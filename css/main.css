@@ -4,3 +4,21 @@ html, body {
 	margin: 0;
 	padding: 0;
 }
+
+#section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* temporary: show element positions on the screen */
+#section > * {
+  border: 1px solid black;
+  margin: 5px;
+  padding: auto 0;
+}
+
+#section > #nav         { flex: 2 }
+#section > #messages    { flex: 3 }
+#section > #game-board  { flex: 30 }
+#section > #controls    { flex: 2 }
