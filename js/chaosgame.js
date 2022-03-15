@@ -20,6 +20,14 @@ let FSHADER = `
         gl_FragColor = u_Color;
     }`;
 
+// Point constructor
+// This is a simple object at the moment
+// Hopefully I can add label information later and keep it here
+function Point(x, y) {
+    this.x = x;
+    this.y = y;
+}
+
 function main() {
     let canvas;                 // Canvas element
     let innerGame;              // Inner div where the points are drawn
@@ -28,14 +36,6 @@ function main() {
     let mousePosition = [];     // Current mouse position
     let points = [];            // Selected point array
     let generatedPoints = [];   // Generated points array
-
-    // Point constructor
-    // This is a simple object at the moment
-    // Hopefully I can add label information later and keep it here
-    function Point(x, y) {
-        this.x = x;
-        this.y = y;
-    }
 
     // Get DOM elements
     canvas = document.getElementById("webGL");
