@@ -49,8 +49,9 @@
         <input type="radio" id="7points" name="points_count" value="7">
         <label for="7points">7</label>
       </span>
-        <input id="speed" type="range"></input>
-        <input id="color" type="range"></input>
+        <!-- I disabled the keyboard input on these inputs -->
+        <input id="speed" type="range" onkeydown="event.preventDefault()"></input>
+        <input id="color" type="range" onkeydown="event.preventDefault()"></input>
         <input id="reset" type="button" value="new"></input>
         <input id="reset" type="button" value="run"></input>
         <input id="reset" type="button" value="reset"></input>
