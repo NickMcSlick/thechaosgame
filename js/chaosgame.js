@@ -24,8 +24,16 @@ let FSHADER = `
 // This is a simple object at the moment
 // Hopefully I can add label information later and keep it here
 function Point(x, y) {
-    this.x = x;
-    this.y = y;
+    if (!x) {
+        this.x = 0;
+    } else {
+        this.x = x;
+    }
+    if (!y) {
+        this.y = 0;
+    } else {
+        this.y = y;
+    }
 }
 
 function main() {
@@ -94,7 +102,7 @@ function main() {
 
     // If the window resizes, adjust the rendering context accordingly
     window.onresize = function() {
-        resize(webGL, canvas, innerGame, mousePosition, points);
+        resize(webGL, canvas, innerGame);
         update();
     }
 }
@@ -107,7 +115,7 @@ function updateMousePosition(e, mousePosition, canvas) {
 }
 
 // Resize the window
-function resize(webGL, canvas, innerGame, mousePosition, points) {
+function resize(webGL, canvas, innerGame) {
     canvas.width = innerGame.getBoundingClientRect().width;
     canvas.height = innerGame.getBoundingClientRect().height;
     webGL = canvas.getContext("webgl");

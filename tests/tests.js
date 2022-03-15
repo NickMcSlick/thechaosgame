@@ -25,8 +25,11 @@ function vShaderTest() {
 
 // Test the point object
 function testPointObject() {
-    let obj = new Point(1, 2);
-    if (obj.x && obj.y) {
+    // Test with data given to constructor
+    let obj1 = new Point(1, 2);
+    // Test without data given to constructor
+    let obj2 = new Point();
+    if (obj1.x && obj1.y && obj2.x === 0 && obj2.y === 0) {
         return true;
     } else {
         return false;
@@ -44,13 +47,13 @@ function testElementExists(name) {
 
 // Run the tests
 function runTests() {
-    console.log(fShaderTest());
-    console.log(vShaderTest());
-    console.log(testPointObject());
-    console.log(testElementExists("nav"));
-    console.log(testElementExists("webGL"));
-    console.log(testElementExists("messages"));
-    console.log(testElementExists("game_board"));
-    console.log(testElementExists("inner_game"));
-    console.log(testElementExists("controls"));
+    console.log("Fragment Shader: " + fShaderTest());
+    console.log("Vertex Shader: " + vShaderTest());
+    console.log("Point object: " + testPointObject());
+    console.log("Header exists: " + testElementExists("nav"));
+    console.log("Canvas exists: " + testElementExists("webGL"));
+    console.log("Messages area exists: " + testElementExists("messages"));
+    console.log("Game board exists: " + testElementExists("game_board"));
+    console.log("Inner game div exists: " + testElementExists("inner_game"));
+    console.log("Controls area exists: " + testElementExists("controls"));
 }
