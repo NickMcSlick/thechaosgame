@@ -29,13 +29,13 @@ function Point(x, y) {
 }
 
 function main() {
-    let canvas;                 // Canvas element
-    let innerGame;              // Inner div where the points are drawn
-    let webGL;                  // The drawing context
+    let canvas;                                     // Canvas element
+    let innerGame;                                  // Inner div where the points are drawn
+    let webGL;                                      // The drawing context
 
-    let mousePosition = [];     // Current mouse position
-    let points = [];            // Selected point array
-    let generatedPoints = [];   // Generated points array
+    let mousePosition = new Point(0, 0);       // Current mouse position
+    let points = [];                                // Selected point array
+    let generatedPoints = [];                       // Generated points array
 
     // Get DOM elements
     canvas = document.getElementById("webGL");
@@ -56,8 +56,8 @@ function main() {
         let outVert = [];
 
         // The mouse position
-        outVert[0] = mousePosition[0];
-        outVert[1] = mousePosition[1];
+        outVert[0] = mousePosition.x;
+        outVert[1] = mousePosition.y;
 
         // Insert the selected points into the output vertices
         points.forEach(pointObject => {
@@ -76,8 +76,7 @@ function main() {
 
     // When the user mouses over the canvas, update the mouse position and render
     canvas.onmousemove = function(e) {
-        let rect = e.target.getBoundingClientRect();
-        mousePosition = [2 * (e.clientX - rect.left) / canvas.width - 1, - 2 * (e.clientY - rect.top) / canvas.height + 1];
+        updateMousePosition(e, mousePosition, canvas);
         update();
     }
 
@@ -89,20 +88,38 @@ function main() {
 
     // If the user clicks on the canvas, add a point to the point array
     canvas.onclick = function(e) {
-        let rect = e.target.getBoundingClientRect();
-        mousePosition = [2 * (e.clientX - rect.left) / canvas.width - 1, - 2 * (e.clientY - rect.top) / canvas.height + 1];
-        points.push(new Point(mousePosition[0], mousePosition[1]));
+        placePoint(e, mousePosition, points, canvas);
         update();
     }
 
     // If the window resizes, adjust the rendering context accordingly
     window.onresize = function() {
-        canvas.width = innerGame.getBoundingClientRect().width;
-        canvas.height = innerGame.getBoundingClientRect().height;
-        webGL = canvas.getContext("webgl");
-        webGL.viewport(0, 0, canvas.width, canvas.height);
+        resize(webGL, canvas, innerGame, mousePosition, points);
         update();
     }
+}
+
+// Update the mouse position
+function updateMousePosition(e, mousePosition, canvas) {
+    let rect = e.target.getBoundingClientRect();
+    mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
+    mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
+}
+
+// Resize the window
+function resize(webGL, canvas, innerGame, mousePosition, points) {
+    canvas.width = innerGame.getBoundingClientRect().width;
+    canvas.height = innerGame.getBoundingClientRect().height;
+    webGL = canvas.getContext("webgl");
+    webGL.viewport(0, 0, canvas.width, canvas.height);
+}
+
+// Place points
+function placePoint(e, mousePosition, points, canvas) {
+    let rect = e.target.getBoundingClientRect();
+    mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
+    mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
+    points.push(new Point(mousePosition.x, mousePosition.y));
 }
 
 // A function used to bind data to the GPU
