@@ -5,12 +5,19 @@
 <html lang="en">
   <head>
     <title>The Chaos Game | Play</title>
-    <link href="../css/main.css" rel="stylesheet" >
+    <link href="../css/main.css" rel="stylesheet">
 
-    <!-- TODO: link to javascript -->
+    <!-- Libraries -->
+    <script src="../lib/webgl-utils.js"></script>
+    <script src="../lib/webgl-debug.js"></script>
+    <script src="../lib/cuon-utils.js"></script>
+    <script src="../lib/cuon-matrix.js"></script>
+    <script src="../lib/dat.gui.min.js"></script>
+
+    <!-- Game Script (contains WebGL code and other functionalities) -->
+    <script src="../js/chaosgame.js"></script>
   </head>
-  <body>
-
+  <body onload="main()">
   <div id="section">
     <div id="nav">
       <a href="../index.html">HOME</a>
@@ -19,8 +26,10 @@
     <div id="messages">
       (messages)
     </div>
-    <div id="game-board">
-      (play area)
+    <div id="game_board">
+      <div id="inner_game">
+        <canvas id="webGL"> Your browser does not support canvas or WebGL </canvas>
+      </div>
     </div>
     <div id="controls">
       <span id="points_placed">Points: ---</span>
