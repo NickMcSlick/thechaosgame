@@ -73,10 +73,12 @@ function main() {
             outVert.push(pointObject.y);
         });
 
-        outVert.push(0);
-        outVert.push(0);
-
         addLabels(points, canvas);
+
+        if (points.length === 3) {
+            readjustPoints(points, canvas, 3);
+            console.log("adjusting points");
+        }
 
         // Let the context know the sizing of the element may have changed
         webGL.viewport(0, 0, canvas.width, canvas.height);
@@ -151,7 +153,7 @@ function addLabels(points, canvas) {
             p.style.display = "inline";
             p.style.padding = "0";
             p.style.margin = "0";
-            let node = document.createTextNode("A");
+            let node = document.createTextNode(String.fromCharCode(i + 65));
             p.appendChild(node);
             p.style.top = div.getBoundingClientRect().top + point[1] + "px";
             p.style.left = div.getBoundingClientRect().left + point[0] + "px";
@@ -160,7 +162,29 @@ function addLabels(points, canvas) {
             label.style.top = div.getBoundingClientRect().top + point[1] + "px";
             label.style.left = div.getBoundingClientRect().left + point[0] + "px";
         }
+    }
+}
 
+// Calculate the center and readjust the points accordingly
+function readjustPoints(points, canvas, n) {
+    let div = document.getElementById("inner_game");
+    let sum = [0, 0];
+    for (let i = 0; i < points.length && i < n; i++) {
+        sum[0] += points[i].x;
+        sum[1] += points[i].y;
+    }
+
+    sum[0] /= n;
+    sum[1] /= n;
+
+    for (let i = 0; i < points.length && i < n; i++) {
+        let label = document.getElementById("pointLabel" + i);
+        let xCoord = (points[i].x - sum[0]);
+        let yCoord = (points[i].y - sum[1]);
+        let unitVector = [xCoord / Math.sqrt(xCoord * xCoord + yCoord * yCoord), yCoord / Math.sqrt(xCoord * xCoord + yCoord * yCoord)]
+        let point = [canvas.width * (xCoord + 0.1 * unitVector[0] + sum[0] + 1) / 2, canvas.height * (yCoord + 0.1 * unitVector[1] + sum[1] - 1) / (-2)];
+        label.style.top = div.getBoundingClientRect().top + (point[1]) + "px";
+        label.style.left = div.getBoundingClientRect().left + (point[0]) + "px";
     }
 }
 

@@ -20,7 +20,7 @@ html, body {
 
 /* Padding so the user doesn't draw right on the edge */
 #game_board {
-    padding: 1em;
+    padding: 5em;
 }
 
 /* The formatting for the point drawing area */
