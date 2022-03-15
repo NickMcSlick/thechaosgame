@@ -73,6 +73,11 @@ function main() {
             outVert.push(pointObject.y);
         });
 
+        outVert.push(0);
+        outVert.push(0);
+
+        addLabels(points, canvas);
+
         // Let the context know the sizing of the element may have changed
         webGL.viewport(0, 0, canvas.width, canvas.height);
 
@@ -128,6 +133,35 @@ function placePoint(e, mousePosition, points, canvas) {
     mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
     mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
     points.push(new Point(mousePosition.x, mousePosition.y));
+}
+
+// Extremely basic label adding
+function addLabels(points, canvas) {
+    for (let i = 0; i < points.length; i++) {
+        let p = document.createElement("p");
+        let div = document.getElementById("inner_game");
+        let label = document.getElementById("pointLabel" + i);
+        let unitPoints = [points[i].x / Math.sqrt(points[i].x * points[i].x + points[i].y * points[i].y), points[i].y / Math.sqrt(points[i].x * points[i].x + points[i].y * points[i].y)];
+        let point = [canvas.width * (points[i].x + 0.08 * unitPoints[0] + 1) / 2, canvas.height * (points[i].y + 0.08 * unitPoints[1] - 1) / (-2)];
+
+        if (!label) {
+            p.id = "pointLabel" + i;
+            p.style.zIndex = i + "";
+            p.style.position = "absolute";
+            p.style.display = "inline";
+            p.style.padding = "0";
+            p.style.margin = "0";
+            let node = document.createTextNode("A");
+            p.appendChild(node);
+            p.style.top = div.getBoundingClientRect().top + point[1] + "px";
+            p.style.left = div.getBoundingClientRect().left + point[0] + "px";
+            div.appendChild(p);
+        } else {
+            label.style.top = div.getBoundingClientRect().top + point[1] + "px";
+            label.style.left = div.getBoundingClientRect().left + point[0] + "px";
+        }
+
+    }
 }
 
 // A function used to bind data to the GPU
