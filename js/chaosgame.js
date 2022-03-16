@@ -80,9 +80,6 @@ function main() {
             console.log("adjusting points");
         }
 
-        // Let the context know the sizing of the element may have changed
-        webGL.viewport(0, 0, canvas.width, canvas.height);
-
         // Clear, bind, and draw
         webGL.clear(webGL.COLOR_BUFFER_BIT);
         bindVertices(webGL, outVert);
@@ -155,17 +152,20 @@ function addLabels(points, canvas) {
             p.style.margin = "0";
             let node = document.createTextNode(String.fromCharCode(i + 65));
             p.appendChild(node);
-            p.style.top = div.getBoundingClientRect().top + point[1] + "px";
+            p.style.top = div.getBoundingClientRect().top + point[1] - 30 + "px";
             p.style.left = div.getBoundingClientRect().left + point[0] + "px";
             div.appendChild(p);
         } else {
-            label.style.top = div.getBoundingClientRect().top + point[1] + "px";
+            label.style.top = div.getBoundingClientRect().top + point[1] - 30 + "px";
             label.style.left = div.getBoundingClientRect().left + point[0] + "px";
         }
     }
 }
 
 // Calculate the center and readjust the points accordingly
+// TO-DO: if the user chooses points that are close to each other or are in a line, issues occur
+// Therefore, we might have to do some checking before actually applying this function
+// OF NOTE - this works using screen space instead of webGL coordinates - otherwise it gets stretched
 function readjustPoints(points, canvas, n) {
     let div = document.getElementById("inner_game");
     let sum = [0, 0];
@@ -181,10 +181,19 @@ function readjustPoints(points, canvas, n) {
         let label = document.getElementById("pointLabel" + i);
         let xCoord = (points[i].x - sum[0]);
         let yCoord = (points[i].y - sum[1]);
-        let unitVector = [xCoord / Math.sqrt(xCoord * xCoord + yCoord * yCoord), yCoord / Math.sqrt(xCoord * xCoord + yCoord * yCoord)]
-        let point = [canvas.width * (xCoord + 0.1 * unitVector[0] + sum[0] + 1) / 2, canvas.height * (yCoord + 0.1 * unitVector[1] + sum[1] - 1) / (-2)];
-        label.style.top = div.getBoundingClientRect().top + (point[1]) + "px";
-        label.style.left = div.getBoundingClientRect().left + (point[0]) + "px";
+        let screenSpaceX = canvas.width * (points[i].x + 1) / 2;
+        let screenSpaceY = canvas.height * (points[i].y - 1) / (-2);
+        let screenCenterX = canvas.width * (sum[0] + 1) / 2;
+        let screenCenterY = canvas.height * (sum[1] - 1) / (-2);
+
+        let direction = [screenSpaceX - screenCenterX, screenSpaceY - screenCenterY];
+
+        let unitVector = [direction[0] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1]), direction[1] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1])]
+
+        let point = [direction[0] + 30 * unitVector[0] + screenCenterX, direction[1] + 30 * unitVector[1] + screenCenterY];
+
+        label.style.top = div.getBoundingClientRect().top + (point[1]) - 10 + "px";
+        label.style.left = div.getBoundingClientRect().left + (point[0]) - 10 + "px";
     }
 }
 
