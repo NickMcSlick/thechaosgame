@@ -26,13 +26,15 @@
       (navigation)
     </div>
     <div id="messages">
-      (messages)
+      
     </div>
-    <div id="game_board">
-      <div id="inner_game">
-        <canvas id="webGL"> Your browser does not support canvas or WebGL </canvas>
-      </div>
-    </div>
+
+    <script type="text/javascript">
+     
+      window.onload = document.getElementById('messages').innerHTML = start_message;
+      
+    </script>
+
     <div id="controls">
       <span id="points_placed">Points: ---</span>
       <form style="display: inline">
@@ -57,6 +59,14 @@
         <input id="reset" type="button" value="reset"></input>
       </form>
     </div>
+
+
+    <div id="game_board">
+      <div id="inner_game">
+        <canvas id="webGL"> Your browser does not support canvas or WebGL </canvas>
+      </div>
+    </div>
+    
   </div>
 
   </body>
