@@ -140,8 +140,16 @@ function addLabels(points, canvas) {
         let p = document.createElement("p");
         let div = document.getElementById("inner_game");
         let label = document.getElementById("pointLabel" + i);
-        let unitPoints = [points[i].x / Math.sqrt(points[i].x * points[i].x + points[i].y * points[i].y), points[i].y / Math.sqrt(points[i].x * points[i].x + points[i].y * points[i].y)];
-        let point = [canvas.width * (points[i].x + 0.08 * unitPoints[0] + 1) / 2, canvas.height * (points[i].y + 0.08 * unitPoints[1] - 1) / (-2)];
+
+        let center = [canvas.width / 2, canvas.height / 2];
+
+        let position = [canvas.width * (points[i].x + 1) / 2, canvas.height * (points[i].y - 1) / (-2)];
+
+        let direction = [position[0] - center[0], position[1] - center[1]];
+
+        let unitVector = [direction[0] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1]), direction[1] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1])];
+
+        let point = [direction[0] + 30 * unitVector[0] + center[0], direction[1] + 30 * unitVector[1] + center[1]];
 
         if (!label) {
             p.id = "pointLabel" + i;
@@ -152,12 +160,12 @@ function addLabels(points, canvas) {
             p.style.margin = "0";
             let node = document.createTextNode(String.fromCharCode(i + 65));
             p.appendChild(node);
-            p.style.top = div.getBoundingClientRect().top + point[1] - 30 + "px";
-            p.style.left = div.getBoundingClientRect().left + point[0] + "px";
+            p.style.top = div.getBoundingClientRect().top + point[1] - 10 + "px";
+            p.style.left = div.getBoundingClientRect().left + point[0] - 10 + "px";
             div.appendChild(p);
         } else {
-            label.style.top = div.getBoundingClientRect().top + point[1] - 30 + "px";
-            label.style.left = div.getBoundingClientRect().left + point[0] + "px";
+            label.style.top = div.getBoundingClientRect().top + point[1] - 10 + "px";
+            label.style.left = div.getBoundingClientRect().left + point[0] - 10 + "px";
         }
     }
 }
