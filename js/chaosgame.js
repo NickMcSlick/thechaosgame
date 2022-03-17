@@ -222,8 +222,5 @@ function bindVertices(webGL, randPoints) {
     webGL.enableVertexAttribArray(a_Position);
 }
 
-var start_message = [
-    
-    'Hello, Please Start by Making a Selection of Points (Below)! <br/> How Many Points Would You Like To Choose?'
-    
-]
+     
+   
