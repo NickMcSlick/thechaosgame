@@ -3,10 +3,6 @@
 
 // TO-DO: insert description, major data structures, etc.
 
-// Message
-let start_message = "Hello, Please Start by Making a Selection of Points (Below)! How Many Points Would You Like To Choose?";
-window.onload = function() { document.getElementById("messages_output").innerHTML = start_message; };
-
 // The vertex shader
 let VSHADER = `
     attribute vec4 a_Position;
@@ -225,3 +221,9 @@ function bindVertices(webGL, randPoints) {
     webGL.vertexAttribPointer(a_Position, 2, webGL.FLOAT, false, 0, 0);
     webGL.enableVertexAttribArray(a_Position);
 }
+
+var start_message = [
+    
+    'Hello, Please Start by Making a Selection of Points (Below)! <br/> How Many Points Would You Like To Choose?'
+    
+]
