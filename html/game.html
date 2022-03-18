@@ -26,14 +26,13 @@
       (navigation)
     </div>
 
-    <!--Message Box Script-->
-
     <div id="messages">
+        <div id="message_box">
+          <p>Click on The Board to Select Points!</p>
+        </div>
     </div>
     <!--Select Points Prompt-->
       <div id="game_board">
-        <div id="select_points">Click on The Board to Select Points!</div>
-      
       <!-- TO-DO: THIS DIV BECOMES TOO TALL WHEN RESIZING - MAKE SURE IT NEVER GOES ABOVE THE PAGE HEIGHT -->
       <div id="inner_game">
         <canvas id="webGL"> Your browser does not support canvas or WebGL </canvas>
@@ -43,21 +42,10 @@
     <div id="controls">
       <span id="points_placed">Points: ---</span>
       <form style="display: inline">
-      <span>
-        Amount Of Points:
-        <input type="radio" id="3points" name="points_count" value="3">
-        <label for="3points">3</label>
-        <input type="radio" id="4points" name="points_count" value="4">
-        <label for="4points">4</label>
-        <input type="radio" id="5points" name="points_count" value="5">
-        <label for="5points">5</label>
-        <input type="radio" id="6points" name="points_count" value="6">
-        <label for="6points">6</label>
-        <input type="radio" id="7points" name="points_count" value="7">
-        <label for="7points">7</label>
-      </span>
         <!-- I disabled the keyboard input on these inputs -->
+        <label>Speed:</label>
         <input id="speed" type="range" onkeydown="event.preventDefault()"></input>
+        <label>Color:</label>
         <input id="color" type="range" onkeydown="event.preventDefault()"></input>
         <input id="reset" type="button" value="new"></input>
         <input id="reset" type="button" value="run"></input>

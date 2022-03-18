@@ -1,6 +1,7 @@
 html, body {
     font-family: "Courier New", Monospace;
     font-weight: bold;
+    font-size: auto;
 	height: 100%;
 	width: 100%;
 	margin: 0;
@@ -31,12 +32,12 @@ html, body {
     width: 100%;
 }
 
-#select_points {
-    
-  color:aqua;
-  text-align: center;
-  font-size: 3.2vw;
-
+#message_box {
+    margin: auto;
+    padding: 0;
+    color: aqua;
+    text-align: center;
+    font-size: 3.2vw;
 }
 
 #section > #nav         { flex: 2 }
