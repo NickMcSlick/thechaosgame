@@ -31,6 +31,14 @@ html, body {
     width: 100%;
 }
 
+#select_points {
+    
+  color:aqua;
+  text-align: center;
+  font-size: 3.2vw;
+
+}
+
 #section > #nav         { flex: 2 }
 #section > #messages    { flex: 3 }
 #section > #game_board  { flex: 30 }
