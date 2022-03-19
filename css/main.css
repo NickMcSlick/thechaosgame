@@ -39,7 +39,11 @@ html, body {
     font-size: 3.2vw;
 }
 
+
+
 #section > #nav         { flex: 2 }
-#section > #messages    { flex: 3 }
+#section > #messages    { flex: 2 }
 #section > #game_board  { flex: 30 }
 #section > #controls    { flex: 2 }
+
+
