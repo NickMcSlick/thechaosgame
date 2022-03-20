@@ -73,6 +73,7 @@ function main() {
 
     let n = 3;                                      // The number of points
     let draw = false;                               // The boolean to generate points
+    let scroll = 0;                                 // The scrolling of the user
     let mousePosition = new Point(0, 0);      // Current mouse position
     let current = new Point(0, 0);            // Current position for drawing
     let points = [];                               // Selected point array
@@ -110,7 +111,6 @@ function main() {
         update();
     }
 
-
     // The update function
     // Called to make rendering changes
     function update() {
@@ -129,21 +129,21 @@ function main() {
 
         // Only label the points if they are the initial ones
         if (points.length < n + 1) {
-            addLabels(points, canvas, n);
+            addLabels(points, canvas, n, scroll);
         // If a point is the starting point, label it
         } else if (points.length === n + 1 && draw === false) {
-            addCustomLabel(points[n], canvas, "Start");
+            addCustomLabel(points[n], canvas, "Start", scroll);
             current = new Point(points[n].x, points[n].y);
         // Otherwise, label the current vertex
         } else if (draw === true) {
-            addCustomLabel(current, canvas, "Current");
+            addCustomLabel(current, canvas, "Current", scroll);
         }
 
         // Readjust the points
         // IT IS IMPORTANT THAT THIS IS CALLED AFTER THE LABELS ARE CREATED
         // SINCE IT MANIPULATES THOSE LABELS
         if (points.length >= n) {
-            readjustPoints(points, canvas, n);
+            readjustPoints(points, canvas, n, scroll);
         }
 
         // If all the points have been drawn, disable the events
@@ -213,9 +213,15 @@ function main() {
     }
 
     // If the window resizes, adjust the rendering context accordingly
-    window.onresize = function () {
+    window.onresize = function() {
         resize(webGL, canvas, innerGame);
         update();
+    }
+
+    // If the user scrolls, update the scroll position
+    window.onscroll = function(e) {
+        scroll = e.scrollY;
+        console.log("scrolling");
     }
 }
 
@@ -291,7 +297,7 @@ function addCustomLabel(labelPoint, canvas, labelMessage) {
 
     let unitVector = [direction[0] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1]), direction[1] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1])];
 
-    let point = [direction[0] + 1 * unitVector[0] + position[0], direction[1] + 1 * unitVector[1] + position[1]];
+    let point = [direction[0] + unitVector[0] + position[0], direction[1] + unitVector[1] + position[1]];
 
     if (!label) {
         p.id = "customLabel";

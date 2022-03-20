@@ -31,7 +31,7 @@
     <!-- Message box to send messages to the user -->
     <div id="messages">
         <div id="message_box">
-          <p>Click on The Board to Select Points!</p>
+          <span>Click on The Board to Select Points!</span>
         </div>
     </div>
       <div id="game_board">
@@ -39,23 +39,21 @@
       <div id="inner_game">
         <canvas id="webGL"> Your browser does not support canvas or WebGL </canvas>
       </div>
-    </div>
-
-    <div id="controls">
-      <span id="points_placed">Points: ---</span>
-      <form style="display: inline">
-        <!-- I disabled the keyboard input on these inputs -->
-        <label>Speed:</label>
-        <input id="speed" type="range" onkeydown="event.preventDefault()"></input>
-        <label>Color:</label>
-        <input id="color" type="range" onkeydown="event.preventDefault()"></input>
-        <input id="new" type="button" value="new"></input>
-        <input id="run" type="button" value="run"></input>
-        <input id="reset" type="button" value="reset"></input>
-        <input id="undo" type="button" value="undo"></input>
-        <input id="redo" type="button" value="redo"></input>
-
-      </form>
+        <div id="controls">
+          <span id="points_placed">Points: ---</span>
+          <form style="display: inline">
+            <!-- I disabled the keyboard input on these inputs -->
+            <label>Speed:</label>
+            <input id="speed" type="range" onkeydown="event.preventDefault()"></input>
+            <label>Color:</label>
+            <input id="color" type="range" onkeydown="event.preventDefault()"></input>
+            <input id="new" type="button" value="new"></input>
+            <input id="run" type="button" value="run"></input>
+            <input id="reset" type="button" value="reset"></input>
+            <input id="undo" type="button" value="undo"></input>
+            <input id="redo" type="button" value="redo"></input>
+          </form>
+        </div>
     </div>
   </div>
 

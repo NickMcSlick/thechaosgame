@@ -22,7 +22,12 @@ html, body {
 
 /* Padding so the user doesn't draw right on the edge */
 #game_board {
+    height: 100%;
+    margin: 1% 10% 5% 10%;
     padding: 3em;
+    border-radius: 2em;
+    border-width: 0.3em;
+    box-shadow: 0em 0em 1em grey;
 }
 
 /* The formatting for the point drawing area */
@@ -32,14 +37,26 @@ html, body {
 }
 
 #message_box {
-    margin: auto;
+    margin: 0.5em auto 0.5em auto;
     padding: 0;
     color: aqua;
     text-align: center;
     font-size: 3.2vw;
 }
 
+#game_wrapper {
+    border: 1px solid black;
+    margin: 0.2em;
+    padding: 0;
+}
 
+#messages {
+    border: none;
+}
+
+#controls {
+    text-align: center;
+}
 
 #section > #nav         { flex: 2 }
 #section > #messages    { flex: 2 }
