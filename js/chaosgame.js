@@ -3,6 +3,13 @@
 
 // TO-DO: insert description, major data structures, etc.
 
+// The configuration object
+// Interface with this object to manipulate the animation of points
+let config = {
+    SPEED: 0,
+    COLOR: 0,
+}
+
 // The vertex shader
 let VSHADER = `
     attribute vec4 a_Position;
@@ -36,12 +43,31 @@ function Point(x, y) {
     }
 }
 
+// Color object
+function Color(r, g, b) {
+    if (!r) {
+        this.r = 0;
+    } else {
+        this.r = r;
+    }
+    if (!g) {
+        this.g = 0;
+    } else {
+        this.g = g;
+    }
+    if (!b) {
+        this.b = 0;
+    } else {
+        this.b = b;
+    }
+}
+
 function main() {
     let canvas;                                     // Canvas element
     let innerGame;                                  // Inner div where the points are drawn
     let webGL;                                      // The drawing context
 
-    let mousePosition = new Point(0, 0);       // Current mouse position
+    let mousePosition = new Point(0, 0);            // Current mouse position
     let points = [];                                // Selected point array
     let generatedPoints = [];                       // Generated points array
 
@@ -77,12 +103,11 @@ function main() {
 
         if (points.length === 3) {
             readjustPoints(points, canvas, 3);
-            console.log("adjusting points");
         }
 
         // Clear, bind, and draw
         webGL.clear(webGL.COLOR_BUFFER_BIT);
-        bindVertices(webGL, outVert);
+        bindVertices(webGL, outVert, new Color(0.0, 0.0, 0.0));
         webGL.drawArrays(webGL.POINTS, 0, outVert.length / 2);
     }
 
@@ -205,8 +230,14 @@ function readjustPoints(points, canvas, n) {
     }
 }
 
+// Generate a new point that is a certain factor
+// from the original point going towards the destination
+function generateFactorPoint(ori, dest, factor) {
+    return new Point((dest.x - ori.x) * factor + ori.x, (dest.y - ori.y) * factor + ori.y);
+}
+
 // A function used to bind data to the GPU
-function bindVertices(webGL, randPoints) {
+function bindVertices(webGL, randPoints, color) {
     let data = new Float32Array(randPoints);
     let vertexBuffer = webGL.createBuffer();
     webGL.bindBuffer(webGL.ARRAY_BUFFER, vertexBuffer);
@@ -216,7 +247,7 @@ function bindVertices(webGL, randPoints) {
     let u_Color = webGL.getUniformLocation(webGL.program, "u_Color");
     let u_pointSize = webGL.getUniformLocation(webGL.program, "u_pointSize");
     webGL.uniform1f(u_pointSize, 5.0);
-    webGL.uniform4f(u_Color, 0.0, 0.0, 0.0, 1.0);
+    webGL.uniform4f(u_Color, color.r,  color.g, color.b, 1.0);
 
     webGL.vertexAttribPointer(a_Position, 2, webGL.FLOAT, false, 0, 0);
     webGL.enableVertexAttribArray(a_Position);
