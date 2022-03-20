@@ -99,6 +99,8 @@ function main() {
     // Clear all animation information
     // and previously drawn elements
     reset.onclick = function () {
+        run.disabled = true;
+        run.style.opacity = "0.5";
         draw = false;
         points = [];
         generatedPoints = [];
