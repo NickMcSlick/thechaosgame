@@ -69,6 +69,7 @@ function main() {
     let animID;                                     // The animation frame ID
 
     let run;                                        // The run button
+    let reset;                                      // The reset button
 
     let n = 3;                                      // The number of points
     let draw = false;                               // The boolean to generate points
@@ -81,6 +82,7 @@ function main() {
     canvas = document.getElementById("webGL");
     innerGame = document.getElementById("inner_game");
     run = document.getElementById("run");
+    reset = document.getElementById("reset");
 
     // Resize canvas
     canvas.width = innerGame.getBoundingClientRect().width;
@@ -93,6 +95,19 @@ function main() {
     // Edit buttons
     run.disabled = true;
     run.style.opacity = "0.5";
+
+    // Clear all animation information
+    // and previously drawn elements
+    reset.onclick = function () {
+        draw = false;
+        points = [];
+        generatedPoints = [];
+        mousePosition = new Point(2, 2);
+        cancelAnimationFrame(animID);
+        clearChildren(innerGame);
+        update();
+    }
+
 
     // The update function
     // Called to make rendering changes
@@ -131,6 +146,7 @@ function main() {
 
         // If all the points have been drawn, disable the events
         // and allow the user to run the game
+        // Otherwise, enable the events and let the process start over again
         if (points.length >= n + 1) {
             disableCanvasEvents();
             run.disabled = false;
@@ -139,6 +155,8 @@ function main() {
                 draw = true;
                 update();
             }
+        } else {
+            enableCanvasEvents();
         }
 
         // If drawing is true, run the game
@@ -289,6 +307,14 @@ function addCustomLabel(labelPoint, canvas, labelMessage) {
         label.innerHTML = labelMessage;
         label.style.top = div.getBoundingClientRect().top + point[1] - 20 + "px";
         label.style.left = div.getBoundingClientRect().left + point[0] - 20 + "px";
+    }
+}
+
+// Clear the children elements - used to clear labels here
+// NOTE - based off of this code: https://stackoverflow.com/questions/19885788/removing-every-child-element-except-first-child
+function clearChildren(div) {
+    while (div.childNodes.length > 2) {
+        div.removeChild(div.lastChild);
     }
 }
 
