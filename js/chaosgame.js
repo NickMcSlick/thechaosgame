@@ -66,14 +66,21 @@ function main() {
     let canvas;                                     // Canvas element
     let innerGame;                                  // Inner div where the points are drawn
     let webGL;                                      // The drawing context
+    let animID;                                     // The animation frame ID
 
-    let mousePosition = new Point(0, 0);            // Current mouse position
-    let points = [];                                // Selected point array
-    let generatedPoints = [];                       // Generated points array
+    let run;                                        // The run button
+
+    let n = 3;                                      // The number of points
+    let draw = false;                               // The boolean to generate points
+    let mousePosition = new Point(0, 0);      // Current mouse position
+    let current = new Point(0, 0);            // Current position for drawing
+    let points = [];                               // Selected point array
+    let generatedPoints = [];                      // Generated points array
 
     // Get DOM elements
     canvas = document.getElementById("webGL");
     innerGame = document.getElementById("inner_game");
+    run = document.getElementById("run");
 
     // Resize canvas
     canvas.width = innerGame.getBoundingClientRect().width;
@@ -82,6 +89,10 @@ function main() {
     // Get context and initialize the shaders
     webGL = canvas.getContext("webgl");
     initShaders(webGL, VSHADER, FSHADER);
+
+    // Edit buttons
+    run.disabled = true;
+    run.style.opacity = "0.5";
 
     // The update function
     // Called to make rendering changes
@@ -99,11 +110,51 @@ function main() {
             outVert.push(pointObject.y);
         });
 
-        addLabels(points, canvas);
-
-        if (points.length === 3) {
-            readjustPoints(points, canvas, 3);
+        // Only label the points if they are the initial ones
+        if (points.length < n + 1) {
+            addLabels(points, canvas, n);
+        // If a point is the starting point, label it
+        } else if (points.length === n + 1 && draw === false) {
+            addCustomLabel(points[n], canvas, "Start");
+            current = new Point(points[n].x, points[n].y);
+        // Otherwise, label the current vertex
+        } else if (draw === true) {
+            addCustomLabel(current, canvas, "Current");
         }
+
+        // Readjust the points
+        // IT IS IMPORTANT THAT THIS IS CALLED AFTER THE LABELS ARE CREATED
+        // SINCE IT MANIPULATES THOSE LABELS
+        if (points.length >= n) {
+            readjustPoints(points, canvas, n);
+        }
+
+        // If all the points have been drawn, disable the events
+        // and allow the user to run the game
+        if (points.length >= n + 1) {
+            disableCanvasEvents();
+            run.disabled = false;
+            run.style.opacity = "1.0";
+            run.onclick = function () {
+                draw = true;
+                update();
+            }
+        }
+
+        // If drawing is true, run the game
+        if (draw === true) {
+            let rand = randomNumber(0, n - 1);
+            generatedPoints.push(generateFactorPoint(current, points[rand], n / (n + 3)));
+            current = generatedPoints[generatedPoints.length - 1];
+            cancelAnimationFrame(animID);
+            animID = requestAnimationFrame(update);
+        }
+
+        // Insert Generated points
+        generatedPoints.forEach(pointObject => {
+            outVert.push(pointObject.x);
+            outVert.push(pointObject.y);
+        });
 
         // Clear, bind, and draw
         webGL.clear(webGL.COLOR_BUFFER_BIT);
@@ -111,26 +162,38 @@ function main() {
         webGL.drawArrays(webGL.POINTS, 0, outVert.length / 2);
     }
 
-    // When the user mouses over the canvas, update the mouse position and render
-    canvas.onmousemove = function(e) {
-        updateMousePosition(e, mousePosition, canvas);
-        update();
+    // Enable the events
+    function enableCanvasEvents() {
+        // When the user mouses over the canvas, update the mouse position and render
+        canvas.onmousemove = function (e) {
+            updateMousePosition(e, mousePosition, canvas);
+            update();
+        }
+
+        // If the user mouses out, put the mouse in an unviewable position and render
+        canvas.onmouseout = function () {
+            mousePosition = [2, 2];
+            update();
+        }
+
+        // If the user clicks on the canvas, add a point to the point array
+        canvas.onclick = function (e) {
+            placePoint(e, mousePosition, points, canvas);
+            update();
+        }
     }
 
-    // If the user mouses out, put the mouse in an unviewable position and render
-    canvas.onmouseout = function () {
-        mousePosition = [2, 2];
-        update();
-    }
+    enableCanvasEvents();
 
-    // If the user clicks on the canvas, add a point to the point array
-    canvas.onclick = function(e) {
-        placePoint(e, mousePosition, points, canvas);
-        update();
+    // Disable the events
+    function disableCanvasEvents() {
+        canvas.onmousemove = update;
+        canvas.onmouseout = update;
+        canvas.onclick = update;
     }
 
     // If the window resizes, adjust the rendering context accordingly
-    window.onresize = function() {
+    window.onresize = function () {
         resize(webGL, canvas, innerGame);
         update();
     }
@@ -159,7 +222,7 @@ function placePoint(e, mousePosition, points, canvas) {
     points.push(new Point(mousePosition.x, mousePosition.y));
 }
 
-// Extremely basic label adding
+// Basic point labeling for initial points "A, B, C"
 function addLabels(points, canvas) {
     for (let i = 0; i < points.length; i++) {
         let p = document.createElement("p");
@@ -194,6 +257,41 @@ function addLabels(points, canvas) {
         }
     }
 }
+
+
+// Basic point labeling for starting vertex and current vertex
+function addCustomLabel(labelPoint, canvas, labelMessage) {
+    let p = document.createElement("p");
+    let div = document.getElementById("inner_game");
+    let label = document.getElementById("customLabel");
+
+    let position = [canvas.width * (labelPoint.x + 1) / 2, canvas.height * (labelPoint.y - 1) / (-2)];
+
+    let direction = [0.0, -1.0];
+
+    let unitVector = [direction[0] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1]), direction[1] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1])];
+
+    let point = [direction[0] + 1 * unitVector[0] + position[0], direction[1] + 1 * unitVector[1] + position[1]];
+
+    if (!label) {
+        p.id = "customLabel";
+        p.style.zIndex = 10 + "";
+        p.style.position = "absolute";
+        p.style.display = "inline";
+        p.style.padding = "0";
+        p.style.margin = "0";
+        let node = document.createTextNode(labelMessage);
+        p.appendChild(node);
+        p.style.top = div.getBoundingClientRect().top + point[1]  - 20 + "px";
+        p.style.left = div.getBoundingClientRect().left + point[0] - 20 + "px";
+        div.appendChild(p);
+    } else {
+        label.innerHTML = labelMessage;
+        label.style.top = div.getBoundingClientRect().top + point[1] - 20 + "px";
+        label.style.left = div.getBoundingClientRect().left + point[0] - 20 + "px";
+    }
+}
+
 
 // Calculate the center and readjust the points accordingly
 // TO-DO: if the user chooses points that are close to each other or are in a line, issues occur
@@ -234,6 +332,11 @@ function readjustPoints(points, canvas, n) {
 // from the original point going towards the destination
 function generateFactorPoint(ori, dest, factor) {
     return new Point((dest.x - ori.x) * factor + ori.x, (dest.y - ori.y) * factor + ori.y);
+}
+
+// Generate random number
+function randomNumber(lower, upper) {
+    return Math.floor(Math.random() * (upper - lower + 1) + lower);
 }
 
 // A function used to bind data to the GPU
