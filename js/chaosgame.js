@@ -217,12 +217,6 @@ function main() {
         resize(webGL, canvas, innerGame);
         update();
     }
-
-    // If the user scrolls, update the scroll position
-    window.onscroll = function(e) {
-        scroll = e.scrollY;
-        console.log("scrolling");
-    }
 }
 
 // Update the mouse position
@@ -278,12 +272,12 @@ function addLabels(points, canvas) {
             p.style.left = div.getBoundingClientRect().left + point[0] - 10 + "px";
             div.appendChild(p);
         } else {
-            label.style.top = div.getBoundingClientRect().top + point[1] - 10 + "px";
+            console.log(div.getBoundingClientRect().top);
+            label.style.top = div.getBoundingClientRect().top + window.scrollY + point[1] - 10 + "px";
             label.style.left = div.getBoundingClientRect().left + point[0] - 10 + "px";
         }
     }
 }
-
 
 // Basic point labeling for starting vertex and current vertex
 function addCustomLabel(labelPoint, canvas, labelMessage) {
@@ -308,12 +302,12 @@ function addCustomLabel(labelPoint, canvas, labelMessage) {
         p.style.margin = "0";
         let node = document.createTextNode(labelMessage);
         p.appendChild(node);
-        p.style.top = div.getBoundingClientRect().top + point[1]  - 20 + "px";
+        p.style.top = div.getBoundingClientRect().top + window.scrollY + point[1]  - 20 + "px";
         p.style.left = div.getBoundingClientRect().left + point[0] - 20 + "px";
         div.appendChild(p);
     } else {
         label.innerHTML = labelMessage;
-        label.style.top = div.getBoundingClientRect().top + point[1] - 20 + "px";
+        label.style.top = div.getBoundingClientRect().top + window.scrollY + point[1] - 20 + "px";
         label.style.left = div.getBoundingClientRect().left + point[0] - 20 + "px";
     }
 }
@@ -357,7 +351,7 @@ function readjustPoints(points, canvas, n) {
 
         let point = [direction[0] + 30 * unitVector[0] + screenCenterX, direction[1] + 30 * unitVector[1] + screenCenterY];
 
-        label.style.top = div.getBoundingClientRect().top + (point[1]) - 10 + "px";
+        label.style.top = div.getBoundingClientRect().top + window.scrollY + (point[1]) - 10 + "px";
         label.style.left = div.getBoundingClientRect().left + (point[0]) - 10 + "px";
     }
 }
