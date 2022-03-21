@@ -27,6 +27,7 @@ html, body {
     padding: 3em;
     border-radius: 2em;
     border-width: 0.3em;
+    border-color: rgba(0, 0, 0, 0);
     box-shadow: 0em 0em 1em grey;
 }
 
@@ -44,6 +45,7 @@ html, body {
     font-size: 3.2vw;
 }
 
+/* isn't used at the moment, need to fix */
 #game_wrapper {
     border: 1px solid black;
     margin: 0.2em;
