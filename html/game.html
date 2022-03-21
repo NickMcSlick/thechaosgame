@@ -28,14 +28,27 @@
       (navigation)
     </div>
 
+    <div id="messages">
+    </div>
+
+    <script type="text/javascript">
+     
+      window.onload = document.getElementById('messages').innerHTML = start_message;
+      
+    </script>
+
     <!-- Message box to send messages to the user -->
     <div id="messages">
         <div id="message_box">
           <span>Click on The Board to Select Points!</span>
         </div>
     </div>
+
+    <div id="game_board">
+
       <div id="game_board">
       <!-- TO-DO: THIS DIV BECOMES TOO TALL WHEN RESIZING - MAKE SURE IT NEVER GOES ABOVE THE PAGE HEIGHT -->
+
       <div id="inner_game">
         <canvas id="webGL"> Your browser does not support canvas or WebGL </canvas>
       </div>
