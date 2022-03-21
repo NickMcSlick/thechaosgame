@@ -23,8 +23,11 @@
   <div id="section">
     <div id="nav">
       <a href="../index.html">HOME</a>
+      <a href="./tutorial.html">TUTORIAL</a>
+
       (navigation)
     </div>
+
     <div id="messages">
     </div>
 
@@ -34,36 +37,37 @@
       
     </script>
 
-    <div id="controls">
-      <span id="points_placed">Points: ---</span>
-      <form style="display: inline">
-      <span>
-        Amount Of Points:
-        <input type="radio" id="3points" name="points_count" value="3">
-        <label for="3points">3</label>
-        <input type="radio" id="4points" name="points_count" value="4">
-        <label for="4points">4</label>
-        <input type="radio" id="5points" name="points_count" value="5">
-        <label for="5points">5</label>
-        <input type="radio" id="6points" name="points_count" value="6">
-        <label for="6points">6</label>
-        <input type="radio" id="7points" name="points_count" value="7">
-        <label for="7points">7</label>
-      </span>
-        <!-- I disabled the keyboard input on these inputs -->
-        <input id="speed" type="range" onkeydown="event.preventDefault()"></input>
-        <input id="color" type="range" onkeydown="event.preventDefault()"></input>
-        <input id="reset" type="button" value="new"></input>
-        <input id="reset" type="button" value="run"></input>
-        <input id="reset" type="button" value="reset"></input>
-      </form>
+    <!-- Message box to send messages to the user -->
+    <div id="messages">
+        <div id="message_box">
+          <span>Click on The Board to Select Points!</span>
+        </div>
     </div>
+
     <div id="game_board">
+
+      <div id="game_board">
+      <!-- TO-DO: THIS DIV BECOMES TOO TALL WHEN RESIZING - MAKE SURE IT NEVER GOES ABOVE THE PAGE HEIGHT -->
+
       <div id="inner_game">
         <canvas id="webGL"> Your browser does not support canvas or WebGL </canvas>
       </div>
+        <div id="controls">
+          <span id="points_placed">Points: ---</span>
+          <form style="display: inline">
+            <!-- I disabled the keyboard input on these inputs -->
+            <label>Speed:</label>
+            <input id="speed" type="range" onkeydown="event.preventDefault()"></input>
+            <label>Color:</label>
+            <input id="color" type="range" onkeydown="event.preventDefault()"></input>
+            <input id="new" type="button" value="new"></input>
+            <input id="run" type="button" value="run"></input>
+            <input id="reset" type="button" value="reset"></input>
+            <input id="undo" type="button" value="undo"></input>
+            <input id="redo" type="button" value="redo"></input>
+          </form>
+        </div>
     </div>
-    
   </div>
 
   </body>
