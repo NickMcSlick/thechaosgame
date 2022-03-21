@@ -1,10 +1,3 @@
-#message_box {
-    margin: auto;
-    padding: 0;
-    color: aqua;
-    text-align: center;
-    font-size: 3.2vw;
-}
 
 ul.topnav {
     display: flex;
@@ -74,7 +67,7 @@ ul.topnav li a.active {background-color: #00ffff;}
 }
 
 #content> #messages     { flex: 1 }
-#content > #tutorial    { flex: 30 }
+#content > #tutorial    { flex: 20 }
 
 
 

@@ -65,6 +65,7 @@ function Color(r, g, b) {
 function main() {
     let canvas;                                     // Canvas element
     let innerGame;                                  // Inner div where the points are drawn
+    let messageBox;                                 // Message box
     let webGL;                                      // The drawing context
     let animID;                                     // The animation frame ID
 
@@ -83,7 +84,8 @@ function main() {
     canvas = document.getElementById("webGL");
     innerGame = document.getElementById("inner_game");
     run = document.getElementById("run");
-    reset = document.getElementById("reset");
+    reset = document.getElementById("reset")
+    messageBox = document.getElementById("message_box");
 
     // Resize canvas
     canvas.width = innerGame.getBoundingClientRect().width;
@@ -129,11 +131,23 @@ function main() {
 
         // Only label the points if they are the initial ones
         if (points.length < n + 1) {
+            // Update the message
+            messageBox.innerHTML = "<span>Click on the board to select points!</span>";
             addLabels(points, canvas, n, scroll);
+
+            // Tell the user to select a starting position
+            if (points.length === n) {
+                messageBox.innerHTML = "<span>Select a starting position!</span>";
+            }
+
         // If a point is the starting point, label it
         } else if (points.length === n + 1 && draw === false) {
             addCustomLabel(points[n], canvas, "Start", scroll);
             current = new Point(points[n].x, points[n].y);
+
+            // Update the message to tell the user to press run
+            messageBox.innerHTML = "<span>Press the 'Run' button to start the game!</span>";
+
         // Otherwise, label the current vertex
         } else if (draw === true) {
             addCustomLabel(current, canvas, "Current", scroll);
@@ -166,6 +180,10 @@ function main() {
             let rand = randomNumber(0, n - 1);
             generatedPoints.push(generateFactorPoint(current, points[rand], n / (n + 3)));
             current = generatedPoints[generatedPoints.length - 1];
+
+            // Update the message to tell the user the random points chosen
+            messageBox.innerHTML = "<span>Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65) + "</span>";
+
             cancelAnimationFrame(animID);
             animID = requestAnimationFrame(update);
         }
@@ -268,11 +286,10 @@ function addLabels(points, canvas) {
             p.style.margin = "0";
             let node = document.createTextNode(String.fromCharCode(i + 65));
             p.appendChild(node);
-            p.style.top = div.getBoundingClientRect().top + point[1] - 10 + "px";
+            p.style.top = div.getBoundingClientRect().top + window.scrollY + point[1] - 10 + "px";
             p.style.left = div.getBoundingClientRect().left + point[0] - 10 + "px";
             div.appendChild(p);
         } else {
-            console.log(div.getBoundingClientRect().top);
             label.style.top = div.getBoundingClientRect().top + window.scrollY + point[1] - 10 + "px";
             label.style.left = div.getBoundingClientRect().left + point[0] - 10 + "px";
         }
