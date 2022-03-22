@@ -29,37 +29,26 @@ let FSHADER = `
 
 // Point constructor
 // This is a simple object at the moment
-// Hopefully I can add label information later and keep it here
-function Point(x, y) {
-    if (!x) {
-        this.x = 0;
-    } else {
-        this.x = x;
-    }
-    if (!y) {
-        this.y = 0;
-    } else {
-        this.y = y;
+// It does include label information, I'm currently refactoring the code to incorporate it
+// Also uses default parameters as suggested by John
+function Point(x = 0, y = 0, label = "N/A") {
+    this.x = x;
+    this.y = y;
+    this.label = label;
+
+    this.unit = function () {
+        this.x = this.x / Math.sqrt(this.x * this.x + this.y * this.y);
+        this.y = this.y / Math.sqrt(this.x * this.x + this.y * this.y);
     }
 }
 
+
 // Color object
-function Color(r, g, b) {
-    if (!r) {
-        this.r = 0;
-    } else {
-        this.r = r;
-    }
-    if (!g) {
-        this.g = 0;
-    } else {
-        this.g = g;
-    }
-    if (!b) {
-        this.b = 0;
-    } else {
-        this.b = b;
-    }
+// Uses default parameters as suggested by John
+function Color(r = 0, g = 0, b = 0) {
+    this.r = r;
+    this.g = g;
+    this.b = b;
 }
 
 function main() {
@@ -210,7 +199,7 @@ function main() {
 
         // If the user mouses out, put the mouse in an unviewable position and render
         canvas.onmouseout = function () {
-            mousePosition = [2, 2];
+            mousePosition = new Point(2, 2);
             update();
         }
 
@@ -257,7 +246,7 @@ function placePoint(e, mousePosition, points, canvas) {
     let rect = e.target.getBoundingClientRect();
     mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
     mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
-    points.push(new Point(mousePosition.x, mousePosition.y));
+    points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65)));
 }
 
 // Basic point labeling for initial points "A, B, C"
@@ -267,15 +256,19 @@ function addLabels(points, canvas) {
         let div = document.getElementById("inner_game");
         let label = document.getElementById("pointLabel" + i);
 
-        let center = [canvas.width / 2, canvas.height / 2];
+        // Find the center
+        let center = new Point(canvas.width / 2, canvas.height / 2);
+        // Find the position of the point in window coordinates
+        let position = new Point(canvas.width * (points[i].x + 1) / 2, canvas.height * (points[i].y - 1) / (-2));
+        // Find the direction we want the label to be in, which is relative to the center
+        let direction = new Point(position.x - center.x, position.y - center.y);
+        // Create a unit vector of that direction
+        let unitVector = new Point(direction.x, direction.y);
+        unitVector.unit();
 
-        let position = [canvas.width * (points[i].x + 1) / 2, canvas.height * (points[i].y - 1) / (-2)];
-
-        let direction = [position[0] - center[0], position[1] - center[1]];
-
-        let unitVector = [direction[0] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1]), direction[1] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1])];
-
-        let point = [direction[0] + 30 * unitVector[0] + center[0], direction[1] + 30 * unitVector[1] + center[1]];
+        // Now find the final position
+        // First we find the direction, add a certain amount of direction, and then translate it to be relative to the center
+        let point = new Point(direction.x + 30 * unitVector.x + center.x, direction.y + 30 * unitVector.y + center.y);
 
         if (!label) {
             p.id = "pointLabel" + i;
@@ -284,14 +277,14 @@ function addLabels(points, canvas) {
             p.style.display = "inline";
             p.style.padding = "0";
             p.style.margin = "0";
-            let node = document.createTextNode(String.fromCharCode(i + 65));
+            let node = document.createTextNode(points[i].label);
             p.appendChild(node);
-            p.style.top = div.getBoundingClientRect().top + window.scrollY + point[1] - 10 + "px";
-            p.style.left = div.getBoundingClientRect().left + point[0] - 10 + "px";
+            p.style.top = div.getBoundingClientRect().top + window.scrollY + point.y - 10 + "px";
+            p.style.left = div.getBoundingClientRect().left + point.x - 10 + "px";
             div.appendChild(p);
         } else {
-            label.style.top = div.getBoundingClientRect().top + window.scrollY + point[1] - 10 + "px";
-            label.style.left = div.getBoundingClientRect().left + point[0] - 10 + "px";
+            label.style.top = div.getBoundingClientRect().top + window.scrollY + point.y - 10 + "px";
+            label.style.left = div.getBoundingClientRect().left + point.x - 10 + "px";
         }
     }
 }
@@ -302,13 +295,13 @@ function addCustomLabel(labelPoint, canvas, labelMessage) {
     let div = document.getElementById("inner_game");
     let label = document.getElementById("customLabel");
 
-    let position = [canvas.width * (labelPoint.x + 1) / 2, canvas.height * (labelPoint.y - 1) / (-2)];
+    let position = new Point(canvas.width * (labelPoint.x + 1) / 2, canvas.height * (labelPoint.y - 1) / (-2));
+    let direction = new Point(0.0, -1.0);
 
-    let direction = [0.0, -1.0];
+    let unitVector = new Point(direction.x, direction.y);
+    unitVector.unit();
 
-    let unitVector = [direction[0] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1]), direction[1] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1])];
-
-    let point = [direction[0] + unitVector[0] + position[0], direction[1] + unitVector[1] + position[1]];
+    let point = new Point(direction.x + unitVector.x + position.x, direction.y + unitVector.y + position.y);
 
     if (!label) {
         p.id = "customLabel";
@@ -319,13 +312,13 @@ function addCustomLabel(labelPoint, canvas, labelMessage) {
         p.style.margin = "0";
         let node = document.createTextNode(labelMessage);
         p.appendChild(node);
-        p.style.top = div.getBoundingClientRect().top + window.scrollY + point[1]  - 20 + "px";
-        p.style.left = div.getBoundingClientRect().left + point[0] - 20 + "px";
+        p.style.top = div.getBoundingClientRect().top + window.scrollY + point.y  - 20 + "px";
+        p.style.left = div.getBoundingClientRect().left + point.x - 20 + "px";
         div.appendChild(p);
     } else {
         label.innerHTML = labelMessage;
-        label.style.top = div.getBoundingClientRect().top + window.scrollY + point[1] - 20 + "px";
-        label.style.left = div.getBoundingClientRect().left + point[0] - 20 + "px";
+        label.style.top = div.getBoundingClientRect().top + window.scrollY + point.y - 20 + "px";
+        label.style.left = div.getBoundingClientRect().left + point.x - 20 + "px";
     }
 }
 
@@ -362,14 +355,15 @@ function readjustPoints(points, canvas, n) {
         let screenCenterX = canvas.width * (sum[0] + 1) / 2;
         let screenCenterY = canvas.height * (sum[1] - 1) / (-2);
 
-        let direction = [screenSpaceX - screenCenterX, screenSpaceY - screenCenterY];
+        let direction = new Point(screenSpaceX - screenCenterX, screenSpaceY - screenCenterY);
 
-        let unitVector = [direction[0] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1]), direction[1] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1])]
+        let unitVector = new Point(direction.x, direction.y);
+        unitVector.unit();
 
-        let point = [direction[0] + 30 * unitVector[0] + screenCenterX, direction[1] + 30 * unitVector[1] + screenCenterY];
+        let point = new Point(direction.x + 30 * unitVector.x + screenCenterX, direction.y + 30 * unitVector.y + screenCenterY);
 
-        label.style.top = div.getBoundingClientRect().top + window.scrollY + (point[1]) - 10 + "px";
-        label.style.left = div.getBoundingClientRect().left + (point[0]) - 10 + "px";
+        label.style.top = div.getBoundingClientRect().top + window.scrollY + point.y - 10 + "px";
+        label.style.left = div.getBoundingClientRect().left + point.x - 10 + "px";
     }
 }
 
