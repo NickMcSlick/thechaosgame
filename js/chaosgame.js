@@ -63,6 +63,7 @@ function main() {
 
     let n = 3;                                      // The number of points
     let draw = false;                               // The boolean to generate points
+    let animation = false;                          // The boolean to animate
     let scroll = 0;                                 // The scrolling of the user
     let mousePosition = new Point(0, 0);      // Current mouse position
     let current = new Point(0, 0);            // Current position for drawing
@@ -136,12 +137,7 @@ function main() {
 
             // Update the message to tell the user to press run
             messageBox.innerHTML = "<span>Press the 'Run' button to start the game!</span>";
-
-        // Otherwise, label the current vertex
-        } else if (draw === true) {
-            addCustomLabel(current, canvas, "Current", scroll);
         }
-
         // Readjust the points
         // IT IS IMPORTANT THAT THIS IS CALLED AFTER THE LABELS ARE CREATED
         // SINCE IT MANIPULATES THOSE LABELS
@@ -158,6 +154,7 @@ function main() {
             run.style.opacity = "1.0";
             run.onclick = function () {
                 draw = true;
+                animation = true;
                 update();
             }
         } else {
@@ -166,27 +163,43 @@ function main() {
 
         // If drawing is true, run the game
         if (draw === true) {
-            let rand = randomNumber(0, n - 1);
-            generatedPoints.push(generateFactorPoint(current, points[rand], n / (n + 3)));
-            current = generatedPoints[generatedPoints.length - 1];
+            run.onclick = null;
+            run.disabled = true;
+            run.style.opacity = "0.5";
+            let animate = function() {
+                let rand = randomNumber(0, n - 1);
+                generatedPoints.push(generateFactorPoint(current, points[rand], n / (n + 3)));
+                current = generatedPoints[generatedPoints.length - 1];
 
-            // Update the message to tell the user the random points chosen
-            messageBox.innerHTML = "<span>Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65) + "</span>";
+                addCustomLabel(current, canvas, "Current", scroll);
 
-            cancelAnimationFrame(animID);
-            animID = requestAnimationFrame(update);
+                // Update the message to tell the user the random points chosen
+                messageBox.innerHTML = "<span>Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65) + "</span>";
+
+                // Insert Generated points
+                generatedPoints.forEach(pointObject => {
+                    outVert.push(pointObject.x);
+                    outVert.push(pointObject.y);
+                });
+
+                // Clear, bind, and draw
+                webGL.clear(webGL.COLOR_BUFFER_BIT);
+                bindVertices(webGL, outVert, new Color(0.0, 0.0, 0.0));
+                webGL.drawArrays(webGL.POINTS, 0, outVert.length / 2);
+
+                cancelAnimationFrame(animID);
+                animID = requestAnimationFrame(animate);
+            }
+
+            if (animation === true) {
+                animate();
+                animation = false;
+            }
+        } else {
+            webGL.clear(webGL.COLOR_BUFFER_BIT);
+            bindVertices(webGL, outVert, new Color(0.0, 0.0, 0.0));
+            webGL.drawArrays(webGL.POINTS, 0, outVert.length / 2);
         }
-
-        // Insert Generated points
-        generatedPoints.forEach(pointObject => {
-            outVert.push(pointObject.x);
-            outVert.push(pointObject.y);
-        });
-
-        // Clear, bind, and draw
-        webGL.clear(webGL.COLOR_BUFFER_BIT);
-        bindVertices(webGL, outVert, new Color(0.0, 0.0, 0.0));
-        webGL.drawArrays(webGL.POINTS, 0, outVert.length / 2);
     }
 
     // Enable the events
@@ -268,7 +281,7 @@ function addLabels(points, canvas) {
 
         // Now find the final position
         // First we find the direction, add a certain amount of direction, and then translate it to be relative to the center
-        let point = new Point(direction.x + 30 * unitVector.x + center.x, direction.y + 30 * unitVector.y + center.y);
+        let point = new Point(direction.x + 20 * unitVector.x + center.x, direction.y + 20 * unitVector.y + center.y);
 
         if (!label) {
             p.id = "pointLabel" + i;
@@ -342,28 +355,20 @@ function readjustPoints(points, canvas, n) {
         sum[0] += points[i].x;
         sum[1] += points[i].y;
     }
-
     sum[0] /= n;
     sum[1] /= n;
-
     for (let i = 0; i < points.length && i < n; i++) {
         let label = document.getElementById("pointLabel" + i);
-        let xCoord = (points[i].x - sum[0]);
-        let yCoord = (points[i].y - sum[1]);
         let screenSpaceX = canvas.width * (points[i].x + 1) / 2;
         let screenSpaceY = canvas.height * (points[i].y - 1) / (-2);
         let screenCenterX = canvas.width * (sum[0] + 1) / 2;
         let screenCenterY = canvas.height * (sum[1] - 1) / (-2);
+        let direction = [screenSpaceX - screenCenterX, screenSpaceY - screenCenterY];
+        let unitVector = [direction[0] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1]), direction[1] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1])]
+        let point = [direction[0] + 30 * unitVector[0] + screenCenterX, direction[1] + 30 * unitVector[1] + screenCenterY];
 
-        let direction = new Point(screenSpaceX - screenCenterX, screenSpaceY - screenCenterY);
-
-        let unitVector = new Point(direction.x, direction.y);
-        unitVector.unit();
-
-        let point = new Point(direction.x + 30 * unitVector.x + screenCenterX, direction.y + 30 * unitVector.y + screenCenterY);
-
-        label.style.top = div.getBoundingClientRect().top + window.scrollY + point.y - 10 + "px";
-        label.style.left = div.getBoundingClientRect().left + point.x - 10 + "px";
+        label.style.top = div.getBoundingClientRect().top + window.scrollY + (point[1]) - 10 + "px";
+        label.style.left = div.getBoundingClientRect().left + (point[0]) - 10 + "px";
     }
 }
 
