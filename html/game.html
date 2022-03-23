@@ -44,7 +44,7 @@
           <form style="display: inline">
             <!-- I disabled the keyboard input on these inputs -->
             <label>Speed:</label>
-            <input id="speed" type="range" onkeydown="event.preventDefault()"></input>
+            <input id="speed" type="range" min="0" max="3000" onkeydown="event.preventDefault()"></input>
             <label>Color:</label>
             <input id="color" type="range" onkeydown="event.preventDefault()"></input>
             <input id="new" type="button" value="new"></input>

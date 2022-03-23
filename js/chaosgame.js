@@ -6,7 +6,7 @@
 // The configuration object
 // Interface with this object to manipulate the animation of points
 let config = {
-    SPEED: 0,
+    SPEED: 1000,
     COLOR: 0,
 }
 
@@ -60,6 +60,7 @@ function main() {
 
     let run;                                        // The run button
     let reset;                                      // The reset button
+    let speed;                                      // The speed slider
 
     let n = 3;                                      // The number of points
     let draw = false;                               // The boolean to generate points
@@ -76,6 +77,7 @@ function main() {
     run = document.getElementById("run");
     reset = document.getElementById("reset")
     messageBox = document.getElementById("message_box");
+    speed = document.getElementById("speed");
 
     // Resize canvas
     canvas.width = innerGame.getBoundingClientRect().width;
@@ -84,6 +86,11 @@ function main() {
     // Get context and initialize the shaders
     webGL = canvas.getContext("webgl");
     initShaders(webGL, VSHADER, FSHADER);
+
+    // Set slider events
+    speed.oninput = function() {
+        config.SPEED = speed.max - speed.value;
+    }
 
     // Edit buttons
     run.disabled = true;
@@ -166,21 +173,30 @@ function main() {
             run.onclick = null;
             run.disabled = true;
             run.style.opacity = "0.5";
+
+            // The time which controls the speed of the animation
+            let deltaTime = 0;
+            let prevTime = deltaTime;
+            deltaTime = Date.now() - prevTime;
+
             let animate = function() {
-                let rand = randomNumber(0, n - 1);
-                generatedPoints.push(generateFactorPoint(current, points[rand], n / (n + 3)));
-                current = generatedPoints[generatedPoints.length - 1];
+                deltaTime = Date.now() - prevTime;
+                if (deltaTime > config.SPEED) {
+                    prevTime = Date.now();
+                    let rand = randomNumber(0, n - 1);
+                    generatedPoints.push(generateFactorPoint(current, points[rand], n / (n + 3)));
+                    current = generatedPoints[generatedPoints.length - 1];
+                    addCustomLabel(current, canvas, "Current", scroll);
 
-                addCustomLabel(current, canvas, "Current", scroll);
+                    // Update the message to tell the user the random points chosen
+                    messageBox.innerHTML = "<span>Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65) + "</span>";
 
-                // Update the message to tell the user the random points chosen
-                messageBox.innerHTML = "<span>Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65) + "</span>";
-
-                // Insert Generated points
-                generatedPoints.forEach(pointObject => {
-                    outVert.push(pointObject.x);
-                    outVert.push(pointObject.y);
-                });
+                    // Insert Generated points
+                    generatedPoints.forEach(pointObject => {
+                        outVert.push(pointObject.x);
+                        outVert.push(pointObject.y);
+                    });
+                }
 
                 // Clear, bind, and draw
                 webGL.clear(webGL.COLOR_BUFFER_BIT);
@@ -191,6 +207,7 @@ function main() {
                 animID = requestAnimationFrame(animate);
             }
 
+            // This is called so that it isn't possible to request the animation again
             if (animation === true) {
                 animate();
                 animation = false;
