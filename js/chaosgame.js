@@ -61,6 +61,7 @@ function main() {
     let run;                                        // The run button
     let reset;                                      // The reset button
     let speed;                                      // The speed slider
+    let color;                                      // The color slider
 
     let n = 3;                                      // The number of points
     let draw = false;                               // The boolean to generate points
@@ -78,6 +79,7 @@ function main() {
     reset = document.getElementById("reset")
     messageBox = document.getElementById("message_box");
     speed = document.getElementById("speed");
+    color = document.getElementById("color");
 
     // Resize canvas
     canvas.width = innerGame.getBoundingClientRect().width;
@@ -90,6 +92,10 @@ function main() {
     // Set slider events
     speed.oninput = function() {
         config.SPEED = speed.max - speed.value;
+    }
+    color.oninput = function() {
+        config.COLOR = color.value;
+        update();
     }
 
     // Edit buttons
@@ -145,6 +151,7 @@ function main() {
             // Update the message to tell the user to press run
             messageBox.innerHTML = "<span>Press the 'Run' button to start the game!</span>";
         }
+
         // Readjust the points
         // IT IS IMPORTANT THAT THIS IS CALLED AFTER THE LABELS ARE CREATED
         // SINCE IT MANIPULATES THOSE LABELS
@@ -200,7 +207,7 @@ function main() {
 
                 // Clear, bind, and draw
                 webGL.clear(webGL.COLOR_BUFFER_BIT);
-                bindVertices(webGL, outVert, new Color(0.0, 0.0, 0.0));
+                bindVertices(webGL, outVert, hsvToRgb(config.COLOR, 1.0, 0.5));
                 webGL.drawArrays(webGL.POINTS, 0, outVert.length / 2);
 
                 cancelAnimationFrame(animID);
@@ -214,7 +221,7 @@ function main() {
             }
         } else {
             webGL.clear(webGL.COLOR_BUFFER_BIT);
-            bindVertices(webGL, outVert, new Color(0.0, 0.0, 0.0));
+            bindVertices(webGL, outVert, hsvToRgb(config.COLOR, 1.0, 0.2));
             webGL.drawArrays(webGL.POINTS, 0, outVert.length / 2);
         }
     }
@@ -353,6 +360,7 @@ function addCustomLabel(labelPoint, canvas, labelMessage) {
 }
 
 // Clear the children elements - used to clear labels here
+// NOTE MY CODE
 // NOTE - based off of this code: https://stackoverflow.com/questions/19885788/removing-every-child-element-except-first-child
 function clearChildren(div) {
     while (div.childNodes.length > 2) {
@@ -360,6 +368,36 @@ function clearChildren(div) {
     }
 }
 
+
+// HSV to RGB color conversion
+// NOTE MY CODE
+// NOTE - based off of this code: https://github.com/micro-js/hsv-to-rgb/blob/master/lib/index.js
+// This code is underneath the MIT license
+function hsvToRgb (h, s, v) {
+    h /= 360;
+    v = Math.round(v * 255);
+
+    var i = Math.floor(h * 6);
+    var f = h * 6 - i;
+    var p = Math.round(v * (1 - s));
+    var q = Math.round(v * (1 - f * s));
+    var t = Math.round(v * (1 - (1 - f) * s));
+
+    switch (i % 6) {
+        case 0:
+            return new Color(v, t, p);
+        case 1:
+            return new Color(q, v, p);
+        case 2:
+            return new Color(p, v, t);
+        case 3:
+            return new Color(p, q, v);
+        case 4:
+            return new Color(t, p, q);
+        case 5:
+            return new Color(v, p, q);
+    }
+}
 
 // Calculate the center and readjust the points accordingly
 // TO-DO: if the user chooses points that are close to each other or are in a line, issues occur

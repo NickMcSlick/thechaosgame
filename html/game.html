@@ -8,11 +8,8 @@
     <link href="../css/main.css" rel="stylesheet">
 
     <!-- Libraries -->
-    <script src="../lib/webgl-utils.js"></script>
-    <script src="../lib/webgl-debug.js"></script>
     <script src="../lib/cuon-utils.js"></script>
     <script src="../lib/cuon-matrix.js"></script>
-    <script src="../lib/dat.gui.min.js"></script>
 
     <!-- Game script (contains WebGL code and other functionalities) -->
     <script src="../js/chaosgame.js"></script>
@@ -46,7 +43,7 @@
             <label>Speed:</label>
             <input id="speed" type="range" min="0" max="3000" onkeydown="event.preventDefault()"></input>
             <label>Color:</label>
-            <input id="color" type="range" onkeydown="event.preventDefault()"></input>
+            <input id="color" type="range" min="0" max="365" onkeydown="event.preventDefault()"></input>
             <input id="new" type="button" value="new"></input>
             <input id="run" type="button" value="run"></input>
             <input id="reset" type="button" value="reset"></input>
