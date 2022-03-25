@@ -62,6 +62,8 @@ function main() {
     let reset;                                      // The reset button
     let speed;                                      // The speed slider
     let color;                                      // The color slider
+    let undo;                                       // The undo button
+    let redo;                                       // The redo button
 
     let n = 3;                                      // The number of points
     let draw = false;                               // The boolean to generate points
@@ -80,6 +82,8 @@ function main() {
     messageBox = document.getElementById("message_box");
     speed = document.getElementById("speed");
     color = document.getElementById("color");
+    undo = document.getElementById("undo");
+    redo = document.getElementById("redo")
 
     // Resize canvas
     canvas.width = innerGame.getBoundingClientRect().width;
@@ -96,6 +100,18 @@ function main() {
     color.oninput = function() {
         config.COLOR = color.value;
         update();
+    }
+
+    //Undo Button
+    undo.onclick = function() {
+        pointCountManager.undo();
+        console.log(pointCounter);
+    }
+
+    //Redo Button
+    redo.onclick = function () {
+        pointCountManager.redo();
+        console.log(pointCounter);
     }
 
     // Edit buttons
