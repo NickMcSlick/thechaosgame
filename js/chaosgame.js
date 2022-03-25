@@ -104,19 +104,25 @@ function main() {
 
     //Undo Button
     undo.onclick = function() {
-        pointCountManager.undo();
-        console.log(pointCounter);
+        removePointAndLabel(points,innerGame,canvas,update);
+        update();
+        if (points.length == 0) {
+            undo.disabled = true;
+        }
     }
+
 
     //Redo Button
     redo.onclick = function () {
-        pointCountManager.redo();
-        console.log(pointCounter);
+       redoPointAndLabel(points, innerGame);
+       update();
     }
 
     // Edit buttons
     run.disabled = true;
     run.style.opacity = "0.5";
+    undo.disabled = true;
+    redo.disabled = true;
 
     // Clear all animation information
     // and previously drawn elements
@@ -258,7 +264,7 @@ function main() {
 
         // If the user clicks on the canvas, add a point to the point array
         canvas.onclick = function (e) {
-            placePoint(e, mousePosition, points, canvas);
+            placePoint(e, mousePosition, points, canvas,undo,redo);
             update();
         }
     }
@@ -295,11 +301,19 @@ function resize(webGL, canvas, innerGame) {
 }
 
 // Place points
-function placePoint(e, mousePosition, points, canvas) {
+function placePoint(e, mousePosition, points, canvas,undo,redo) {
     let rect = e.target.getBoundingClientRect();
     mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
     mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
     points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65)));
+    undo.disabled = false;
+    redo.disabled = false;
+}
+
+//Remove points and label
+function removePointAndLabel(points,innerGame,canvas,update) {
+    points.pop();
+    innerGame.removeChild(innerGame.lastChild);
 }
 
 // Basic point labeling for initial points "A, B, C"
@@ -341,6 +355,7 @@ function addLabels(points, canvas) {
         }
     }
 }
+
 
 // Basic point labeling for starting vertex and current vertex
 function addCustomLabel(labelPoint, canvas, labelMessage) {
