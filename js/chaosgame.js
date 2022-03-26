@@ -65,9 +65,14 @@ function main() {
     let undo;                                       // The undo button
     let redo;                                       // The redo button
 
+    // Encapsulating the flags in an object
+    let flags = {
+        run: false,                                 // flag to alert the program that the user wants to run the game
+        spawnAnimation: false,                      // flag to alert the program to spawn an animation
+        endGame: false                              // flag to alert to program to end the game
+    }
+
     let n = 3;                                      // The number of points
-    let draw = false;                               // The boolean to generate points
-    let animation = false;                          // The boolean to animate
     let mousePosition = new Point(0, 0, "");// Current mouse position
     let current = new Point(0, 0, "");  // Current position for drawing
     let points = [];                               // Selected point array
@@ -138,8 +143,8 @@ function main() {
     reset.onclick = function () {
         run.disabled = true;
         run.style.opacity = "0.5";
-        draw = false;
-        animation = false;
+        flags.run = false;
+        flags.spawnAnimation = false;
         points = [];
         generatedPoints = [];
         mousePosition = new Point(2, 2);
@@ -150,8 +155,8 @@ function main() {
 
     // Run the game
     run.onclick = function () {
-        draw = true;
-        animation = true;
+        flags.run = true;
+        flags.spawnAnimation = true;
         update();
     }
 
@@ -183,7 +188,7 @@ function main() {
             }
 
         // If a point is the starting point, label it
-        } else if (points.length === n + 1 && draw === false) {
+        } else if (points.length === n + 1 && flags.run === false) {
             addCustomLabel(points[n], canvas, "Start");
             current = new Point(points[n].x, points[n].y);
 
@@ -210,7 +215,7 @@ function main() {
         }
 
         // If drawing is true, run the game
-        if (draw === true) {
+        if (flags.run === true) {
             run.disabled = true;
             run.style.opacity = "0.5";
 
@@ -248,9 +253,9 @@ function main() {
             }
 
             // This is called so that it isn't possible to request the animation again
-            if (animation === true) {
+            if (flags.spawnAnimation === true) {
                 animate();
-                animation = false;
+                flags.spawnAnimation = false;
             }
         } else {
             webGL.clear(webGL.COLOR_BUFFER_BIT);
