@@ -68,9 +68,8 @@ function main() {
     let n = 3;                                      // The number of points
     let draw = false;                               // The boolean to generate points
     let animation = false;                          // The boolean to animate
-    let scroll = 0;                                 // The scrolling of the user
-    let mousePosition = new Point(0, 0);      // Current mouse position
-    let current = new Point(0, 0);            // Current position for drawing
+    let mousePosition = new Point(0, 0, "");// Current mouse position
+    let current = new Point(0, 0, "");  // Current position for drawing
     let points = [];                               // Selected point array
     let generatedPoints = [];                      // Generated points array
 
@@ -102,11 +101,21 @@ function main() {
         update();
     }
 
-    //Undo Button
+    // Undo Button
+    // NOTE - the last mouse position is still on the start, since canvas events are disabled
+    // This means update will still draw that mouse position
+    // To remedy this, draw the mouse outside of the canvas
+
+    // TO DO - MAKE SURE THE RUN BUTTON IS TURNED OFF WHEN THIS OCCURS
+    // DISABLE WHILE THE GAME IS RUNNING AS WELL
     undo.onclick = function() {
-        removePointAndLabel(points,innerGame,canvas,update);
-        update();
-        if (points.length == 0) {
+        if (points.length > 0) {
+            removePointAndLabel(points, innerGame, canvas);
+            mousePosition = new Point(2, 2);
+            update();
+        }
+
+        if (points.length === 0) {
             undo.disabled = true;
         }
     }
@@ -130,11 +139,19 @@ function main() {
         run.disabled = true;
         run.style.opacity = "0.5";
         draw = false;
+        animation = false;
         points = [];
         generatedPoints = [];
         mousePosition = new Point(2, 2);
         cancelAnimationFrame(animID);
         clearChildren(innerGame);
+        update();
+    }
+
+    // Run the game
+    run.onclick = function () {
+        draw = true;
+        animation = true;
         update();
     }
 
@@ -158,7 +175,7 @@ function main() {
         if (points.length < n + 1) {
             // Update the message
             messageBox.innerHTML = "<span>Click on the board to select points!</span>";
-            addLabels(points, canvas, n, scroll);
+            addLabels(points, canvas);
 
             // Tell the user to select a starting position
             if (points.length === n) {
@@ -167,7 +184,7 @@ function main() {
 
         // If a point is the starting point, label it
         } else if (points.length === n + 1 && draw === false) {
-            addCustomLabel(points[n], canvas, "Start", scroll);
+            addCustomLabel(points[n], canvas, "Start");
             current = new Point(points[n].x, points[n].y);
 
             // Update the message to tell the user to press run
@@ -178,7 +195,7 @@ function main() {
         // IT IS IMPORTANT THAT THIS IS CALLED AFTER THE LABELS ARE CREATED
         // SINCE IT MANIPULATES THOSE LABELS
         if (points.length >= n) {
-            readjustPoints(points, canvas, n, scroll);
+            readjustPoints(points, canvas, n);
         }
 
         // If all the points have been drawn, disable the events
@@ -188,18 +205,12 @@ function main() {
             disableCanvasEvents();
             run.disabled = false;
             run.style.opacity = "1.0";
-            run.onclick = function () {
-                draw = true;
-                animation = true;
-                update();
-            }
         } else {
             enableCanvasEvents();
         }
 
         // If drawing is true, run the game
         if (draw === true) {
-            run.onclick = null;
             run.disabled = true;
             run.style.opacity = "0.5";
 
@@ -215,7 +226,7 @@ function main() {
                     let rand = randomNumber(0, n - 1);
                     generatedPoints.push(generateFactorPoint(current, points[rand], n / (n + 3)));
                     current = generatedPoints[generatedPoints.length - 1];
-                    addCustomLabel(current, canvas, "Current", scroll);
+                    addCustomLabel(current, canvas, "Current");
 
                     // Update the message to tell the user the random points chosen
                     messageBox.innerHTML = "<span>Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65) + "</span>";
@@ -311,8 +322,9 @@ function placePoint(e, mousePosition, points, canvas,undo,redo) {
 }
 
 //Remove points and label
-function removePointAndLabel(points,innerGame,canvas,update) {
+function removePointAndLabel(points, innerGame, canvas) {
     points.pop();
+
     innerGame.removeChild(innerGame.lastChild);
 }
 
