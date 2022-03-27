@@ -8,14 +8,12 @@
     <link href="../css/main.css" rel="stylesheet">
 
     <!-- Libraries -->
-    <script src="../lib/webgl-utils.js"></script>
-    <script src="../lib/webgl-debug.js"></script>
     <script src="../lib/cuon-utils.js"></script>
     <script src="../lib/cuon-matrix.js"></script>
-    <script src="../lib/dat.gui.min.js"></script>
 
     <!-- Game script (contains WebGL code and other functionalities) -->
     <script src="../js/chaosgame.js"></script>
+
     <!-- Test script (contains unit testing and function testing) -->
     <script src="../tests/tests.js"></script>
   </head>
@@ -23,34 +21,37 @@
   <div id="section">
     <div id="nav">
       <a href="../index.html">HOME</a>
+      <a href="./tutorial.html">TUTORIAL</a>
+
       (navigation)
     </div>
 
     <!-- Message box to send messages to the user -->
     <div id="messages">
         <div id="message_box">
-          <p>Click on The Board to Select Points!</p>
+          <span>Click on the board to select points!</span>
         </div>
     </div>
       <div id="game_board">
       <!-- TO-DO: THIS DIV BECOMES TOO TALL WHEN RESIZING - MAKE SURE IT NEVER GOES ABOVE THE PAGE HEIGHT -->
       <div id="inner_game">
-        <canvas id="webGL"> Your browser does not support canvas or WebGL </canvas>
+        <canvas id="webGL"> Your browser does not support canvas or WebGL. Try using an update major browser, like Google Chrome or Mozilla FireFox </canvas>
       </div>
-    </div>
-
-    <div id="controls">
-      <span id="points_placed">Points: ---</span>
-      <form style="display: inline">
-        <!-- I disabled the keyboard input on these inputs -->
-        <label>Speed:</label>
-        <input id="speed" type="range" onkeydown="event.preventDefault()"></input>
-        <label>Color:</label>
-        <input id="color" type="range" onkeydown="event.preventDefault()"></input>
-        <input id="reset" type="button" value="new"></input>
-        <input id="reset" type="button" value="run"></input>
-        <input id="reset" type="button" value="reset"></input>
-      </form>
+        <div id="controls">
+          <span id="points_placed">Points: ---</span>
+          <form style="display: inline">
+            <!-- I disabled the keyboard input on these inputs -->
+            <label>Speed:</label>
+            <input id="speed" type="range" min="0" max="3000" onkeydown="event.preventDefault()"></input>
+            <label>Color:</label>
+            <input id="color" type="range" min="0" max="365" onkeydown="event.preventDefault()"></input>
+            <input id="new" type="button" value="new"></input>
+            <input id="run" type="button" value="run"></input>
+            <input id="reset" type="button" value="reset"></input>
+            <input id="undo" type="button" value="undo"></input>
+            <input id="redo" type="button" value="redo"></input>
+          </form>
+        </div>
     </div>
   </div>
 

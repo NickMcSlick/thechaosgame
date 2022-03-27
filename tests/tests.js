@@ -8,8 +8,8 @@
 // Dummy variables used for the tests
 let dummyCanvas = document.createElement("canvas");
 let dummyGL = dummyCanvas.getContext("webgl");
-let dummyEvent = new MouseEvent("click", {clientX: 400, clientY: 400});
-Object.defineProperty(dummyEvent, "target", {writable: false, value: dummyCanvas});
+let dummyEvent = new MouseEvent("click", { clientX: 400, clientY: 400 });
+Object.defineProperty(dummyEvent, "target", { writable: false, value: dummyCanvas });
 
 // Size the canvas for standard testing
 dummyCanvas.width = 500;
@@ -77,6 +77,9 @@ function testMouseDown() {
         return true;
     }
 }
+
+// INSERT TESTS FOR:
+// addLabels and readjustPoints
 
 // Run the tests
 function runTests() {
