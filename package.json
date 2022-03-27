@@ -1,0 +1,26 @@
+{
+  "name": "thechaosgame",
+  "version": "1.0.0",
+  "description": "",
+  "main": "HomePage.html",
+  "directories": {
+    "lib": "lib",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "tests.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bwpd58/thechaosgame.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bwpd58/thechaosgame/issues"
+  },
+  "homepage": "https://github.com/bwpd58/thechaosgame#readme",
+  "dependencies": {
+    "bootstrap-icons": "^1.8.1"
+  }
+}

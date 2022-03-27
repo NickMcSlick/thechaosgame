@@ -15,7 +15,6 @@ html, body {
 
 /* temporary: show element positions on the screen */
 #section > * {
-  border: 1px solid black;
   margin: 0.2em;
   padding: 0;
 }
@@ -45,6 +44,45 @@ html, body {
     font-size: 3.2vw;
 }
 
+#page_header {
+  text-align: center;
+  display: block;
+  margin: auto;
+  padding: 0;
+  color: white;
+  background-color: aqua;
+  font-size: 3.2vw;
+  width: 100%;
+}
+
+#header_text
+{
+  float: none;
+  position: absolute;
+  margin-left: 36.54vw;
+}
+
+#nav_bar {
+
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav_element
+{
+  float: left;
+  margin-left: 8px;
+}
+
+.squareImage {
+  float: right;
+}
+
+.triangleImage
+{
+  float: left;
+
 /* isn't used at the moment, need to fix */
 #game_wrapper {
     border: 1px solid black;
@@ -58,6 +96,7 @@ html, body {
 
 #controls {
     text-align: center;
+
 }
 
 #section > #nav         { flex: 2 }
