@@ -84,7 +84,6 @@ function main() {
     innerGame = document.getElementById("inner_game");
     run = document.getElementById("run");
     reset = document.getElementById("reset")
-    messageBox = document.getElementById("message_box");
     speed = document.getElementById("speed");
     color = document.getElementById("color");
     undo = document.getElementById("undo");
@@ -142,6 +141,7 @@ function main() {
         flags.spawnAnimation = false;
         points = [];
         generatedPoints = [];
+        undid = [];
         mousePosition = new Point(2, 2);
         cancelAnimationFrame(animID);
         clearChildren(innerGame);
