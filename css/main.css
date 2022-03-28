@@ -1,3 +1,4 @@
+/* Global CSS */
 html, body {
     font-family: "Courier New", Monospace;
     font-weight: bold;
@@ -36,6 +37,7 @@ html, body {
     width: 100%;
 }
 
+/* Formatting for the messages on the game page */
 #message_box {
     margin: 0.5em auto 0.5em auto;
     padding: 0;
@@ -44,10 +46,11 @@ html, body {
     font-size: 3.2vw;
 }
 
+/* Formatting for the header on all pages */
 #page_header {
   text-align: center;
   display: block;
-  margin: auto;
+  margin: 0;
   padding: 0;
   color: white;
   background-color: aqua;
@@ -55,33 +58,32 @@ html, body {
   width: 100%;
 }
 
-#header_text
-{
+#header_text {
   float: none;
   position: absolute;
   margin-left: 36.54vw;
+  font-size: larger;
 }
 
 #nav_bar {
-
   list-style-type: none;
   margin: 0;
   padding: 0;
 }
 
-.nav_element
-{
+.nav_element {
   float: left;
   margin-left: 8px;
+  margin-top: 8px;
 }
 
 .squareImage {
   float: right;
 }
 
-.triangleImage
-{
-  float: left;
+.triangleImage {
+    float: left;
+}
 
 /* isn't used at the moment, need to fix */
 #game_wrapper {

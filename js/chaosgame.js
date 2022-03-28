@@ -68,6 +68,7 @@ function main() {
     // Encapsulating the flags in an object
     let flags = {
         run: false,                                 // flag to alert the program that the user wants to run the game
+        runnable: false,                            // Currently this is not used - however I want to use it to determine if the game is in a runnable state
         spawnAnimation: false,                      // flag to alert the program to spawn an animation
         endGame: false                              // flag to alert to program to end the game
     }
