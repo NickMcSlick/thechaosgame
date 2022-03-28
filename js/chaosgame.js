@@ -197,12 +197,6 @@ function main() {
             readjustPoints(points, canvas, n);
         }
 
-        if (undid.length != 0) {
-            enable(redo);
-        } else {
-            disable(redo);
-        }
-
         /* Possible cases for which buttons should be enabled */
         // There are enough points and the user is running the game
         if (points.length >= n + 1 && flags.run === true) {
@@ -218,14 +212,22 @@ function main() {
             disableCanvasEvents();
         // If we have no points to draw, disable
         } else if (points.length === 0) {
+            if (undid.length !== 0) {
+                enable(redo);
+            } else {
+                disable(redo);
+            }
             disable(run);
             disable(undo);
-            enable(redo);
             enableCanvasEvents();
         // This situation occurs when the user is currently drawing
         } else {
+            if (undid.length !== 0) {
+                enable(redo);
+            } else {
+                disable(redo);
+            }
             enable(undo);
-            enable(redo);
             disable(run);
             enableCanvasEvents();
         }
@@ -295,7 +297,7 @@ function main() {
 
         // If the user clicks on the canvas, add a point to the point array
         canvas.onclick = function (e) {
-            placePoint(e, mousePosition, points, canvas,undo,redo);
+            placePoint(e, mousePosition, points, canvas, undid);
             update();
         }
     }
@@ -333,11 +335,13 @@ function resize(webGL, canvas, innerGame) {
 
 // Place points
 function placePoint(e, mousePosition, points, canvas, undid) {
+    // Clear the array
+    undid.length = 0;
+
     let rect = e.target.getBoundingClientRect();
     mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
     mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
     points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65)));
-    undid = [];
 }
 
 // Remove points and label
