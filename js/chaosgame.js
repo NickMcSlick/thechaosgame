@@ -42,7 +42,6 @@ function Point(x = 0, y = 0, label = "N/A") {
     }
 }
 
-
 // Color object
 // Uses default parameters as suggested by John
 function Color(r = 0, g = 0, b = 0) {
@@ -68,7 +67,7 @@ function main() {
     // Encapsulating the flags in an object
     let flags = {
         run: false,                                 // flag to alert the program that the user wants to run the game
-        runnable: false,                            // Currently this is not used - however I want to use it to determine if the game is in a runnable state
+        runnable: false,                            // flag to alert the program that the game is in a runnable state
         spawnAnimation: false,                      // flag to alert the program to spawn an animation
         endGame: false                              // flag to alert to program to end the game
     }
@@ -98,14 +97,17 @@ function main() {
     webGL = canvas.getContext("webgl");
     initShaders(webGL, VSHADER, FSHADER);
 
-    // Set slider events
+    // Set slider events (also initialize the slider values)
     speed.oninput = function() {
         config.SPEED = speed.max - speed.value;
+        update();
     }
+    speed.value = config.VALUE;
     color.oninput = function() {
         config.COLOR = color.value;
         update();
     }
+    color.value = config.COLOR;
 
     // Undo Button
     // NOTE - the last mouse position is still on the start, since canvas events are disabled
@@ -115,15 +117,9 @@ function main() {
     // TO DO - MAKE SURE THE RUN BUTTON IS TURNED OFF WHEN THIS OCCURS
     // DISABLE WHILE THE GAME IS RUNNING AS WELL
     undo.onclick = function() {
-        if (points.length > 0) {
-            removePointAndLabel(points, innerGame, canvas);
-            mousePosition = new Point(2, 2);
-            update();
-        }
-
-        if (points.length === 0) {
-            undo.disabled = true;
-        }
+        removePointAndLabel(points, innerGame, canvas);
+        mousePosition = new Point(2, 2);
+        update();
     }
 
 
@@ -134,16 +130,13 @@ function main() {
     }
 
     // Edit buttons
-    run.disabled = true;
-    run.style.opacity = "0.5";
-    undo.disabled = true;
+    disable(run);
+    disable(undo);
     redo.disabled = true;
 
     // Clear all animation information
     // and previously drawn elements
     reset.onclick = function () {
-        run.disabled = true;
-        run.style.opacity = "0.5";
         flags.run = false;
         flags.spawnAnimation = false;
         points = [];
@@ -204,22 +197,31 @@ function main() {
             readjustPoints(points, canvas, n);
         }
 
-        // If all the points have been drawn, disable the events
-        // and allow the user to run the game
-        // Otherwise, enable the events and let the process start over again
-        if (points.length >= n + 1) {
+        /* Possible cases for which buttons should be enabled */
+        // There are enough points and the user is running the game
+        if (points.length >= n + 1 && flags.run === true) {
+            disable(run);
+            disable(undo);
             disableCanvasEvents();
-            run.disabled = false;
-            run.style.opacity = "1.0";
+        // There are enough points but the user has yet to run the game (so you can still undo points)
+        } else if (points.length === n + 1 && flags.run !== true) {
+            enable(run);
+            enable(undo);
+            disableCanvasEvents();
+        // If we have no points to draw, disable
+        } else if (points.length === 0) {
+            disable(run);
+            disable(undo);
+            enableCanvasEvents();
+        // This situation occurs when the user is currently drawing
         } else {
+            enable(undo);
+            disable(run);
             enableCanvasEvents();
         }
 
         // If drawing is true, run the game
         if (flags.run === true) {
-            run.disabled = true;
-            run.style.opacity = "0.5";
-
             // The time which controls the speed of the animation
             let deltaTime = 0;
             let prevTime = deltaTime;
@@ -246,7 +248,7 @@ function main() {
 
                 // Clear, bind, and draw
                 webGL.clear(webGL.COLOR_BUFFER_BIT);
-                bindVertices(webGL, outVert, hsvToRgb(config.COLOR, 1.0, 0.5));
+                bindVertices(webGL, outVert, hsvToRgb(config.COLOR / 360, config.COLOR / 255, config.COLOR / 255));
                 webGL.drawArrays(webGL.POINTS, 0, outVert.length / 2);
 
                 cancelAnimationFrame(animID);
@@ -260,7 +262,7 @@ function main() {
             }
         } else {
             webGL.clear(webGL.COLOR_BUFFER_BIT);
-            bindVertices(webGL, outVert, hsvToRgb(config.COLOR, 1.0, 0.2));
+            bindVertices(webGL, outVert, hsvToRgb(config.COLOR / 360, config.COLOR / 255, config.COLOR / 255));
             webGL.drawArrays(webGL.POINTS, 0, outVert.length / 2);
         }
     }
@@ -323,8 +325,6 @@ function placePoint(e, mousePosition, points, canvas,undo,redo) {
     mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
     mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
     points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65)));
-    undo.disabled = false;
-    redo.disabled = false;
 }
 
 //Remove points and label
@@ -420,32 +420,38 @@ function clearChildren(div) {
 
 // HSV to RGB color conversion
 // NOTE MY CODE
-// NOTE - based off of this code: https://github.com/micro-js/hsv-to-rgb/blob/master/lib/index.js
-// This code is underneath the MIT license
-function hsvToRgb (h, s, v) {
-    h /= 360;
-    v = Math.round(v * 255);
+// NOTE - based off of this code: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+// This is interim code - it is not meant to stay
+/**
+ * Converts an HSV color value to RGB. Conversion formula
+ * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
+ * Assumes h, s, and v are contained in the set [0, 1] and
+ * returns r, g, and b in the set [0, 255].
+ *
+ * @param   Number  h       The hue
+ * @param   Number  s       The saturation
+ * @param   Number  v       The value
+ * @return  Array           The RGB representation
+ */
+function hsvToRgb(h, s, v){
+    var r, g, b;
 
     var i = Math.floor(h * 6);
     var f = h * 6 - i;
-    var p = Math.round(v * (1 - s));
-    var q = Math.round(v * (1 - f * s));
-    var t = Math.round(v * (1 - (1 - f) * s));
+    var p = v * (1 - s);
+    var q = v * (1 - f * s);
+    var t = v * (1 - (1 - f) * s);
 
-    switch (i % 6) {
-        case 0:
-            return new Color(v, t, p);
-        case 1:
-            return new Color(q, v, p);
-        case 2:
-            return new Color(p, v, t);
-        case 3:
-            return new Color(p, q, v);
-        case 4:
-            return new Color(t, p, q);
-        case 5:
-            return new Color(v, p, q);
+    switch(i % 6){
+        case 0: r = v, g = t, b = p; break;
+        case 1: r = q, g = v, b = p; break;
+        case 2: r = p, g = v, b = t; break;
+        case 3: r = p, g = q, b = v; break;
+        case 4: r = t, g = p, b = v; break;
+        case 5: r = v, g = p, b = q; break;
     }
+
+    return new Color(r * 255, g * 255, b * 255);
 }
 
 // Calculate the center and readjust the points accordingly
@@ -493,13 +499,24 @@ function bindVertices(webGL, randPoints, color) {
     let vertexBuffer = webGL.createBuffer();
     webGL.bindBuffer(webGL.ARRAY_BUFFER, vertexBuffer);
     webGL.bufferData(webGL.ARRAY_BUFFER, data, webGL.STATIC_DRAW);
-
     let a_Position = webGL.getAttribLocation(webGL.program, "a_Position");
     let u_Color = webGL.getUniformLocation(webGL.program, "u_Color");
     let u_pointSize = webGL.getUniformLocation(webGL.program, "u_pointSize");
     webGL.uniform1f(u_pointSize, 5.0);
-    webGL.uniform4f(u_Color, color.r,  color.g, color.b, 1.0);
+    webGL.uniform4f(u_Color, color.r / 255,  color.g / 255, color.b / 255, 1.0);
 
     webGL.vertexAttribPointer(a_Position, 2, webGL.FLOAT, false, 0, 0);
     webGL.enableVertexAttribArray(a_Position);
+}
+
+// Enable a button
+function enable(domElement) {
+    domElement.disabled = false;
+    domElement.style.opacity = "1.0";
+}
+
+// Disable a button
+function disable(domElement) {
+    domElement.disabled = true;
+    domElement.style.opacity = "0.5";
 }
