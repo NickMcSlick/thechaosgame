@@ -77,6 +77,7 @@ function main() {
     let current = new Point(0, 0, "");  // Current position for drawing
     let points = [];                               // Selected point array
     let generatedPoints = [];                      // Generated points array
+    let undid = [];                                // The undone points
 
     // Get DOM elements
     canvas = document.getElementById("webGL");
@@ -102,7 +103,7 @@ function main() {
         config.SPEED = speed.max - speed.value;
         update();
     }
-    speed.value = config.VALUE;
+    speed.value = speed.max - config.SPEED;
     color.oninput = function() {
         config.COLOR = color.value;
         update();
@@ -117,7 +118,7 @@ function main() {
     // TO DO - MAKE SURE THE RUN BUTTON IS TURNED OFF WHEN THIS OCCURS
     // DISABLE WHILE THE GAME IS RUNNING AS WELL
     undo.onclick = function() {
-        removePointAndLabel(points, innerGame, canvas);
+        removePointAndLabel(points, undid, innerGame);
         mousePosition = new Point(2, 2);
         update();
     }
@@ -125,14 +126,14 @@ function main() {
 
     //Redo Button
     redo.onclick = function () {
-       redoPointAndLabel(points, innerGame);
+       redoPoint(points, undid);
        update();
     }
 
-    // Edit buttons
+    // Start with buttons disabled
     disable(run);
     disable(undo);
-    redo.disabled = true;
+    disable(redo)
 
     // Clear all animation information
     // and previously drawn elements
@@ -160,7 +161,7 @@ function main() {
         // The output vertex array
         let outVert = [];
 
-        // The mouse position
+        // Insert the mouse position to draw
         outVert[0] = mousePosition.x;
         outVert[1] = mousePosition.y;
 
@@ -173,12 +174,12 @@ function main() {
         // Only label the points if they are the initial ones
         if (points.length < n + 1) {
             // Update the message
-            messageBox.innerHTML = "<span>Click on the board to select points!</span>";
+            updateMessage("Click on the board to select points!");
             addLabels(points, canvas);
 
             // Tell the user to select a starting position
             if (points.length === n) {
-                messageBox.innerHTML = "<span>Select a starting position!</span>";
+                updateMessage("Select a starting position!");
             }
 
         // If a point is the starting point, label it
@@ -187,14 +188,19 @@ function main() {
             current = new Point(points[n].x, points[n].y);
 
             // Update the message to tell the user to press run
-            messageBox.innerHTML = "<span>Press the 'Run' button to start the game!</span>";
+            updateMessage("Press the 'Run' button to start the game!");
         }
 
         // Readjust the points
-        // IT IS IMPORTANT THAT THIS IS CALLED AFTER THE LABELS ARE CREATED
-        // SINCE IT MANIPULATES THOSE LABELS
+        /* IT IS IMPORTANT THAT THIS IS CALLED AFTER THE LABELS ARE CREATED SINCE IT MANIPULATES THOSE LABELS */
         if (points.length >= n) {
             readjustPoints(points, canvas, n);
+        }
+
+        if (undid.length != 0) {
+            enable(redo);
+        } else {
+            disable(redo);
         }
 
         /* Possible cases for which buttons should be enabled */
@@ -202,20 +208,24 @@ function main() {
         if (points.length >= n + 1 && flags.run === true) {
             disable(run);
             disable(undo);
+            disable(redo);
             disableCanvasEvents();
         // There are enough points but the user has yet to run the game (so you can still undo points)
         } else if (points.length === n + 1 && flags.run !== true) {
             enable(run);
             enable(undo);
+            disable(redo);
             disableCanvasEvents();
         // If we have no points to draw, disable
         } else if (points.length === 0) {
             disable(run);
             disable(undo);
+            enable(redo);
             enableCanvasEvents();
         // This situation occurs when the user is currently drawing
         } else {
             enable(undo);
+            enable(redo);
             disable(run);
             enableCanvasEvents();
         }
@@ -227,6 +237,8 @@ function main() {
             let prevTime = deltaTime;
             deltaTime = Date.now() - prevTime;
 
+            undid = [];
+
             let animate = function() {
                 deltaTime = Date.now() - prevTime;
                 if (deltaTime > config.SPEED) {
@@ -237,7 +249,7 @@ function main() {
                     addCustomLabel(current, canvas, "Current");
 
                     // Update the message to tell the user the random points chosen
-                    messageBox.innerHTML = "<span>Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65) + "</span>";
+                    updateMessage("Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65));
 
                     // Insert Generated points
                     generatedPoints.forEach(pointObject => {
@@ -320,18 +332,23 @@ function resize(webGL, canvas, innerGame) {
 }
 
 // Place points
-function placePoint(e, mousePosition, points, canvas,undo,redo) {
+function placePoint(e, mousePosition, points, canvas, undid) {
     let rect = e.target.getBoundingClientRect();
     mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
     mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
     points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65)));
+    undid = [];
 }
 
-//Remove points and label
-function removePointAndLabel(points, innerGame, canvas) {
-    points.pop();
-
+// Remove points and label
+function removePointAndLabel(points, undid, innerGame) {
+    undid.push(points.pop());
     innerGame.removeChild(innerGame.lastChild);
+}
+
+// Redo point (the update function automatically adds labels)
+function redoPoint(points, undid) {
+    points.push(undid.pop());
 }
 
 // Basic point labeling for initial points "A, B, C"
@@ -519,4 +536,10 @@ function enable(domElement) {
 function disable(domElement) {
     domElement.disabled = true;
     domElement.style.opacity = "0.5";
+}
+
+// Update message for the message area of the game
+function updateMessage(message) {
+    let messageBox = document.getElementById("message_box");
+    messageBox.innerHTML = "<span>" + message + "</span>";
 }
