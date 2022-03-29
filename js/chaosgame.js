@@ -241,23 +241,21 @@ function main() {
 
             undid = [];
 
-            let animate = function() {
+            let animate = function () {
                 deltaTime = Date.now() - prevTime;
                 if (deltaTime > config.SPEED) {
                     prevTime = Date.now();
                     let rand = randomNumber(0, n - 1);
                     generatedPoints.push(generateFactorPoint(current, points[rand], n / (n + 3)));
+                    outVert.push(generatedPoints[generatedPoints.length - 1].x);
+                    outVert.push(generatedPoints[generatedPoints.length - 1].y);
                     current = generatedPoints[generatedPoints.length - 1];
                     addCustomLabel(current, canvas, "Current");
 
+                    console.log(outVert.length / 2);
+
                     // Update the message to tell the user the random points chosen
                     updateMessage("Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65));
-
-                    // Insert Generated points
-                    generatedPoints.forEach(pointObject => {
-                        outVert.push(pointObject.x);
-                        outVert.push(pointObject.y);
-                    });
                 }
 
                 // Clear, bind, and draw
