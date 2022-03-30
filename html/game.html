@@ -42,9 +42,9 @@
           <form style="display: inline">
             <!-- I disabled the keyboard input on these inputs -->
             <label>Speed:</label>
-            <input id="speed" type="range" min="0" max="10000" onkeydown="event.preventDefault()"></input>
+            <input id="speed" class="slider" type="range" min="0" max="2000" onkeydown="event.preventDefault()"></input>
             <label>Color:</label>
-            <input id="color" type="range" min="0" max="365" onkeydown="event.preventDefault()"></input>
+            <input id="color" class="slider" type="range" min="0" max="365" onkeydown="event.preventDefault()"></input>
             <input id="new" type="button" value="new"></input>
             <input id="run" type="button" value="run"></input>
             <input id="reset" type="button" value="reset"></input>

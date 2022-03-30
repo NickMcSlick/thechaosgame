@@ -106,4 +106,8 @@ html, body {
 #section > #game_board  { flex: 30 }
 #section > #controls    { flex: 2 }
 
+.slider {
+
+}
+
 

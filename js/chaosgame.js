@@ -1,7 +1,27 @@
+/***** Title *****/
 // The Chaos Game
-// The Web Devs 3/14/2022
+// The Web Devs
+// Latest Revision: 3/30/22
+/*****************/
 
-// TO-DO: insert description, major data structures, etc.
+/****** Description *****/
+// This is the main program that runs on the game page
+// It runs the game, handles input/output, generates new points, and renders the new points
+/************************/
+
+/***** Major data structures *****/
+// Defined Globally:
+// config: is the go-between object for the user input data and animation information (the user manipulates the config which manipulates animation)
+// Point: a class for handling point information
+// Color: a class for handling color information
+
+// Within main():
+// DOM objects: as often occurs in JS programs, DOM elements are accessed and manipulated
+// Multiple point arrays: to keep track of the different points, multiple arrays are used (includes generated points, undid points, etc.)
+// Vertex array: since the GPU can't understand a point object, each x and y component is inserted into an array to be sent to the GPU
+// Flags object: flags for the state of the program are encapsulated in a flag object
+// WebGL context object: used for animating and to communicate with the GPU and canvas element
+/*********************************/
 
 // The configuration object
 // Interface with this object to manipulate the animation of points
@@ -10,26 +30,10 @@ let config = {
     COLOR: 0,
 }
 
-// The vertex shader
-let VSHADER = `
-    attribute vec4 a_Position;
-    uniform float u_pointSize;
-    void main() {
-        gl_Position = a_Position;
-        gl_PointSize = u_pointSize;
-    }`;
-
-// The fragment shader
-let FSHADER = `
-    precision mediump float;
-    uniform vec4 u_Color;
-    void main() {
-        gl_FragColor = u_Color;
-    }`;
-
 // Point constructor
-// This is a simple object at the moment
-// It does include label information, I'm currently refactoring the code to incorporate it
+// This is a class to handle point information
+// Label information is included, though not always used
+// If the label information is not used, by default the label is "N/A"
 // Also uses default parameters as suggested by John
 function Point(x = 0, y = 0, label = "N/A") {
     this.x = x;
@@ -50,10 +54,27 @@ function Color(r = 0, g = 0, b = 0) {
     this.b = b;
 }
 
+// The vertex shader
+let VSHADER = `
+    attribute vec4 a_Position;
+    uniform float u_pointSize;
+    void main() {
+        gl_Position = a_Position;
+        gl_PointSize = u_pointSize;
+    }`;
+
+// The fragment shader
+let FSHADER = `
+    precision mediump float;
+    uniform vec4 u_Color;
+    void main() {
+        gl_FragColor = u_Color;
+    }`;
+
+// Main program
 function main() {
     let canvas;                                     // Canvas element
     let innerGame;                                  // Inner div where the points are drawn
-    let messageBox;                                 // Message box
     let webGL;                                      // The drawing context
     let animID;                                     // The animation frame ID
 
@@ -67,17 +88,16 @@ function main() {
     // Encapsulating the flags in an object
     let flags = {
         run: false,                                 // flag to alert the program that the user wants to run the game
-        runnable: false,                            // flag to alert the program that the game is in a runnable state
         spawnAnimation: false,                      // flag to alert the program to spawn an animation
         endGame: false                              // flag to alert to program to end the game
     }
 
     let n = 3;                                      // The number of points
-    let mousePosition = new Point(0, 0, "");// Current mouse position
-    let current = new Point(0, 0, "");  // Current position for drawing
-    let points = [];                               // Selected point array
-    let generatedPoints = [];                      // Generated points array
-    let undid = [];                                // The undone points
+    let mousePosition = new Point(0, 0, "");        // Current mouse position
+    let current = new Point(0, 0, "");              // Current position for drawing
+    let points = [];                                // Selected point array
+    let generatedPoints = [];                       // Generated points array
+    let undid = [];                                 // The undone points
 
     // Get DOM elements
     canvas = document.getElementById("webGL");
@@ -110,30 +130,25 @@ function main() {
     color.value = config.COLOR;
 
     // Undo Button
-    // NOTE - the last mouse position is still on the start, since canvas events are disabled
-    // This means update will still draw that mouse position
-    // To remedy this, draw the mouse outside of the canvas
-
-    // TO DO - MAKE SURE THE RUN BUTTON IS TURNED OFF WHEN THIS OCCURS
-    // DISABLE WHILE THE GAME IS RUNNING AS WELL
     undo.onclick = function() {
+        // Remove the label and its point
         removePointAndLabel(points, undid, innerGame);
+        // Note that the mousePosition will still be included for the first undo
+        // which will cause the point to still be drawn. To remedy this, the mouse
+        // position is moved completely off the canvas
         mousePosition = new Point(2, 2);
         update();
     }
 
-
-    //Redo Button
+    // Redo Button
     redo.onclick = function () {
+       // Since labels are automatic within the update function,
+       // no need to specify any particular label to add
        redoPoint(points, undid);
        update();
     }
 
-    // Start with buttons disabled
-    disable(run);
-    disable(undo);
-    disable(redo)
-
+    // Reset button
     // Clear all animation information
     // and previously drawn elements
     reset.onclick = function () {
@@ -148,12 +163,56 @@ function main() {
         update();
     }
 
-    // Run the game
+    // Run button
+    // Set the flags to true
     run.onclick = function () {
         flags.run = true;
         flags.spawnAnimation = true;
         update();
     }
+
+    // Enable the events
+    function enableCanvasEvents() {
+        // When the user mouses over the canvas, update the mouse position and render
+        canvas.onmousemove = function (e) {
+            updateMousePosition(e, mousePosition, canvas);
+            update();
+        }
+
+        // If the user mouses out, put the mouse in an unviewable position and render
+        canvas.onmouseout = function () {
+            mousePosition = new Point(2, 2);
+            update();
+        }
+
+        // If the user clicks on the canvas, add a point to the point array
+        canvas.onclick = function (e) {
+            placePoint(e, mousePosition, points, canvas, undid);
+            update();
+        }
+    }
+
+    // Call the function to bind the events
+    enableCanvasEvents();
+
+    // Disable the events
+    // Update is still called, but the point events are disabled
+    function disableCanvasEvents() {
+        canvas.onmousemove = update;
+        canvas.onmouseout = update;
+        canvas.onclick = update;
+    }
+
+    // If the window resizes, adjust the rendering context accordingly
+    window.onresize = function() {
+        resize(webGL, canvas, innerGame);
+        update();
+    }
+
+    // Start with buttons disabled
+    disable(run);
+    disable(undo);
+    disable(redo);
 
     // The update function
     // Called to make rendering changes
@@ -232,87 +291,71 @@ function main() {
             enableCanvasEvents();
         }
 
-        // If drawing is true, run the game
+        // If the user presses the run button, run the game
+        // The previous if/else-if statements verify that the game is in a runnable state
         if (flags.run === true) {
-            // The time which controls the speed of the animation
+            // Initialize the time variables to control the speed of point insertion
             let deltaTime = 0;
             let prevTime = deltaTime;
             deltaTime = Date.now() - prevTime;
 
+            // Clear the undone points for the next game
             undid = [];
 
+            // Animation function to generate and draw a new point
             let animate = function () {
+                // Update the time elapsed
                 deltaTime = Date.now() - prevTime;
+
+                // If the time elapsed has become greater than the speed
+                // specified by the user, then generate a new point and draw it
                 if (deltaTime > config.SPEED) {
+                    // Update previous time
                     prevTime = Date.now();
+
+                    // Generate a random number
                     let rand = randomNumber(0, n - 1);
+
+                    // Generate a point based on that number
                     generatedPoints.push(generateFactorPoint(current, points[rand], n / (n + 3)));
+
+                    // Insert it into the drawing vertices
                     outVert.push(generatedPoints[generatedPoints.length - 1].x);
                     outVert.push(generatedPoints[generatedPoints.length - 1].y);
+
+                    // Update current vertex and label it
                     current = generatedPoints[generatedPoints.length - 1];
                     addCustomLabel(current, canvas, "Current");
 
-                    console.log(outVert.length / 2);
-
-                    // Update the message to tell the user the random points chosen
+                    // Update the message to tell the user the random number and point chosen
                     updateMessage("Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65));
                 }
 
                 // Clear, bind, and draw
                 webGL.clear(webGL.COLOR_BUFFER_BIT);
-                bindVertices(webGL, outVert, hsvToRgb(config.COLOR / 360, config.COLOR / 255, config.COLOR / 255));
+                bindVertices(webGL, outVert, hsvToRgb(config.COLOR / 360, config.COLOR / 360, config.COLOR / 360));
                 webGL.drawArrays(webGL.POINTS, 0, outVert.length / 2);
 
+                // Spawn the animation recursively using requestAnimationFrame
                 cancelAnimationFrame(animID);
                 animID = requestAnimationFrame(animate);
             }
 
-            // This is called so that it isn't possible to request the animation again
+            // IMPORTANT - we DO NOT want multiple animations occurring
+            // This must be included here, so that only one animation is spawned
+            // If this is not included, multiple animations will spawn, causing issues
+            // That way we can control the speed of the only animation occurring
             if (flags.spawnAnimation === true) {
                 animate();
                 flags.spawnAnimation = false;
             }
+
+        // If we are not running the game, bind and draw the current positions
         } else {
             webGL.clear(webGL.COLOR_BUFFER_BIT);
-            bindVertices(webGL, outVert, hsvToRgb(config.COLOR / 360, config.COLOR / 255, config.COLOR / 255));
+            bindVertices(webGL, outVert, hsvToRgb(config.COLOR / 360, config.COLOR / 360, config.COLOR / 360));
             webGL.drawArrays(webGL.POINTS, 0, outVert.length / 2);
         }
-    }
-
-    // Enable the events
-    function enableCanvasEvents() {
-        // When the user mouses over the canvas, update the mouse position and render
-        canvas.onmousemove = function (e) {
-            updateMousePosition(e, mousePosition, canvas);
-            update();
-        }
-
-        // If the user mouses out, put the mouse in an unviewable position and render
-        canvas.onmouseout = function () {
-            mousePosition = new Point(2, 2);
-            update();
-        }
-
-        // If the user clicks on the canvas, add a point to the point array
-        canvas.onclick = function (e) {
-            placePoint(e, mousePosition, points, canvas, undid);
-            update();
-        }
-    }
-
-    enableCanvasEvents();
-
-    // Disable the events
-    function disableCanvasEvents() {
-        canvas.onmousemove = update;
-        canvas.onmouseout = update;
-        canvas.onclick = update;
-    }
-
-    // If the window resizes, adjust the rendering context accordingly
-    window.onresize = function() {
-        resize(webGL, canvas, innerGame);
-        update();
     }
 }
 
