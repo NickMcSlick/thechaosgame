@@ -41,6 +41,9 @@ function Point(x = 0, y = 0, label = "N/A") {
         this.y = this.y / Math.sqrt(this.x * this.x + this.y * this.y);
     }
 }
+function Label() {
+
+}
 
 // Color object
 // Uses default parameters as suggested by John
@@ -199,41 +202,37 @@ function main() {
 
         /* Possible cases for which buttons should be enabled */
         // There are enough points and the user is running the game
-        if (points.length >= n + 1 && flags.run === true) {
+        if (points.length >= n + 1 && flags.run) {
             disable(run);
             disable(undo);
             disable(redo);
             disableCanvasEvents();
         // There are enough points but the user has yet to run the game (so you can still undo points)
-        } else if (points.length === n + 1 && flags.run !== true) {
+        } else if (points.length === n + 1 && !flags.run) {
             enable(run);
             enable(undo);
             disable(redo);
             disableCanvasEvents();
         // If we have no points to draw, disable
         } else if (points.length === 0) {
-            if (undid.length !== 0) {
-                enable(redo);
-            } else {
-                disable(redo);
-            }
+            (undid.length !== 0) ? 
+                enable(redo): disable(redo);
+            
             disable(run);
             disable(undo);
             enableCanvasEvents();
         // This situation occurs when the user is currently drawing
         } else {
-            if (undid.length !== 0) {
-                enable(redo);
-            } else {
-                disable(redo);
-            }
+            (undid.length !== 0) ? 
+                enable(redo): disable(redo);
+
             enable(undo);
             disable(run);
             enableCanvasEvents();
         }
 
         // If drawing is true, run the game
-        if (flags.run === true) {
+        if (flags.run) {
             // The time which controls the speed of the animation
             let deltaTime = 0;
             let prevTime = deltaTime;
@@ -268,7 +267,7 @@ function main() {
             }
 
             // This is called so that it isn't possible to request the animation again
-            if (flags.spawnAnimation === true) {
+            if (flags.spawnAnimation) {
                 animate();
                 flags.spawnAnimation = false;
             }
@@ -334,7 +333,7 @@ function resize(webGL, canvas, innerGame) {
 // Place points
 function placePoint(e, mousePosition, points, canvas, undid) {
     // Clear the array
-    undid.length = 0;
+    undid = [];
 
     let rect = e.target.getBoundingClientRect();
     mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
@@ -353,42 +352,46 @@ function redoPoint(points, undid) {
     points.push(undid.pop());
 }
 
+function new_label(id, zIndex) {
+    let p = document.createElement("p");
+
+    p.id = id;
+    p.style.zIndex = zIndex;
+    p.style.position = "absolute";
+    p.style.display = "inline";
+    p.style.padding = "0";
+    p.style.margin = "0";
+
+    return p;
+}
 // Basic point labeling for initial points "A, B, C"
 function addLabels(points, canvas) {
     for (let i = 0; i < points.length; i++) {
-        let p = document.createElement("p");
         let div = document.getElementById("inner_game");
-        let label = document.getElementById("pointLabel" + i);
-
-        // Find the center
-        let center = new Point(canvas.width / 2, canvas.height / 2);
-        // Find the position of the point in window coordinates
         let position = new Point(canvas.width * (points[i].x + 1) / 2, canvas.height * (points[i].y - 1) / (-2));
         // Find the direction we want the label to be in, which is relative to the center
-        let direction = new Point(position.x - center.x, position.y - center.y);
+        let direction = new Point(position.x - (canvas.width/2), position.y - (canvas.height/2));
         // Create a unit vector of that direction
         let unitVector = new Point(direction.x, direction.y);
         unitVector.unit();
 
         // Now find the final position
         // First we find the direction, add a certain amount of direction, and then translate it to be relative to the center
-        let point = new Point(direction.x + 20 * unitVector.x + center.x, direction.y + 20 * unitVector.y + center.y);
+        let point = new Point(direction.x + 20 * unitVector.x + (canvas.width/2), direction.y + 20 * unitVector.y + (canvas.height/2));
 
-        if (!label) {
-            p.id = "pointLabel" + i;
-            p.style.zIndex = i + "";
-            p.style.position = "absolute";
-            p.style.display = "inline";
-            p.style.padding = "0";
-            p.style.margin = "0";
+        let label = document.getElementById("pointLabel" + i);
+        if(label) {
+            label.style.top = div.getBoundingClientRect().top + window.scrollY + point.y - 10 + "px";
+            label.style.left = div.getBoundingClientRect().left + point.x - 10 + "px";
+        } else {
+            let p = new_label("pointLabel"+i, i+"");
+
+            // Find the position of the point in window coordinates
             let node = document.createTextNode(points[i].label);
             p.appendChild(node);
             p.style.top = div.getBoundingClientRect().top + window.scrollY + point.y - 10 + "px";
             p.style.left = div.getBoundingClientRect().left + point.x - 10 + "px";
             div.appendChild(p);
-        } else {
-            label.style.top = div.getBoundingClientRect().top + window.scrollY + point.y - 10 + "px";
-            label.style.left = div.getBoundingClientRect().left + point.x - 10 + "px";
         }
     }
 }
@@ -396,7 +399,6 @@ function addLabels(points, canvas) {
 
 // Basic point labeling for starting vertex and current vertex
 function addCustomLabel(labelPoint, canvas, labelMessage) {
-    let p = document.createElement("p");
     let div = document.getElementById("inner_game");
     let label = document.getElementById("customLabel");
 
@@ -408,22 +410,17 @@ function addCustomLabel(labelPoint, canvas, labelMessage) {
 
     let point = new Point(direction.x + unitVector.x + position.x, direction.y + unitVector.y + position.y);
 
-    if (!label) {
-        p.id = "customLabel";
-        p.style.zIndex = 10 + "";
-        p.style.position = "absolute";
-        p.style.display = "inline";
-        p.style.padding = "0";
-        p.style.margin = "0";
+    if (label) {
+        label.innerHTML = labelMessage;
+        label.style.top = div.getBoundingClientRect().top + window.scrollY + point.y - 20 + "px";
+        label.style.left = div.getBoundingClientRect().left + point.x - 20 + "px";
+    } else {
+        let p = new_label("customLabel", 10+"");
         let node = document.createTextNode(labelMessage);
         p.appendChild(node);
         p.style.top = div.getBoundingClientRect().top + window.scrollY + point.y  - 20 + "px";
         p.style.left = div.getBoundingClientRect().left + point.x - 20 + "px";
         div.appendChild(p);
-    } else {
-        label.innerHTML = labelMessage;
-        label.style.top = div.getBoundingClientRect().top + window.scrollY + point.y - 20 + "px";
-        label.style.left = div.getBoundingClientRect().left + point.x - 20 + "px";
     }
 }
 
@@ -478,26 +475,40 @@ function hsvToRgb(h, s, v){
 // Therefore, we might have to do some checking before actually applying this function
 // OF NOTE - this works using screen space instead of webGL coordinates - otherwise it gets stretched
 function readjustPoints(points, canvas, n) {
-    let div = document.getElementById("inner_game");
-    let sum = [0, 0];
+    // get center of user-placed points by averaging their x and y positions
+    let avg = { x: 0, y: 0 }
     for (let i = 0; i < points.length && i < n; i++) {
-        sum[0] += points[i].x;
-        sum[1] += points[i].y;
+        avg.x += points[i].x;
+        avg.y += points[i].y;
     }
-    sum[0] /= n;
-    sum[1] /= n;
-    for (let i = 0; i < points.length && i < n; i++) {
-        let label = document.getElementById("pointLabel" + i);
-        let screenSpaceX = canvas.width * (points[i].x + 1) / 2;
-        let screenSpaceY = canvas.height * (points[i].y - 1) / (-2);
-        let screenCenterX = canvas.width * (sum[0] + 1) / 2;
-        let screenCenterY = canvas.height * (sum[1] - 1) / (-2);
-        let direction = [screenSpaceX - screenCenterX, screenSpaceY - screenCenterY];
-        let unitVector = [direction[0] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1]), direction[1] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1])]
-        let point = [direction[0] + 30 * unitVector[0] + screenCenterX, direction[1] + 30 * unitVector[1] + screenCenterY];
+    avg.x /= n, avg.y /= n;
 
-        label.style.top = div.getBoundingClientRect().top + window.scrollY + (point[1]) - 10 + "px";
-        label.style.left = div.getBoundingClientRect().left + (point[0]) - 10 + "px";
+    for (let i = 0; i < points.length && i < n; i++) {
+        let screenSpace = {
+            x:  canvas.width  * (points[i].x + 1) / 2,
+            y: -canvas.height * (points[i].y - 1) / 2
+        };
+        let screenCenter = {
+            x:  canvas.width  * (avg.x + 1) / 2,
+            y: -canvas.height * (avg.y - 1) / 2
+        };
+        let dir = {
+            x: screenSpace.x - screenCenter.x, 
+            y: screenSpace.y - screenCenter.y 
+        };
+        let unitVec = {
+            x: dir.x / Math.sqrt( dir.x**2 + dir.y**2 ), 
+            y: dir.y / Math.sqrt( dir.x**2 + dir.y**2 )
+        };
+        let point = {
+            x: dir.x + 30*unitVec.x + screenCenter.x,
+            y: dir.y + 30*unitVec.y + screenCenter.y
+        };
+
+        let label = document.getElementById("pointLabel" + i);
+        let div = document.getElementById("inner_game");
+        label.style.top = `{div.getBoundingClientRect().top + window.scrollY + point.y - 10 }px`;
+        label.style.left = `{div.getBoundingClientRect().left + point.x - 10 }px`;
     }
 }
 
