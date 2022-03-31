@@ -377,6 +377,8 @@ function resize(webGL, canvas, innerGame) {
 // Place points
 function placePoint(e, mousePosition, points, canvas, undid) {
     // Clear the array
+    // Note that there was a bug where setting this array to [] does nothing
+    // This has to do with some JS typing and pass by reference issues - leave it as is
     undid.length = 0;
 
     let rect = e.target.getBoundingClientRect();
