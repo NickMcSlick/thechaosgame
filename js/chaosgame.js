@@ -397,11 +397,21 @@ function removePointAndLabel(points, undid, innerGame) {
 function redoPoint(points, undid) {
     points.push(undid.pop());
 }
+function newLabel(id, zIndex) {
+    let p = document.createElement("p");
 
+    p.id = id;
+    p.style.zIndex = zIndex;
+    p.style.position = "absolute";
+    p.style.display = "inline";
+    p.style.padding = "0";
+    p.style.margin = "0";
+
+    return p;
+}
 // Basic point labeling for initial points "A, B, C"
 function addLabels(points, canvas) {
     for (let i = 0; i < points.length; i++) {
-        let p = document.createElement("p");
         let div = document.getElementById("inner_game");
         let label = document.getElementById("pointLabel" + i);
 
@@ -420,12 +430,7 @@ function addLabels(points, canvas) {
         let point = new Point(direction.x + 20 * unitVector.x + center.x, direction.y + 20 * unitVector.y + center.y);
 
         if (!label) {
-            p.id = "pointLabel" + i;
-            p.style.zIndex = i + "";
-            p.style.position = "absolute";
-            p.style.display = "inline";
-            p.style.padding = "0";
-            p.style.margin = "0";
+            let p = newLabel("pointLabel"+i, i+"");
             let node = document.createTextNode(points[i].label);
             p.appendChild(node);
             p.style.top = div.getBoundingClientRect().top + window.scrollY + point.y - 10 + "px";
@@ -437,11 +442,8 @@ function addLabels(points, canvas) {
         }
     }
 }
-
-
 // Basic point labeling for starting vertex and current vertex
 function addCustomLabel(labelPoint, canvas, labelMessage) {
-    let p = document.createElement("p");
     let div = document.getElementById("inner_game");
     let label = document.getElementById("customLabel");
 
@@ -454,12 +456,7 @@ function addCustomLabel(labelPoint, canvas, labelMessage) {
     let point = new Point(direction.x + unitVector.x + position.x, direction.y + unitVector.y + position.y);
 
     if (!label) {
-        p.id = "customLabel";
-        p.style.zIndex = 10 + "";
-        p.style.position = "absolute";
-        p.style.display = "inline";
-        p.style.padding = "0";
-        p.style.margin = "0";
+        let p = newLabel("customLabel", "10");
         let node = document.createTextNode(labelMessage);
         p.appendChild(node);
         p.style.top = div.getBoundingClientRect().top + window.scrollY + point.y  - 20 + "px";
@@ -532,15 +529,25 @@ function readjustPoints(points, canvas, n) {
     sum[0] /= n;
     sum[1] /= n;
     for (let i = 0; i < points.length && i < n; i++) {
-        let label = document.getElementById("pointLabel" + i);
-        let screenSpaceX = canvas.width * (points[i].x + 1) / 2;
-        let screenSpaceY = canvas.height * (points[i].y - 1) / (-2);
-        let screenCenterX = canvas.width * (sum[0] + 1) / 2;
-        let screenCenterY = canvas.height * (sum[1] - 1) / (-2);
-        let direction = [screenSpaceX - screenCenterX, screenSpaceY - screenCenterY];
-        let unitVector = [direction[0] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1]), direction[1] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1])]
-        let point = [direction[0] + 30 * unitVector[0] + screenCenterX, direction[1] + 30 * unitVector[1] + screenCenterY];
+        let screenSpaceX =   canvas.width * (points[i].x + 1) / 2;
+        let screenSpaceY = -canvas.height * (points[i].y - 1) / 2;
 
+        let screenCenterX =   canvas.width * (sum[0] + 1) / 2;
+        let screenCenterY = -canvas.height * (sum[1] - 1) / 2;
+        let dir = [
+            screenSpaceX - screenCenterX,
+            screenSpaceY - screenCenterY
+        ];
+        let unitVec = [
+            dir[0] / Math.sqrt( dir[0]**2 + dir[1]**2 ),
+            dir[1] / Math.sqrt( dir[0]**2 + dir[1]**2 )
+        ]
+        let point = [
+            dir[0] + 30 * unitVec[0] + screenCenterX,
+            dir[1] + 30 * unitVec[1] + screenCenterY
+        ];
+
+        let label = document.getElementById("pointLabel" + i);
         label.style.top = div.getBoundingClientRect().top + window.scrollY + (point[1]) - 10 + "px";
         label.style.left = div.getBoundingClientRect().left + (point[0]) - 10 + "px";
     }
