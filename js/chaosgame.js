@@ -58,6 +58,7 @@ function Color(r = 0, g = 0, b = 0) {
 let VSHADER = `
     attribute vec4 a_Position;
     uniform float u_pointSize;
+    
     void main() {
         gl_Position = a_Position;
         gl_PointSize = u_pointSize;
@@ -65,10 +66,18 @@ let VSHADER = `
 
 // The fragment shader
 let FSHADER = `
-    precision mediump float;
+    precision highp float;
     uniform vec4 u_Color;
+   
     void main() {
-        gl_FragColor = u_Color;
+        float d = distance(vec2(0.5, 0.5), gl_PointCoord);
+       
+        if (d < 0.5) {
+            vec3 cout = mix(vec3(1.0), u_Color.xyz, 1.0 - d);
+            gl_FragColor = vec4(cout, 1.0 - d);
+        } else {
+            discard;
+        }
     }`;
 
 // Main program
@@ -142,10 +151,10 @@ function main() {
 
     // Redo Button
     redo.onclick = function () {
-       // Since labels are automatic within the update function,
-       // no need to specify any particular label to add
-       redoPoint(points, undid);
-       update();
+        // Since labels are automatic within the update function,
+        // no need to specify any particular label to add
+        redoPoint(points, undid);
+        update();
     }
 
     // Reset button
@@ -170,7 +179,6 @@ function main() {
         flags.spawnAnimation = true;
         update();
     }
-
     // Enable the events
     function enableCanvasEvents() {
         // When the user mouses over the canvas, update the mouse position and render
@@ -218,11 +226,7 @@ function main() {
     // Called to make rendering changes
     function update() {
         // The output vertex array
-        let outVert = [];
-
-        // Insert the mouse position to draw
-        outVert[0] = mousePosition.x;
-        outVert[1] = mousePosition.y;
+        let outVert = [ mousePosition.x, mousePosition.y ];
 
         // Insert the selected points into the output vertices
         points.forEach(pointObject => {
@@ -241,7 +245,7 @@ function main() {
                 updateMessage("Select a starting position!");
             }
 
-        // If a point is the starting point, label it
+            // If a point is the starting point, label it
         } else if (points.length === n + 1 && flags.run === false) {
             addCustomLabel(points[n], canvas, "Start");
             current = new Point(points[n].x, points[n].y);
@@ -263,13 +267,13 @@ function main() {
             disable(undo);
             disable(redo);
             disableCanvasEvents();
-        // There are enough points but the user has yet to run the game (so you can still undo points)
+            // There are enough points but the user has yet to run the game (so you can still undo points)
         } else if (points.length === n + 1 && flags.run !== true) {
             enable(run);
             enable(undo);
             disable(redo);
             disableCanvasEvents();
-        // If we have no points to draw, disable
+            // If we have no points to draw, disable
         } else if (points.length === 0) {
             if (undid.length !== 0) {
                 enable(redo);
@@ -279,7 +283,7 @@ function main() {
             disable(run);
             disable(undo);
             enableCanvasEvents();
-        // This situation occurs when the user is currently drawing
+            // This situation occurs when the user is currently drawing
         } else {
             if (undid.length !== 0) {
                 enable(redo);
@@ -350,7 +354,7 @@ function main() {
                 flags.spawnAnimation = false;
             }
 
-        // If we are not running the game, bind and draw the current positions
+            // If we are not running the game, bind and draw the current positions
         } else {
             webGL.clear(webGL.COLOR_BUFFER_BIT);
             bindVertices(webGL, outVert, hsvToRgb(config.COLOR / 360, config.COLOR / 360, config.COLOR / 360));
@@ -377,6 +381,8 @@ function resize(webGL, canvas, innerGame) {
 // Place points
 function placePoint(e, mousePosition, points, canvas, undid) {
     // Clear the array
+    /* For some odd reason JS requires that I change the attribute instead of the array */
+    /* If I set it to an empty array it does nothing - possibly a pass-by-reference/value rule issue */
     undid.length = 0;
 
     let rect = e.target.getBoundingClientRect();
@@ -395,11 +401,21 @@ function removePointAndLabel(points, undid, innerGame) {
 function redoPoint(points, undid) {
     points.push(undid.pop());
 }
+function newLabel(id, zIndex) {
+    let p = document.createElement("p");
 
+    p.id = id;
+    p.style.zIndex = zIndex;
+    p.style.position = "absolute";
+    p.style.display = "inline";
+    p.style.padding = "0";
+    p.style.margin = "0";
+
+    return p;
+}
 // Basic point labeling for initial points "A, B, C"
 function addLabels(points, canvas) {
     for (let i = 0; i < points.length; i++) {
-        let p = document.createElement("p");
         let div = document.getElementById("inner_game");
         let label = document.getElementById("pointLabel" + i);
 
@@ -418,12 +434,7 @@ function addLabels(points, canvas) {
         let point = new Point(direction.x + 20 * unitVector.x + center.x, direction.y + 20 * unitVector.y + center.y);
 
         if (!label) {
-            p.id = "pointLabel" + i;
-            p.style.zIndex = i + "";
-            p.style.position = "absolute";
-            p.style.display = "inline";
-            p.style.padding = "0";
-            p.style.margin = "0";
+            let p = newLabel("pointLabel"+i, i+"");
             let node = document.createTextNode(points[i].label);
             p.appendChild(node);
             p.style.top = div.getBoundingClientRect().top + window.scrollY + point.y - 10 + "px";
@@ -435,11 +446,8 @@ function addLabels(points, canvas) {
         }
     }
 }
-
-
 // Basic point labeling for starting vertex and current vertex
 function addCustomLabel(labelPoint, canvas, labelMessage) {
-    let p = document.createElement("p");
     let div = document.getElementById("inner_game");
     let label = document.getElementById("customLabel");
 
@@ -452,12 +460,7 @@ function addCustomLabel(labelPoint, canvas, labelMessage) {
     let point = new Point(direction.x + unitVector.x + position.x, direction.y + unitVector.y + position.y);
 
     if (!label) {
-        p.id = "customLabel";
-        p.style.zIndex = 10 + "";
-        p.style.position = "absolute";
-        p.style.display = "inline";
-        p.style.padding = "0";
-        p.style.margin = "0";
+        let p = newLabel("customLabel", "10");
         let node = document.createTextNode(labelMessage);
         p.appendChild(node);
         p.style.top = div.getBoundingClientRect().top + window.scrollY + point.y  - 20 + "px";
@@ -530,15 +533,25 @@ function readjustPoints(points, canvas, n) {
     sum[0] /= n;
     sum[1] /= n;
     for (let i = 0; i < points.length && i < n; i++) {
-        let label = document.getElementById("pointLabel" + i);
-        let screenSpaceX = canvas.width * (points[i].x + 1) / 2;
-        let screenSpaceY = canvas.height * (points[i].y - 1) / (-2);
-        let screenCenterX = canvas.width * (sum[0] + 1) / 2;
-        let screenCenterY = canvas.height * (sum[1] - 1) / (-2);
-        let direction = [screenSpaceX - screenCenterX, screenSpaceY - screenCenterY];
-        let unitVector = [direction[0] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1]), direction[1] / Math.sqrt(direction[0] * direction[0] + direction[1] * direction[1])]
-        let point = [direction[0] + 30 * unitVector[0] + screenCenterX, direction[1] + 30 * unitVector[1] + screenCenterY];
+        let screenSpaceX =   canvas.width * (points[i].x + 1) / 2;
+        let screenSpaceY = -canvas.height * (points[i].y - 1) / 2;
 
+        let screenCenterX =   canvas.width * (sum[0] + 1) / 2;
+        let screenCenterY = -canvas.height * (sum[1] - 1) / 2;
+        let dir = [
+            screenSpaceX - screenCenterX,
+            screenSpaceY - screenCenterY
+        ];
+        let unitVec = [
+            dir[0] / Math.sqrt( dir[0]**2 + dir[1]**2 ),
+            dir[1] / Math.sqrt( dir[0]**2 + dir[1]**2 )
+        ]
+        let point = [
+            dir[0] + 30 * unitVec[0] + screenCenterX,
+            dir[1] + 30 * unitVec[1] + screenCenterY
+        ];
+
+        let label = document.getElementById("pointLabel" + i);
         label.style.top = div.getBoundingClientRect().top + window.scrollY + (point[1]) - 10 + "px";
         label.style.left = div.getBoundingClientRect().left + (point[0]) - 10 + "px";
     }
@@ -564,7 +577,7 @@ function bindVertices(webGL, randPoints, color) {
     let a_Position = webGL.getAttribLocation(webGL.program, "a_Position");
     let u_Color = webGL.getUniformLocation(webGL.program, "u_Color");
     let u_pointSize = webGL.getUniformLocation(webGL.program, "u_pointSize");
-    webGL.uniform1f(u_pointSize, 5.0);
+    webGL.uniform1f(u_pointSize, 10.0);
     webGL.uniform4f(u_Color, color.r / 255,  color.g / 255, color.b / 255, 1.0);
 
     webGL.vertexAttribPointer(a_Position, 2, webGL.FLOAT, false, 0, 0);
