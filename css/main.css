@@ -21,7 +21,8 @@ html, body {
 }
 
 /* Padding so the user doesn't draw right on the edge */
-#game_board {
+@media only screen and (min-width : 1224px) {
+  #game_board {
     height: 100%;
     margin: 1% 10% 5% 10%;
     padding: 3em;
@@ -29,6 +30,20 @@ html, body {
     border-width: 0.3em;
     border-color: rgba(0, 0, 0, 0);
     box-shadow: 0em 0em 1em grey;
+  }
+    /* Styles */
+    
+}
+@media only screen and (max-width:1224px) {
+#game_board {
+    height: 100%;
+    margin: 1% 5% 10%;
+    padding: 3em;
+    border-radius: 2em;
+    border-width: 0.3em;
+    border-color: rgba(0, 0, 0, 0);
+    box-shadow: 0em 0em 1em grey;
+}
 }
 
 /* The formatting for the point drawing area */
@@ -59,9 +74,8 @@ html, body {
 }
 
 #header_text {
-  float: none;
   position: absolute;
-  margin-left: 36.54vw;
+  left: 33.87vw;
   font-size: larger;
 }
 
@@ -75,14 +89,18 @@ html, body {
   float: left;
   margin-left: 8px;
   margin-top: 8px;
+  cursor: pointer;
 }
 
 .squareImage {
   float: right;
+  max-width: 40%;
+  max-height: 86.1%;
 }
 
 .triangleImage {
     float: left;
+    max-width: 44.6%;
 }
 
 /* isn't used at the moment, need to fix */
