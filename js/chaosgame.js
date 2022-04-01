@@ -27,7 +27,7 @@
 // Interface with this object to manipulate the animation of points
 let config = {
     SPEED: 1000,
-    COLOR: 0,
+    COLOR: 180,
 }
 
 // Point constructor
@@ -359,7 +359,6 @@ function main() {
 
                 // Clear, bind, and draw
                 webGL.clear(webGL.COLOR_BUFFER_BIT);
-                console.log(config.COLOR);
                 if (config.COLOR <= 3) {
                     bindVertices(webGL, outVert, hsvToRgb(1.0, 0.0, 0.0));
                 } else {
