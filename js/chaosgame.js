@@ -359,7 +359,12 @@ function main() {
 
                 // Clear, bind, and draw
                 webGL.clear(webGL.COLOR_BUFFER_BIT);
-                bindVertices(webGL, outVert, hsvToRgb(config.COLOR / 360, config.COLOR / 360, config.COLOR / 360));
+                console.log(config.COLOR);
+                if (config.COLOR <= 3) {
+                    bindVertices(webGL, outVert, hsvToRgb(1.0, 0.0, 0.0));
+                } else {
+                    bindVertices(webGL, outVert, hsvToRgb(config.COLOR / 360, 1.0, 1.0));
+                }
                 webGL.drawArrays(webGL.POINTS, 0, outVert.length / 2);
 
                 // Spawn the animation recursively using requestAnimationFrame
@@ -379,7 +384,11 @@ function main() {
             // If we are not running the game, bind and draw the current positions
         } else {
             webGL.clear(webGL.COLOR_BUFFER_BIT);
-            bindVertices(webGL, outVert, hsvToRgb(config.COLOR / 360, config.COLOR / 360, config.COLOR / 360));
+            if (config.COLOR <= 3) {
+                bindVertices(webGL, outVert, hsvToRgb(1.0, 0.0, 0.0));
+            } else {
+                bindVertices(webGL, outVert, hsvToRgb(config.COLOR / 360, 1.0, 1.0));
+            }
             webGL.drawArrays(webGL.POINTS, 0, outVert.length / 2);
         }
     }
