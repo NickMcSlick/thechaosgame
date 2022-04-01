@@ -66,18 +66,36 @@ let VSHADER = `
 
 // The fragment shader
 let FSHADER = `
+    #extension GL_EXT_shader_texture_lod : enable
+    #extension GL_OES_standard_derivatives : enable
+    
     precision highp float;
     uniform vec4 u_Color;
    
     void main() {
+        /*
         float d = distance(vec2(0.5, 0.5), gl_PointCoord);
+        vec3 cout;
        
         if (d < 0.5) {
+            float value = fwidth(d);
             vec3 cout = mix(vec3(1.0), u_Color.xyz, 1.0 - d);
-            gl_FragColor = vec4(cout, 1.0 - d);
+            //cout = smoothstep(vec3(0.0), value * vec3(1.0), u_Color.xyz);
+            gl_FragColor = vec4(cout, smoothstep(0.0, 1.0, 1.0 - 0.4 * d));
         } else {
             discard;
         }
+        */
+        
+        
+        // FRAGMENT SHADER CODE BASED ON: https://www.desultoryquest.com/blog/drawing-anti-aliased-circular-points-using-opengl-slash-webgl/
+        float r = 0.0, delta = 0.0, alpha = 1.0;
+        vec2 cxy = 2.0 * gl_PointCoord - 1.0;
+        r = dot(cxy, cxy);
+        delta = fwidth(r);
+        alpha = 1.0 - smoothstep(1.0 - delta, 1.0 + delta, r);
+
+        gl_FragColor = u_Color * alpha;  
     }`;
 
 // Main program
@@ -124,7 +142,11 @@ function main() {
 
     // Get context and initialize the shaders
     webGL = canvas.getContext("webgl");
+    webGL.getExtension('OES_standard_derivatives');
+    webGL.getExtension('EXT_shader_texture_lod');
     initShaders(webGL, VSHADER, FSHADER);
+    webGL.enable(webGL.BLEND);
+    webGL.blendFunc(webGL.SRC_ALPHA, webGL.ONE_MINUS_SRC_ALPHA);
 
     // Set slider events (also initialize the slider values)
     speed.oninput = function() {
@@ -577,7 +599,7 @@ function bindVertices(webGL, randPoints, color) {
     let a_Position = webGL.getAttribLocation(webGL.program, "a_Position");
     let u_Color = webGL.getUniformLocation(webGL.program, "u_Color");
     let u_pointSize = webGL.getUniformLocation(webGL.program, "u_pointSize");
-    webGL.uniform1f(u_pointSize, 10.0);
+    webGL.uniform1f(u_pointSize, 8.0);
     webGL.uniform4f(u_Color, color.r / 255,  color.g / 255, color.b / 255, 1.0);
 
     webGL.vertexAttribPointer(a_Position, 2, webGL.FLOAT, false, 0, 0);
