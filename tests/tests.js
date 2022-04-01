@@ -70,7 +70,8 @@ function testMouseOver() {
 function testMouseDown() {
     let dummyMouse = new Point();
     let dummyPoints = [];
-    placePoint(dummyEvent, dummyMouse, dummyPoints, dummyCanvas);
+    let dummyUndid = [];
+    placePoint(dummyEvent, dummyMouse, dummyPoints, dummyCanvas, dummyUndid);
     if (Math.abs(dummyPoints[0].x) > 1 || Math.abs(dummyPoints[0].y) > 1) {
         return false;
     } else {
