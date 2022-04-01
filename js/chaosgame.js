@@ -170,7 +170,6 @@ function main() {
         flags.spawnAnimation = true;
         update();
     }
-
     // Enable the events
     function enableCanvasEvents() {
         // When the user mouses over the canvas, update the mouse position and render
