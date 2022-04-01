@@ -217,11 +217,7 @@ function main() {
     // Called to make rendering changes
     function update() {
         // The output vertex array
-        let outVert = [];
-
-        // Insert the mouse position to draw
-        outVert[0] = mousePosition.x;
-        outVert[1] = mousePosition.y;
+        let outVert = [ mousePosition.x, mousePosition.y ];
 
         // Insert the selected points into the output vertices
         points.forEach(pointObject => {
