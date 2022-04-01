@@ -58,6 +58,7 @@ function Color(r = 0, g = 0, b = 0) {
 let VSHADER = `
     attribute vec4 a_Position;
     uniform float u_pointSize;
+    
     void main() {
         gl_Position = a_Position;
         gl_PointSize = u_pointSize;
@@ -65,10 +66,18 @@ let VSHADER = `
 
 // The fragment shader
 let FSHADER = `
-    precision mediump float;
+    precision highp float;
     uniform vec4 u_Color;
+   
     void main() {
-        gl_FragColor = u_Color;
+        float d = distance(vec2(0.5, 0.5), gl_PointCoord);
+       
+        if (d < 0.5) {
+            vec3 cout = mix(vec3(1.0), u_Color.xyz, 1.0 - d);
+            gl_FragColor = vec4(cout, 1.0 - d);
+        } else {
+            discard;
+        }
     }`;
 
 // Main program
@@ -573,7 +582,7 @@ function bindVertices(webGL, randPoints, color) {
     let a_Position = webGL.getAttribLocation(webGL.program, "a_Position");
     let u_Color = webGL.getUniformLocation(webGL.program, "u_Color");
     let u_pointSize = webGL.getUniformLocation(webGL.program, "u_pointSize");
-    webGL.uniform1f(u_pointSize, 5.0);
+    webGL.uniform1f(u_pointSize, 10.0);
     webGL.uniform4f(u_Color, color.r / 255,  color.g / 255, color.b / 255, 1.0);
 
     webGL.vertexAttribPointer(a_Position, 2, webGL.FLOAT, false, 0, 0);
