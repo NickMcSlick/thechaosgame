@@ -1,0 +1,26 @@
+table {
+    font-family: "Courier New", Monospace;
+    font-weight: bold;
+    margin: 0.2em auto 0.2em auto;
+    color: aqua;
+    text-align: center;
+    font-size: 3.2vw;
+    
+    }
+    table td {
+      padding: 10px;
+      text-align: center;
+    }
+  
+    #messages {
+      border: none;
+  }
+  
+  #message_box {
+    margin: 0.2em auto 0.2em auto;
+    padding: 0;
+    color: aqua;
+    text-align: center;
+    font-size: 3.2vw;
+  }
+  
