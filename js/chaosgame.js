@@ -73,21 +73,8 @@ let FSHADER = `
     uniform vec4 u_Color;
    
     void main() {
-        /*
         float d = distance(vec2(0.5, 0.5), gl_PointCoord);
-        vec3 cout;
-       
-        if (d < 0.5) {
-            float value = fwidth(d);
-            vec3 cout = mix(vec3(1.0), u_Color.xyz, 1.0 - d);
-            //cout = smoothstep(vec3(0.0), value * vec3(1.0), u_Color.xyz);
-            gl_FragColor = vec4(cout, smoothstep(0.0, 1.0, 1.0 - 0.4 * d));
-        } else {
-            discard;
-        }
-        */
-        
-        
+
         // FRAGMENT SHADER CODE BASED ON: https://www.desultoryquest.com/blog/drawing-anti-aliased-circular-points-using-opengl-slash-webgl/
         float r = 0.0, delta = 0.0, alpha = 1.0;
         vec2 cxy = 2.0 * gl_PointCoord - 1.0;
@@ -95,7 +82,8 @@ let FSHADER = `
         delta = fwidth(r);
         alpha = 1.0 - smoothstep(1.0 - delta, 1.0 + delta, r);
 
-        gl_FragColor = u_Color * alpha;  
+        gl_FragColor = u_Color * alpha; 
+
     }`;
 
 // Main program
@@ -119,12 +107,19 @@ function main() {
         endGame: false                              // flag to alert to program to end the game
     }
 
-    let n = 3;                                      // The number of points
+    let n;                                          // The number of points
     let mousePosition = new Point(0, 0, "");        // Current mouse position
     let current = new Point(0, 0, "");              // Current position for drawing
     let points = [];                                // Selected point array
     let generatedPoints = [];                       // Generated points array
     let undid = [];                                 // The undone points
+
+    // Get number of points
+    n = parseInt(sessionStorage.getItem("n"));
+    if (!n) {
+        console.log("Number of points is not selected");
+        return;
+    }
 
     // Get DOM elements
     canvas = document.getElementById("webGL");

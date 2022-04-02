@@ -69,13 +69,11 @@ function checkKey(e) {
 
 
 function swap() {
+  sessionStorage.setItem("n", x + "");
   let n=0;
   setTimeout(function(){
     window.location = "../html/game.html";
     
   }, 2000);
-  
-  
-  
 }
 
