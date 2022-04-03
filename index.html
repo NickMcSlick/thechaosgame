@@ -45,13 +45,18 @@
         </header>
         <body>
           <!-- Message box to send messages to the user -->
-          <div class="messages">
+          <div>
               <div id="message_box">
                 <p>Welcome to The Chaos Game!</p>
               </div>
           </div>
-          <div>
+          <div class="message_container">
             <img class="triangleImage" src="./images/triangle.PNG">
+            <div class="textButtonsDiv">
+            <p class="red_message_box">Make sure to see the tutorial first!</p>
+            <span id="indexTutorialText" onclick="indexTutorialText()" class="message_box">Tutorial</span>
+            <span id="indexPlayText" onclick="indexPlayText()" class="message_box">Play</span>
+            </div>
             <img class="squareImage" src="./images/square.PNG">
           </div>
         </div>
