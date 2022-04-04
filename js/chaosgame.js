@@ -87,7 +87,7 @@ let FSHADER = `
     }`;
 
 // Main program
-function main() {
+function main(selection) {
     let canvas;                                     // Canvas element
     let innerGame;                                  // Inner div where the points are drawn
     let webGL;                                      // The drawing context
@@ -114,12 +114,8 @@ function main() {
     let generatedPoints = [];                       // Generated points array
     let undid = [];                                 // The undone points
 
-    // Get number of points
-    n = parseInt(sessionStorage.getItem("n"));
-    if (!n) {
-        console.log("Number of points is not selected");
-        return;
-    }
+    // Let n be the number of points passed
+    n = selection;
 
     // Get DOM elements
     canvas = document.getElementById("webGL");

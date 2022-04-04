@@ -1,79 +1,129 @@
-var start = document.getElementById('start');
-start.focus();
-start.style.backgroundColor = 'aqua';
-start.style.color = 'white';
+// Run the point selection
+function selectMain() {
+  let pointSelectionDiv = document.getElementById("pointSelection");
+  let gameDiv = document.getElementById("mainGameWrapper");
+  let three = document.getElementById("three");
+  let four = document.getElementById("four");
+  let five = document.getElementById("five");
+  let six = document.getElementById("six");
+  let seven = document.getElementById("seven");
+  let eight = document.getElementById("eight");
 
-function dotheneedful(sibling) {
-  if (sibling != null) {
-    start.focus();
-    start.style.backgroundColor = '';
-    start.style.color = '';
-    sibling.focus();
-    sibling.style.backgroundColor = 'aqua';
-    sibling.style.color = 'white';
-    start = sibling;
+  gameDiv.hidden = true;
+  let current = three;
+  let prev = three;
+  updateSpecialFactor(3);
+  selected(three);
+
+  three.onmouseover = function() {
+    prev = current;
+    current = three;
+    deSelected(prev);
+    selected(current);
+    updateSpecialFactor(3);
+    three.onclick = function () {
+      pointSelectionDiv.hidden = true;
+      gameDiv.hidden = false;
+      main(3);
+    }
+  }
+
+  four.onmouseover = function() {
+    prev = current;
+    current = four;
+    deSelected(prev);
+    selected(current);
+    updateSpecialFactor(4);
+    four.onclick = function() {
+      pointSelectionDiv.hidden = true;
+      gameDiv.hidden = false;
+      main(4);
+    }
+  }
+
+  five.onmouseover = function() {
+    prev = current;
+    current = five;
+    deSelected(prev);
+    selected(current);
+    updateSpecialFactor(5);
+    five.onclick = function() {
+      pointSelectionDiv.hidden = true;
+      gameDiv.hidden = false;
+      main(5);
+    }
+  }
+
+  six.onmouseover = function() {
+    prev = current;
+    current = six;
+    deSelected(prev);
+    selected(current);
+    updateSpecialFactor(6);
+    six.onclick = function() {
+      pointSelectionDiv.hidden = true;
+      gameDiv.hidden = false;
+      main(6);
+    }
+  }
+
+  seven.onmouseover = function() {
+    prev = current;
+    current = seven;
+    deSelected(prev);
+    selected(current);
+    updateSpecialFactor(7);
+    seven.onclick = function() {
+      pointSelectionDiv.hidden = true;
+      gameDiv.hidden = false;
+      main(7);
+    }
+  }
+
+  eight.onmouseover = function() {
+    prev = current;
+    current = eight;
+    deSelected(prev);
+    selected(current);
+    updateSpecialFactor(8);
+    eight.onclick = function() {
+      pointSelectionDiv.hidden = true;
+      gameDiv.hidden = false;
+      main(8);
+    }
   }
 }
 
-document.onkeydown = checkKey;
-let x = 3;
-function checkKey(e) {
-  e = e || window.event;
-  if (e.keyCode == '38') {
-    // up arrow
-    var idx = start.cellIndex;
-    var nextrow = start.parentElement.previousElementSibling;
-    if (nextrow != null) {
-      var sibling = nextrow.cells[idx];
-      dotheneedful(sibling);
-    }
-  } else if (e.keyCode == '40') {
-    // down arrow
-    var idx = start.cellIndex;
-    var nextrow = start.parentElement.nextElementSibling;
-    if (nextrow != null) {
-      var sibling = nextrow.cells[idx];
-      dotheneedful(sibling);
-    }
-  } else if (e.keyCode == '37') {
-    // left arrow
-    
-    var sibling = start.previousElementSibling;
-    dotheneedful(sibling);
-    
-    if (x>3){x--;}
-  } else if (e.keyCode == '39') {
-    // right arrow
-    
-    var sibling = start.nextElementSibling;
-    dotheneedful(sibling);
-    if (x<8) {x++;}
-  } else if (e.keyCode =='13'){
-        
-      window.alert(x);
-      
-      window.alert(x/(x+3));
 
-      let NUM_x = (x/(x+3));
+// Select an option
+function selected(domElement) {
+  domElement.innerHTML = "&gt; " + domElement.innerHTML + " &lt;";
+  domElement.style.color = "blue";
+}
 
-      document.getElementById("NUM_x").innerHTML = NUM_x;
+// De-select an option
+function deSelected(domElement) {
+  // This could be combined into one regex
+  domElement.innerHTML = domElement.innerHTML.replace("&gt;", "");
+  domElement.innerHTML = domElement.innerHTML.replace("&lt;", "");
+  domElement.innerHTML = domElement.innerHTML.replace(" ", "");
+  domElement.style.color = "aqua";
+}
 
-      swap();
+// Update the special factor
+function updateSpecialFactor(value) {
+  let specialFactorElement = document.getElementById("selectPointsFactor");
+  specialFactorElement.innerHTML = "Special factor needed to get a fractal pattern: " + determineSpecialFactor(value);
+}
 
-      
-      //enter key
-     
+// Find special factor
+function determineSpecialFactor(value) {
+  switch(value) {
+    case 3: return "1/2";
+    case 4: return "4/7";
+    case 5: return "5/8";
+    case 6: return "2/3";
+    case 7: return "7/10";
+    case 8: return "8/11";
   }
 }
-
-
-
-function swap() {
-  sessionStorage.setItem("n", x + "");
-  let n=0;
-  setTimeout(function(){
-    window.location = "../html/game.html";
-    
-  }, 2000);
-}
-

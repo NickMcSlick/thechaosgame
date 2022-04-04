@@ -11,16 +11,39 @@ table {
       padding: 10px;
       text-align: center;
     }
-  
-    #messages {
-      border: none;
-  }
-  
-  #message_box {
-    margin: 0.2em auto 0.2em auto;
+
+ #selectPointPrompt {
+     margin: 1.0em auto 1.0em auto;
+     padding: 0;
+     color: aqua;
+     text-align: center;
+     font-size: 2.9vw;
+ }
+
+ #selectPointsFactor {
+     margin: 1.0em auto 1.0em auto;
+     padding: 0;
+     color: aqua;
+     text-align: center;
+     font-size: 2.9vw;
+ }
+
+  #pointSelection {
+    margin: 1.0em auto 1.0em auto;
     padding: 0;
     color: aqua;
     text-align: center;
-    font-size: 3.2vw;
+    font-size: 2.9vw;
+  }
+
+  #pointList {
+      user-select: none;
+      -moz-user-select: none;
+      font-size: 4.0vw;
+      margin: 1.0em auto 1.0em auto;
+  }
+
+  .pointListElements {
+      width: 3.5em;
   }
   

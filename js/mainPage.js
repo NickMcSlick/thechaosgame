@@ -6,7 +6,7 @@ function homeButton()
 
 function gameButton()
 {
-    location.assign("../html/select_points.html")
+    location.assign("../html/game.html")
 }
 
 function tutorialButton()
@@ -21,7 +21,7 @@ function indexHomeButton()
 
 function indexGameButton()
 {
-    location.assign("./html/select_points.html")
+    location.assign("./html/game.html")
 }
 
 function indexTutorialButton()
