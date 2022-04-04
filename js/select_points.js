@@ -32,19 +32,19 @@ function selectMain() {
       if (current.associatedValue > 3) {
         prev = current;
         current = getTableElement(tableArray, current.associatedValue - 1);
+        updateSpecialFactor(current.associatedValue);
+        selected(current);
+        deSelected(prev);
       }
-      updateSpecialFactor(current.associatedValue);
-      selected(current);
-      deSelected(prev);
     // right
     } else if (e.keyCode === 39) {
       if (current.associatedValue < 8) {
         prev = current;
         current = getTableElement(tableArray, current.associatedValue + 1);
+        updateSpecialFactor(current.associatedValue);
+        selected(current);
+        deSelected(prev);
       }
-      updateSpecialFactor(current.associatedValue);
-      selected(current);
-      deSelected(prev);
     // Enter
     } else if (e.keyCode === 13) {
       pointSelectionDiv.hidden = true;
