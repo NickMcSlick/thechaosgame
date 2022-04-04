@@ -45,6 +45,7 @@ html, body {
     border-width: 0.3em;
     border-color: rgba(0, 0, 0, 0);
     box-shadow: 0em 0em 1em grey;
+    height: 60%;
   }
   .message_box {
     margin: 1em auto 2.75em auto;

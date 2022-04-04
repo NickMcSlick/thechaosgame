@@ -8,7 +8,6 @@ table {
     
     }
     table td {
-      padding: 10px;
       text-align: center;
     }
 
@@ -29,7 +28,7 @@ table {
  }
 
   #pointSelection {
-    margin: 1.0em auto 1.0em auto;
+    margin: 1.0em auto auto 1.0em auto;
     padding: 0;
     color: aqua;
     text-align: center;
@@ -44,6 +43,7 @@ table {
   }
 
   .pointListElements {
+      padding: 0;
       width: 3.5em;
   }
   

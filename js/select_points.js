@@ -27,8 +27,8 @@ function selectMain() {
   selected(three);
 
   window.onkeydown = function(e) {
-    // left
-    if (e.keyCode === 37) {
+    // left or down
+    if (e.keyCode === 37 || e.keyCode === 40) {
       if (current.associatedValue > 3) {
         prev = current;
         current = getTableElement(tableArray, current.associatedValue - 1);
@@ -36,8 +36,8 @@ function selectMain() {
         selected(current);
         deSelected(prev);
       }
-    // right
-    } else if (e.keyCode === 39) {
+    // right or up
+    } else if (e.keyCode === 39 || e.keyCode === 38) {
       if (current.associatedValue < 8) {
         prev = current;
         current = getTableElement(tableArray, current.associatedValue + 1);
