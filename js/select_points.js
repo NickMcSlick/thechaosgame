@@ -2,6 +2,8 @@
 function selectMain() {
   let pointSelectionDiv = document.getElementById("pointSelection");
   let gameDiv = document.getElementById("mainGameWrapper");
+
+  // TO-DO: put these into an array and use the array
   let three = document.getElementById("three");
   let four = document.getElementById("four");
   let five = document.getElementById("five");
@@ -9,11 +11,48 @@ function selectMain() {
   let seven = document.getElementById("seven");
   let eight = document.getElementById("eight");
 
+  let tableArray = [three, four, five, six, seven, eight];
+
+  three.associatedValue = 3;
+  four.associatedValue = 4;
+  five.associatedValue = 5;
+  six.associatedValue = 6;
+  seven.associatedValue = 7;
+  eight.associatedValue = 8;
+
   gameDiv.hidden = true;
   let current = three;
   let prev = three;
   updateSpecialFactor(3);
   selected(three);
+
+  window.onkeydown = function(e) {
+    // left
+    if (e.keyCode === 37) {
+      if (current.associatedValue > 3) {
+        prev = current;
+        current = getTableElement(tableArray, current.associatedValue - 1);
+      }
+      updateSpecialFactor(current.associatedValue);
+      selected(current);
+      deSelected(prev);
+    // right
+    } else if (e.keyCode === 39) {
+      if (current.associatedValue < 8) {
+        prev = current;
+        current = getTableElement(tableArray, current.associatedValue + 1);
+      }
+      updateSpecialFactor(current.associatedValue);
+      selected(current);
+      deSelected(prev);
+    // Enter
+    } else if (e.keyCode === 13) {
+      pointSelectionDiv.hidden = true;
+      gameDiv.hidden = false;
+      main(current.associatedValue);
+    }
+
+  }
 
   three.onmouseover = function() {
     prev = current;
@@ -126,4 +165,14 @@ function determineSpecialFactor(value) {
     case 7: return "7/10";
     case 8: return "8/11";
   }
+}
+
+// Get a table element
+function getTableElement(array, value) {
+  for (let i = 0; i < array.length; i++) {
+    if (value === array[i].associatedValue) {
+      return array[i];
+    }
+  }
+  return null;
 }
