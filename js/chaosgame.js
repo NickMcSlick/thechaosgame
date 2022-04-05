@@ -196,6 +196,8 @@ function main(selection) {
         generatedPoints = [];
         undid = [];
         mousePosition = new Point(2, 2, "", true);
+        config.COLOR = color.value = "180";
+        config.SPEED = speed.value = "1000";
         cancelAnimationFrame(animID);
         clearChildren(innerGame);
         update();
@@ -381,11 +383,7 @@ function main(selection) {
 
                 // Clear, bind, and draw
                 webGL.clear(webGL.COLOR_BUFFER_BIT);
-                if (config.COLOR <= 3) {
-                    bindVertices(webGL, totalPoints, hsvToRgb(1.0, 0.0, 0.0));
-                } else {
-                    bindVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0));
-                }
+                bindVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0));
 
                 // Draw all points but exclude the initial border
                 webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders - 1);
@@ -407,11 +405,7 @@ function main(selection) {
         // If we are not running the game, bind and draw the current positions
         } else {
             webGL.clear(webGL.COLOR_BUFFER_BIT);
-            if (config.COLOR <= 3) {
-                bindVertices(webGL, totalPoints, hsvToRgb(1.0, 0.0, 0.0), n);
-            } else {
-                bindVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0), n);
-            }
+            bindVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0), n);
             // Draw the total points including the borders
             webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders);
         }
