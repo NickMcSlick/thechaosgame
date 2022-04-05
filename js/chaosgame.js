@@ -115,6 +115,7 @@ function main(selection) {
     let color;                                      // The color slider
     let undo;                                       // The undo button
     let redo;                                       // The redo button
+    let newN;                                       // Get a new number of points
 
     // Encapsulating the flags in an object
     let flags = {
@@ -142,6 +143,7 @@ function main(selection) {
     color = document.getElementById("color");
     undo = document.getElementById("undo");
     redo = document.getElementById("redo")
+    newN = document.getElementById("new");
 
     // Resize canvas
     canvas.width = innerGame.getBoundingClientRect().width;
@@ -201,6 +203,11 @@ function main(selection) {
         cancelAnimationFrame(animID);
         clearChildren(innerGame);
         update();
+    }
+
+    // For a new set of points, just refresh the page
+    newN.onclick = function() {
+        window.location.reload();
     }
 
     // Run button
