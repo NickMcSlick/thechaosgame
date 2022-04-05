@@ -335,14 +335,12 @@ function main(selection) {
             enableCanvasEvents();
         }
 
-        console.log(totalPoints);
-
         // If the user presses the run button, run the game
         // The previous if/else-if statements verify that the game is in a runnable state
         if (flags.run === true) {
             totalPoints[0].border = false;
             totalPoints[n + 1].border = false;
-            console.log(totalPoints);
+
             // Initialize the time variables to control the speed of point insertion
             let deltaTime = 0;
             let prevTime = deltaTime;

@@ -73,15 +73,15 @@
               <span>Click on the board to select points!</span>
             </div>
         </div>
-          <div id="game_board">
+        <div id="game_board">
           <!-- TO-DO: THIS DIV BECOMES TOO TALL WHEN RESIZING - MAKE SURE IT NEVER GOES ABOVE THE PAGE HEIGHT -->
           <div id="inner_game">
             <canvas id="webGL"> Your browser does not support canvas or WebGL. Try using an update major browser, like Google Chrome or Mozilla FireFox </canvas>
           </div>
-            <div id="controls">
+          <div id="controls">
               <span id="points_placed">Points: ---</span>
               <form style="display: inline">
-                <!-- I disabled the keyboard input on these inputs -->
+                <!-- Default keyboard input disabled on these inputs -->
                 <label>Speed:</label>
                 <input id="speed" class="slider" type="range" min="0" max="2000" onkeydown="event.preventDefault()"></input>
                 <label>Color:</label>
@@ -96,6 +96,5 @@
         </div>
     </div>
   </div>
-  
   </body>
 </html>
