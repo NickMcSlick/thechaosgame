@@ -95,6 +95,7 @@ html, body {
     color: aqua;
     text-align: center;
     display: flex;
+    min-width: max-content;
     flex-direction: column;
     font-size: 3.2vw;
 }
@@ -149,7 +150,10 @@ html, body {
 
 #header_text {
   position: absolute;
-  left: 33.87vw;
+
+  left: 32.87vw;
+  font-size: larger;
+
 }
 
 #nav_bar {
@@ -162,6 +166,7 @@ html, body {
   float: left;
   margin-left: 8px;
   margin-top: 8px;
+  width: 3%;
   cursor: pointer;
 }
 
@@ -192,6 +197,12 @@ html, body {
 
 }
 
+.headerImages
+{
+  width: 100%;
+  height: 100%;
+}
+
 #section > #nav         { flex: 2 }
 #section > #messages    { flex: 2 }
 #section > #game_board  { flex: 30 }
@@ -205,5 +216,7 @@ html, body {
 .slider {
 
 }
+
+
 
 
