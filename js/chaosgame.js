@@ -28,6 +28,7 @@
 let config = {
     SPEED: 1000,
     COLOR: 180,
+    PLAY: false
 }
 
 // Point constructor
@@ -202,6 +203,8 @@ function main(selection) {
         config.SPEED = speed.value = "1000";
         cancelAnimationFrame(animID);
         clearChildren(innerGame);
+        disable(play)
+        disable(pause)
         update();
     }
 
@@ -215,6 +218,8 @@ function main(selection) {
     run.onclick = function () {
         flags.run = true;
         flags.spawnAnimation = true;
+        enable(play)
+        enable(pause)
         update();
     }
     // Enable the events
@@ -262,6 +267,8 @@ function main(selection) {
     disable(run);
     disable(undo);
     disable(redo);
+    disable(play);
+    disable(pause)
 
     // The update function
     // Called to make rendering changes
@@ -320,7 +327,6 @@ function main(selection) {
             // There are enough points but the user has yet to run the game (so you can still undo points)
         } else if (points.length === n + 1 && flags.run !== true) {
             enable(run);
-            enable(undo);
             disable(redo);
             disableCanvasEvents();
             // If we have no points to draw, disable
