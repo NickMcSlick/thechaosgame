@@ -3,9 +3,12 @@
   The Chaos Game
 -->
 <html lang="en">
+  
   <head>
     <title>The Chaos Game | Play</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="../css/main.css" rel="stylesheet">
+    <link href="../css/select_points.css" rel="stylesheet">
 
     <!-- Libraries -->
     <script src="../lib/cuon-utils.js"></script>
@@ -17,10 +20,13 @@
     <!-- Game script (contains WebGL code and other functionalities) -->
     <script src="../js/chaosgame.js"></script>
 
+    <!-- Point selection script -->
+    <script src="../js/select_points.js"></script>
+
     <!-- Test script (contains unit testing and function testing) -->
     <script src="../tests/tests.js"></script>
   </head>
-  <body onload="main(); runTests();">
+  <body onload="selectMain();"> <!-- onload="main(); runTests();" -->
   <div id="section">
     <header id="page_header">
       <ul id="nav_bar">
@@ -42,38 +48,53 @@
               </svg>
           </li>
       </ul>
-  <div id="header_text">The Chaos Game</div>
-  
-</header>
+      <div id="header_text">The Chaos Game</div>
+    </header>
 
-    <!-- Message box to send messages to the user -->
-    <div id="messages">
-        <div id="message_box">
-          <span>Click on the board to select points!</span>
-        </div>
+    <div id="pointSelection">
+        <div id="selectPointsPrompt"><span>Select the number of points that you would like to use!</span></div>
+        <table id="pointList">
+            <tr>
+                <td id="three" class="pointListElements">3</td>
+                <td id="four" class="pointListElements">4</td>
+                <td id="five" class="pointListElements">5</td>
+                <td id="six" class="pointListElements">6</td>
+                <td id="seven" class="pointListElements">7</td>
+                <td id="eight" class="pointListElements">8</td>
+            </tr>
+        </table>
+        <div id="selectPointsFactor"><span>Special factor needed to get a fractal pattern:</span></div>
     </div>
-      <div id="game_board">
-      <!-- TO-DO: THIS DIV BECOMES TOO TALL WHEN RESIZING - MAKE SURE IT NEVER GOES ABOVE THE PAGE HEIGHT -->
-      <div id="inner_game">
-        <canvas id="webGL"> Your browser does not support canvas or WebGL. Try using an update major browser, like Google Chrome or Mozilla FireFox </canvas>
-      </div>
-        <div id="controls">
-          <span id="points_placed">Points: ---</span>
-          <form style="display: inline">
-            <!-- I disabled the keyboard input on these inputs -->
-            <label>Speed:</label>
-            <input id="speed" class="slider" type="range" min="0" max="2000" onkeydown="event.preventDefault()"></input>
-            <label>Color:</label>
-            <input id="color" class="slider" type="range" min="0" max="365" onkeydown="event.preventDefault()"></input>
-            <input id="new" type="button" value="new"></input>
-            <input id="run" type="button" value="run"></input>
-            <input id="reset" type="button" value="reset"></input>
-            <input id="undo" type="button" value="undo"></input>
-            <input id="redo" type="button" value="redo"></input>
-          </form>
+
+    <div id="mainGameWrapper" hidden>
+        <!-- Message box to send messages to the user -->
+        <div id="messages">
+            <div id="message_box">
+              <span>Click on the board to select points!</span>
+            </div>
+        </div>
+        <div id="game_board">
+          <!-- TO-DO: THIS DIV BECOMES TOO TALL WHEN RESIZING - MAKE SURE IT NEVER GOES ABOVE THE PAGE HEIGHT -->
+          <div id="inner_game">
+            <canvas id="webGL"> Your browser does not support canvas or WebGL. Try using an update major browser, like Google Chrome or Mozilla FireFox </canvas>
+          </div>
+          <div id="controls">
+              <span id="points_placed">Points: ---</span>
+              <form style="display: inline">
+                <!-- Default keyboard input disabled on these inputs -->
+                <label>Speed:</label>
+                <input id="speed" class="slider" type="range" min="0" max="2000" onkeydown="event.preventDefault()"></input>
+                <label>Color:</label>
+                <input id="color" class="slider" type="range" min="0" max="365" onkeydown="event.preventDefault()"></input>
+                <input id="new" type="button" value="new"></input>
+                <input id="run" type="button" value="run"></input>
+                <input id="reset" type="button" value="reset"></input>
+                <input id="undo" type="button" value="undo"></input>
+                <input id="redo" type="button" value="redo"></input>
+              </form>
+            </div>
         </div>
     </div>
   </div>
-
   </body>
 </html>

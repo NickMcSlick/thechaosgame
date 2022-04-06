@@ -27,7 +27,7 @@
 // Interface with this object to manipulate the animation of points
 let config = {
     SPEED: 1000,
-    COLOR: 0,
+    COLOR: 180,
 }
 
 // Point constructor
@@ -35,9 +35,10 @@ let config = {
 // Label information is included, though not always used
 // If the label information is not used, by default the label is "N/A"
 // Also uses default parameters as suggested by John
-function Point(x = 0, y = 0, label = "N/A") {
+function Point(x = 0, y = 0, label = "N/A", border = false) {
     this.x = x;
     this.y = y;
+    this.border = border;
     this.label = label;
 
     this.unit = function () {
@@ -57,11 +58,19 @@ function Color(r = 0, g = 0, b = 0) {
 // The vertex shader
 let VSHADER = `
     attribute vec4 a_Position;
+    attribute float a_border;
+    varying float v_border;
     uniform float u_pointSize;
     
     void main() {
+        v_border = a_border;
         gl_Position = a_Position;
-        gl_PointSize = u_pointSize;
+        
+        if (a_border > 0.5) {
+            gl_PointSize = u_pointSize + 3.0;
+        } else {
+            gl_PointSize = u_pointSize;
+        }
     }`;
 
 // The fragment shader
@@ -71,35 +80,30 @@ let FSHADER = `
     
     precision highp float;
     uniform vec4 u_Color;
+    varying float v_border;
    
     void main() {
-        /*
         float d = distance(vec2(0.5, 0.5), gl_PointCoord);
-        vec3 cout;
-       
-        if (d < 0.5) {
-            float value = fwidth(d);
-            vec3 cout = mix(vec3(1.0), u_Color.xyz, 1.0 - d);
-            //cout = smoothstep(vec3(0.0), value * vec3(1.0), u_Color.xyz);
-            gl_FragColor = vec4(cout, smoothstep(0.0, 1.0, 1.0 - 0.4 * d));
-        } else {
-            discard;
-        }
-        */
-        
-        
+        vec4 cout = u_Color;
+
         // FRAGMENT SHADER CODE BASED ON: https://www.desultoryquest.com/blog/drawing-anti-aliased-circular-points-using-opengl-slash-webgl/
+        
+        if (v_border > 0.5) {
+            cout = vec4(0.0, 0.0, 0.0, 1.0);
+        }
+        
         float r = 0.0, delta = 0.0, alpha = 1.0;
         vec2 cxy = 2.0 * gl_PointCoord - 1.0;
         r = dot(cxy, cxy);
         delta = fwidth(r);
         alpha = 1.0 - smoothstep(1.0 - delta, 1.0 + delta, r);
 
-        gl_FragColor = u_Color * alpha;  
+        gl_FragColor = cout * alpha; 
+
     }`;
 
 // Main program
-function main() {
+function main(selection) {
     let canvas;                                     // Canvas element
     let innerGame;                                  // Inner div where the points are drawn
     let webGL;                                      // The drawing context
@@ -111,6 +115,7 @@ function main() {
     let color;                                      // The color slider
     let undo;                                       // The undo button
     let redo;                                       // The redo button
+    let newN;                                       // Get a new number of points
 
     // Encapsulating the flags in an object
     let flags = {
@@ -119,12 +124,15 @@ function main() {
         endGame: false                              // flag to alert to program to end the game
     }
 
-    let n = 3;                                      // The number of points
-    let mousePosition = new Point(0, 0, "");        // Current mouse position
+    let n;                                          // The number of points
+    let mousePosition = new Point(0, 0, "", true);        // Current mouse position
     let current = new Point(0, 0, "");              // Current position for drawing
     let points = [];                                // Selected point array
     let generatedPoints = [];                       // Generated points array
     let undid = [];                                 // The undone points
+
+    // Let n be the number of points passed
+    n = selection;
 
     // Get DOM elements
     canvas = document.getElementById("webGL");
@@ -135,6 +143,7 @@ function main() {
     color = document.getElementById("color");
     undo = document.getElementById("undo");
     redo = document.getElementById("redo")
+    newN = document.getElementById("new");
 
     // Resize canvas
     canvas.width = innerGame.getBoundingClientRect().width;
@@ -167,7 +176,7 @@ function main() {
         // Note that the mousePosition will still be included for the first undo
         // which will cause the point to still be drawn. To remedy this, the mouse
         // position is moved completely off the canvas
-        mousePosition = new Point(2, 2);
+        mousePosition = new Point(2, 2, "", true);
         update();
     }
 
@@ -188,10 +197,17 @@ function main() {
         points = [];
         generatedPoints = [];
         undid = [];
-        mousePosition = new Point(2, 2);
+        mousePosition = new Point(2, 2, "", true);
+        config.COLOR = color.value = "180";
+        config.SPEED = speed.value = "1000";
         cancelAnimationFrame(animID);
         clearChildren(innerGame);
         update();
+    }
+
+    // For a new set of points, just refresh the page
+    newN.onclick = function() {
+        window.location.reload();
     }
 
     // Run button
@@ -211,7 +227,7 @@ function main() {
 
         // If the user mouses out, put the mouse in an unviewable position and render
         canvas.onmouseout = function () {
-            mousePosition = new Point(2, 2);
+            mousePosition = new Point(2, 2, "", true);
             update();
         }
 
@@ -248,13 +264,22 @@ function main() {
     // Called to make rendering changes
     function update() {
         // The output vertex array
-        let outVert = [ mousePosition.x, mousePosition.y ];
+        let totalPoints = [ mousePosition ];
+
+        // Letting the program know how many borders to draw
+        let borders = 0;
 
         // Insert the selected points into the output vertices
         points.forEach(pointObject => {
-            outVert.push(pointObject.x);
-            outVert.push(pointObject.y);
+            totalPoints.push(pointObject);
         });
+
+        // Determine the amount of borders
+        totalPoints.forEach(pointObject => {
+            if (pointObject.border) {
+                borders++;
+            }
+        })
 
         // Only label the points if they are the initial ones
         if (points.length < n + 1) {
@@ -270,7 +295,7 @@ function main() {
             // If a point is the starting point, label it
         } else if (points.length === n + 1 && flags.run === false) {
             addCustomLabel(points[n], canvas, "Start");
-            current = new Point(points[n].x, points[n].y);
+            current = new Point(points[n].x, points[n].y, "", false);
 
             // Update the message to tell the user to press run
             updateMessage("Press the 'Run' button to start the game!");
@@ -320,6 +345,9 @@ function main() {
         // If the user presses the run button, run the game
         // The previous if/else-if statements verify that the game is in a runnable state
         if (flags.run === true) {
+            totalPoints[0].border = false;
+            totalPoints[n + 1].border = false;
+
             // Initialize the time variables to control the speed of point insertion
             let deltaTime = 0;
             let prevTime = deltaTime;
@@ -343,14 +371,15 @@ function main() {
                     let rand = randomNumber(0, n - 1);
 
                     // Generate a point based on that number
+                    current.border = false;
                     generatedPoints.push(generateFactorPoint(current, points[rand], n / (n + 3)));
 
                     // Insert it into the drawing vertices
-                    outVert.push(generatedPoints[generatedPoints.length - 1].x);
-                    outVert.push(generatedPoints[generatedPoints.length - 1].y);
+                    totalPoints.splice(totalPoints.length - n - 1, 0, generatedPoints[generatedPoints.length - 1]);
 
                     // Update current vertex and label it
                     current = generatedPoints[generatedPoints.length - 1];
+                    current.border = true;
                     addCustomLabel(current, canvas, "Current");
 
                     // Update the message to tell the user the random number and point chosen
@@ -359,8 +388,10 @@ function main() {
 
                 // Clear, bind, and draw
                 webGL.clear(webGL.COLOR_BUFFER_BIT);
-                bindVertices(webGL, outVert, hsvToRgb(config.COLOR / 360, config.COLOR / 360, config.COLOR / 360));
-                webGL.drawArrays(webGL.POINTS, 0, outVert.length / 2);
+                bindVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0));
+
+                // Draw all points but exclude the initial border
+                webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders - 1);
 
                 // Spawn the animation recursively using requestAnimationFrame
                 cancelAnimationFrame(animID);
@@ -376,11 +407,12 @@ function main() {
                 flags.spawnAnimation = false;
             }
 
-            // If we are not running the game, bind and draw the current positions
+        // If we are not running the game, bind and draw the current positions
         } else {
             webGL.clear(webGL.COLOR_BUFFER_BIT);
-            bindVertices(webGL, outVert, hsvToRgb(config.COLOR / 360, config.COLOR / 360, config.COLOR / 360));
-            webGL.drawArrays(webGL.POINTS, 0, outVert.length / 2);
+            bindVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0), n);
+            // Draw the total points including the borders
+            webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders);
         }
     }
 }
@@ -410,7 +442,7 @@ function placePoint(e, mousePosition, points, canvas, undid) {
     let rect = e.target.getBoundingClientRect();
     mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
     mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
-    points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65)));
+    points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65), true));
 }
 
 // Remove points and label
@@ -591,19 +623,45 @@ function randomNumber(lower, upper) {
 }
 
 // A function used to bind data to the GPU
-function bindVertices(webGL, randPoints, color) {
-    let data = new Float32Array(randPoints);
+function bindVertices(webGL, pointArray, color) {
+    let vertexArray = [];
+    let borderArray = [];
+    for (let i = 0; i < pointArray.length; i++) {
+        if (pointArray[i].border) {
+            vertexArray.push(pointArray[i].x);
+            vertexArray.push(pointArray[i].y);
+            vertexArray.push(pointArray[i].x);
+            vertexArray.push(pointArray[i].y);
+            borderArray.push(1.0);
+            borderArray.push(0.0);
+        } else {
+            vertexArray.push(pointArray[i].x);
+            vertexArray.push(pointArray[i].y);
+            borderArray.push(0.0);
+        }
+    }
+
+    let a_Position = webGL.getAttribLocation(webGL.program, "a_Position");
+    let a_border = webGL.getAttribLocation(webGL.program, "a_border");
+    let u_Color = webGL.getUniformLocation(webGL.program, "u_Color");
+    let u_pointSize = webGL.getUniformLocation(webGL.program, "u_pointSize");
+
+    let data = new Float32Array(vertexArray);
     let vertexBuffer = webGL.createBuffer();
     webGL.bindBuffer(webGL.ARRAY_BUFFER, vertexBuffer);
     webGL.bufferData(webGL.ARRAY_BUFFER, data, webGL.STATIC_DRAW);
-    let a_Position = webGL.getAttribLocation(webGL.program, "a_Position");
-    let u_Color = webGL.getUniformLocation(webGL.program, "u_Color");
-    let u_pointSize = webGL.getUniformLocation(webGL.program, "u_pointSize");
-    webGL.uniform1f(u_pointSize, 8.0);
-    webGL.uniform4f(u_Color, color.r / 255,  color.g / 255, color.b / 255, 1.0);
-
     webGL.vertexAttribPointer(a_Position, 2, webGL.FLOAT, false, 0, 0);
     webGL.enableVertexAttribArray(a_Position);
+
+    let borderData = new Float32Array(borderArray);
+    let borderBuffer = webGL.createBuffer();
+    webGL.bindBuffer(webGL.ARRAY_BUFFER, borderBuffer);
+    webGL.bufferData(webGL.ARRAY_BUFFER, borderData, webGL.STATIC_DRAW);
+    webGL.vertexAttribPointer(a_border, 1, webGL.FLOAT, false, 0, 0);
+    webGL.enableVertexAttribArray(a_border);
+
+    webGL.uniform1f(u_pointSize, 8.0);
+    webGL.uniform4f(u_Color, color.r / 255,  color.g / 255, color.b / 255, 1.0);
 }
 
 // Enable a button
