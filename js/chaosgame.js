@@ -361,12 +361,34 @@ function main(selection) {
 
             // Animation function to generate and draw a new point
             let animate = function () {
+
+                // End game condition
+                if (totalPoints.length - 1 >= 3000) {
+                    // End the game and update the last point generated to get rid of its border
+                    flags.endGame = true;
+                    totalPoints[totalPoints.length - n - 2].border = false;
+
+                    // Clear, bind, and draw
+                    webGL.clear(webGL.COLOR_BUFFER_BIT);
+                    bindVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0));
+
+                    // Draw all points but exclude two border points, the mouse and the current position
+                    webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders - 2);
+
+                    // Update the message and clear the labels
+                    updateMessage("Look at your fascinating fractal pattern!");
+                    clearChildren(innerGame);
+
+                    // TO-DO for Kathlyn - insert the celebration gif and music here
+                    return;
+                }
+
                 // Update the time elapsed
                 deltaTime = Date.now() - prevTime;
 
                 // If the time elapsed has become greater than the speed
                 // specified by the user, then generate a new point and draw it
-                if (deltaTime > config.SPEED) {
+                if (deltaTime > config.SPEED && !flags.endGame) {
                     // Update previous time
                     prevTime = Date.now();
 
