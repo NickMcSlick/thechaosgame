@@ -28,7 +28,8 @@
 let config = {
     SPEED: 1000,
     COLOR: 180,
-    PLAY: false
+    PLAY: false,
+    TOTAL_POINTS: 3000,
 }
 
 // Point constructor
@@ -355,12 +356,11 @@ function main(selection) {
 
         // If the user presses the run button, run the game
         // The previous if/else-if statements verify that the game is in a runnable state
-        if (flags.run === true) {
+        if (flags.run) {
             if (!flags.endGame) {
                 totalPoints[0].border = false;
                 totalPoints[n + 1].border = false;
             }
-
 
             // Initialize the time variables to control the speed of point insertion
             let deltaTime = 0;
@@ -374,7 +374,7 @@ function main(selection) {
             let animate = function () {
 
                 // End game condition
-                if (totalPoints.length - 1 >= 3000) {
+                if (totalPoints.length - 1 >= config.TOTAL_POINTS) {
                     // End the game and update the last point generated to get rid of its border
                     flags.endGame = true;
                     totalPoints[totalPoints.length - n - 2].border = false;
@@ -382,19 +382,11 @@ function main(selection) {
                     // Also clear point data
                     points = [];
 
-                    // Clear, bind, and draw
-                    webGL.clear(webGL.COLOR_BUFFER_BIT);
-                    bindVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0));
-
-                    // Draw all points but exclude two border points, the mouse and the current position
-                    webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders - 2);
-
                     // Update the message and clear the labels
                     updateMessage("Look at your fascinating fractal pattern! If you would like to play again, press the reset or new button!");
                     clearChildren(innerGame);
 
                     // TO-DO for Kathlyn - insert the celebration gif and music here
-                    return;
                 }
 
                 // Update the time elapsed
@@ -430,7 +422,13 @@ function main(selection) {
                 bindVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0));
 
                 // Draw all points but exclude the initial border
-                webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders - 1);
+                // Note that if the game ends, we get rid of the last border
+                // So, we need a different point drawing number
+                if (!flags.endGame) {
+                    webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders - 1);
+                } else {
+                    webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders - 2);
+                }
 
                 // Update the number of points drawn (excluding the mouse position)
                 updatePoints(totalPoints.length - 1);
