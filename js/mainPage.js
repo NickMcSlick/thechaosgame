@@ -38,8 +38,10 @@ function indexPlayText()
 {
     location.assign("./html/game.html")
 }
+
 var tutorialSelected = false
 var playSelected = false
+
 document.addEventListener('keyup', (event) =>
 {
     var text
