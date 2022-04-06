@@ -241,6 +241,9 @@ function main(selection) {
     // Call the function to bind the events
     enableCanvasEvents();
 
+    // Update the number of points
+    updatePoints(0);
+
     // Disable the events
     // Update is still called, but the point events are disabled
     function disableCanvasEvents() {
@@ -393,6 +396,9 @@ function main(selection) {
                 // Draw all points but exclude the initial border
                 webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders - 1);
 
+                // Update the number of points drawn (excluding the mouse position)
+                updatePoints(totalPoints.length - 1);
+
                 // Spawn the animation recursively using requestAnimationFrame
                 cancelAnimationFrame(animID);
                 animID = requestAnimationFrame(animate);
@@ -413,6 +419,12 @@ function main(selection) {
             bindVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0), n);
             // Draw the total points including the borders
             webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders);
+
+            // Update the number of points drawn
+            if (totalPoints.length === 0)
+                updatePoints(totalPoints.length);
+            else
+                updatePoints(totalPoints.length - 1);
         }
     }
 }
@@ -528,8 +540,7 @@ function addCustomLabel(labelPoint, canvas, labelMessage) {
 }
 
 // Clear the children elements - used to clear labels here
-// NOTE MY CODE
-// NOTE - based off of this code: https://stackoverflow.com/questions/19885788/removing-every-child-element-except-first-child
+// Based off of this code: https://stackoverflow.com/questions/19885788/removing-every-child-element-except-first-child
 function clearChildren(div) {
     while (div.childNodes.length > 2) {
         div.removeChild(div.lastChild);
@@ -538,8 +549,7 @@ function clearChildren(div) {
 
 
 // HSV to RGB color conversion
-// NOTE MY CODE
-// NOTE - based off of this code: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+// Based off of this code: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
 // This is interim code - it is not meant to stay
 /**
  * Converts an HSV color value to RGB. Conversion formula
@@ -680,4 +690,10 @@ function disable(domElement) {
 function updateMessage(message) {
     let messageBox = document.getElementById("message_box");
     messageBox.innerHTML = "<span>" + message + "</span>";
+}
+
+// Update the number of points shown to the user on the canvas
+function updatePoints(n) {
+    let numberOfPoints = document.getElementById("points_placed");
+    numberOfPoints.innerHTML = "<span>Points: " + n + "</span>";
 }
