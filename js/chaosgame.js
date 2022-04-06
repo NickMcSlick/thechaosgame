@@ -194,6 +194,7 @@ function main(selection) {
     reset.onclick = function () {
         flags.run = false;
         flags.spawnAnimation = false;
+        flags.endGame = false;
         points = [];
         generatedPoints = [];
         undid = [];
@@ -285,18 +286,18 @@ function main(selection) {
         })
 
         // Only label the points if they are the initial ones
-        if (points.length < n + 1) {
+        if (points.length < n + 1 && !flags.endGame) {
             // Update the message
             updateMessage("Click on the board to select points!");
             addLabels(points, canvas);
 
             // Tell the user to select a starting position
-            if (points.length === n) {
+            if (points.length === n && !flags.endGame) {
                 updateMessage("Select a starting position!");
             }
 
             // If a point is the starting point, label it
-        } else if (points.length === n + 1 && flags.run === false) {
+        } else if (points.length === n + 1 && flags.run === false && !flags.endGame) {
             addCustomLabel(points[n], canvas, "Start");
             current = new Point(points[n].x, points[n].y, "", false);
 
@@ -306,13 +307,14 @@ function main(selection) {
 
         // Readjust the points
         /* IT IS IMPORTANT THAT THIS IS CALLED AFTER THE LABELS ARE CREATED SINCE IT MANIPULATES THOSE LABELS */
-        if (points.length >= n) {
+        /* If the game ends there are no labels, so do not readjust them either */
+        if (points.length >= n && !flags.endGame) {
             readjustPoints(points, canvas, n);
         }
 
         /* Possible cases for which buttons should be enabled */
         // There are enough points and the user is running the game
-        if (points.length >= n + 1 && flags.run === true) {
+        if (points.length >= n + 1 && flags.run || flags.endGame) {
             disable(run);
             disable(undo);
             disable(redo);
@@ -348,8 +350,11 @@ function main(selection) {
         // If the user presses the run button, run the game
         // The previous if/else-if statements verify that the game is in a runnable state
         if (flags.run === true) {
-            totalPoints[0].border = false;
-            totalPoints[n + 1].border = false;
+            if (!flags.endGame) {
+                totalPoints[0].border = false;
+                totalPoints[n + 1].border = false;
+            }
+
 
             // Initialize the time variables to control the speed of point insertion
             let deltaTime = 0;
@@ -368,6 +373,9 @@ function main(selection) {
                     flags.endGame = true;
                     totalPoints[totalPoints.length - n - 2].border = false;
 
+                    // Also clear point data
+                    points = [];
+
                     // Clear, bind, and draw
                     webGL.clear(webGL.COLOR_BUFFER_BIT);
                     bindVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0));
@@ -376,7 +384,7 @@ function main(selection) {
                     webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders - 2);
 
                     // Update the message and clear the labels
-                    updateMessage("Look at your fascinating fractal pattern!");
+                    updateMessage("Look at your fascinating fractal pattern! If you would like to play again, press the reset or new button!");
                     clearChildren(innerGame);
 
                     // TO-DO for Kathlyn - insert the celebration gif and music here
