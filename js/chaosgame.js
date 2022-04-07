@@ -1,7 +1,7 @@
 /***** Title *****/
 // The Chaos Game
 // The Web Devs
-// Latest Revision: 3/30/22
+// Latest Revision: 4/6/22
 /*****************/
 
 /****** Description *****/
@@ -108,6 +108,8 @@ let FSHADER = `
 function main(selection) {
     let canvas;                                     // Canvas element
     let innerGame;                                  // Inner div where the points are drawn
+	let messageBox;									// Messages for the user
+	let pointsPlaced;								// Number of points drawn message
     let webGL;                                      // The drawing context
     let animID;                                     // The animation frame ID
 
@@ -139,6 +141,9 @@ function main(selection) {
     // Get DOM elements
     canvas = document.getElementById("webGL");
     innerGame = document.getElementById("inner_game");
+	messageBox = document.getElementById("message_box");
+	pointsPlaced = document.getElementById("points_placed");
+	
     run = document.getElementById("run");
     reset = document.getElementById("reset")
     speed = document.getElementById("speed");
@@ -249,7 +254,7 @@ function main(selection) {
     enableCanvasEvents();
 
     // Update the number of points
-    updatePoints(0);
+    updateMessage(pointsPlaced, 0);
 
     // Disable the events
     // Update is still called, but the point events are disabled
@@ -296,12 +301,12 @@ function main(selection) {
         // Only label the points if they are the initial ones
         if (points.length < n + 1 && !flags.endGame) {
             // Update the message
-            updateMessage("Click on the board to select points!");
+            updateMessage(messageBox, "Click on the board to select points!");
             addLabels(points, canvas);
 
             // Tell the user to select a starting position
             if (points.length === n && !flags.endGame) {
-                updateMessage("Select a starting position!");
+                updateMessage(messageBox, "Select a starting position!");
             }
 
             // If a point is the starting point, label it
@@ -310,7 +315,7 @@ function main(selection) {
             current = new Point(points[n].x, points[n].y, "", false);
 
             // Update the message to tell the user to press run
-            updateMessage("Press the 'Run' button to start the game!");
+            updateMessage(messageBox, "Press the 'Run' button to start the game!");
         }
 
         // Readjust the points
@@ -383,7 +388,7 @@ function main(selection) {
                     points = [];
 
                     // Update the message and clear the labels
-                    updateMessage("Look at your fascinating fractal pattern! If you would like to play again, press the reset or new button!");
+                    updateMessage(messageBox, "Look at your fascinating fractal pattern! If you would like to play again, press the reset or new button!");
                     clearChildren(innerGame);
 
                     // TO-DO for Kathlyn - insert the celebration gif and music here
@@ -414,7 +419,7 @@ function main(selection) {
                     addCustomLabel(current, canvas, "Current");
 
                     // Update the message to tell the user the random number and point chosen
-                    updateMessage("Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65));
+                    updateMessage(messageBox, "Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65));
                 }
 
                 // Clear, bind, and draw
@@ -431,7 +436,7 @@ function main(selection) {
                 }
 
                 // Update the number of points drawn (excluding the mouse position)
-                updatePoints(totalPoints.length - 1);
+                updateMessage(pointsPlaced, totalPoints.length - 1);
 
                 // Spawn the animation recursively using requestAnimationFrame
                 cancelAnimationFrame(animID);
@@ -456,9 +461,9 @@ function main(selection) {
 
             // Update the number of points drawn
             if (totalPoints.length === 0)
-                updatePoints(totalPoints.length);
+                updateMessage(pointsPlaced, totalPoints.length);
             else
-                updatePoints(totalPoints.length - 1);
+                updateMessage(pointsPlaced, totalPoints.length - 1);
         }
     }
 }
@@ -534,7 +539,7 @@ function addLabels(points, canvas) {
         let point = new Point(direction.x + 20 * unitVector.x + center.x, direction.y + 20 * unitVector.y + center.y);
 
         if (!label) {
-            let p = newLabel("pointLabel"+i, i+"");
+            let p = newLabel("pointLabel" + i, i + "");
             let node = document.createTextNode(points[i].label);
             p.appendChild(node);
             p.style.top = div.getBoundingClientRect().top + window.scrollY + point.y - 10 + "px";
@@ -576,7 +581,7 @@ function addCustomLabel(labelPoint, canvas, labelMessage) {
 // Clear the children elements - used to clear labels here
 // Based off of this code: https://stackoverflow.com/questions/19885788/removing-every-child-element-except-first-child
 function clearChildren(div) {
-    while (div.childNodes.length > 2) {
+    while (div.childNodes.length > 3) {
         div.removeChild(div.lastChild);
     }
 }
@@ -584,17 +589,11 @@ function clearChildren(div) {
 
 // HSV to RGB color conversion
 // Based off of this code: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
-// This is interim code - it is not meant to stay
 /**
  * Converts an HSV color value to RGB. Conversion formula
  * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
  * Assumes h, s, and v are contained in the set [0, 1] and
  * returns r, g, and b in the set [0, 255].
- *
- * @param   Number  h       The hue
- * @param   Number  s       The saturation
- * @param   Number  v       The value
- * @return  Array           The RGB representation
  */
 function hsvToRgb(h, s, v){
     var r, g, b;
@@ -720,14 +719,7 @@ function disable(domElement) {
     domElement.style.opacity = "0.5";
 }
 
-// Update message for the message area of the game
-function updateMessage(message) {
-    let messageBox = document.getElementById("message_box");
-    messageBox.innerHTML = "<span>" + message + "</span>";
-}
-
-// Update the number of points shown to the user on the canvas
-function updatePoints(n) {
-    let numberOfPoints = document.getElementById("points_placed");
-    numberOfPoints.innerHTML = "<span>Points: " + n + "</span>";
+// Update messages
+function updateInnerHtml(domElement, message) {
+    domElement.innerHTML = "<span>" + message + "</span>";
 }

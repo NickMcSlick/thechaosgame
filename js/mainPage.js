@@ -16,7 +16,7 @@ function tutorialButton()
 
 function indexHomeButton()
 {
-    location.assign(".")
+    location.assign("index.html")
 }
 
 function indexGameButton()
