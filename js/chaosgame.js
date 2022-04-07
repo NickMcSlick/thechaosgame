@@ -253,8 +253,8 @@ function main(selection) {
     // Call the function to bind the events
     enableCanvasEvents();
 
-    // Update the number of points
-    updateMessage(pointsPlaced, 0);
+    // Initialize the number of points displayed as zero
+    updateInnerHtml(pointsPlaced, 0);
 
     // Disable the events
     // Update is still called, but the point events are disabled
@@ -301,12 +301,12 @@ function main(selection) {
         // Only label the points if they are the initial ones
         if (points.length < n + 1 && !flags.endGame) {
             // Update the message
-            updateMessage(messageBox, "Click on the board to select points!");
+            updateInnerHtml(messageBox, "Click on the board to select points!");
             addLabels(points, canvas);
 
             // Tell the user to select a starting position
             if (points.length === n && !flags.endGame) {
-                updateMessage(messageBox, "Select a starting position!");
+                updateInnerHtml(messageBox, "Select a starting position!");
             }
 
             // If a point is the starting point, label it
@@ -315,7 +315,7 @@ function main(selection) {
             current = new Point(points[n].x, points[n].y, "", false);
 
             // Update the message to tell the user to press run
-            updateMessage(messageBox, "Press the 'Run' button to start the game!");
+            updateInnerHtml(messageBox, "Press the 'Run' button to start the game!");
         }
 
         // Readjust the points
@@ -388,7 +388,7 @@ function main(selection) {
                     points = [];
 
                     // Update the message and clear the labels
-                    updateMessage(messageBox, "Look at your fascinating fractal pattern! If you would like to play again, press the reset or new button!");
+                    updateInnerHtml(messageBox, "Look at your fascinating fractal pattern! If you would like to play again, press the reset or new button!");
                     clearChildren(innerGame);
 
                     // TO-DO for Kathlyn - insert the celebration gif and music here
@@ -419,7 +419,7 @@ function main(selection) {
                     addCustomLabel(current, canvas, "Current");
 
                     // Update the message to tell the user the random number and point chosen
-                    updateMessage(messageBox, "Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65));
+                    updateInnerHtml(messageBox, "Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65));
                 }
 
                 // Clear, bind, and draw
@@ -436,7 +436,7 @@ function main(selection) {
                 }
 
                 // Update the number of points drawn (excluding the mouse position)
-                updateMessage(pointsPlaced, totalPoints.length - 1);
+                updateInnerHtml(pointsPlaced, "Points: " + (totalPoints.length - 1));
 
                 // Spawn the animation recursively using requestAnimationFrame
                 cancelAnimationFrame(animID);
@@ -461,9 +461,9 @@ function main(selection) {
 
             // Update the number of points drawn
             if (totalPoints.length === 0)
-                updateMessage(pointsPlaced, totalPoints.length);
+                updateInnerHtml(pointsPlaced, "Points: " + totalPoints.length);
             else
-                updateMessage(pointsPlaced, totalPoints.length - 1);
+                updateInnerHtml(pointsPlaced, "Points: " + (totalPoints.length - 1));
         }
     }
 }
