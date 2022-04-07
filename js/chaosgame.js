@@ -254,7 +254,7 @@ function main(selection) {
     enableCanvasEvents();
 
     // Initialize the number of points displayed as zero
-    updateInnerHtml(pointsPlaced, 0);
+    updateInnerHtml(pointsPlaced, "Points" +0);
 
     // Disable the events
     // Update is still called, but the point events are disabled
@@ -388,7 +388,7 @@ function main(selection) {
                     points = [];
 
                     // Update the message and clear the labels
-                    updateInnerHtml(messageBox, "Look at your fascinating fractal pattern! If you would like to play again, press the reset or new button!");
+                    updateInnerHtml(messageBox, "Look at your fascinating fractal pattern!");
                     clearChildren(innerGame);
 
                     // TO-DO for Kathlyn - insert the celebration gif and music here

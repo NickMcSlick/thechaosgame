@@ -137,7 +137,7 @@ function selectMain() {
 // Select an option
 function selected(domElement) {
   domElement.innerHTML = "&gt; " + domElement.innerHTML + " &lt;";
-  domElement.style.color = "blue";
+  domElement.style.color = "darkcyan";
 }
 
 // De-select an option

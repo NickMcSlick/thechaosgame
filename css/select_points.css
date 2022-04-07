@@ -11,8 +11,8 @@ table {
       text-align: center;
     }
 
- #selectPointPrompt {
-     margin: 1.0em auto 1.0em auto;
+ #selectPointsPrompt {
+     margin: 1.2em auto 1.0em auto;
      padding: 0;
      color: aqua;
      text-align: center;
@@ -28,7 +28,7 @@ table {
  }
 
   #pointSelection {
-    margin: 1.0em auto auto 1.0em auto;
+    margin: 1.0em auto 1.0em auto;
     padding: 0;
     color: aqua;
     text-align: center;
@@ -39,7 +39,7 @@ table {
       user-select: none;
       -moz-user-select: none;
       font-size: 4.0vw;
-      margin: 1.0em auto 1.0em auto;
+      margin: 1.2em auto 1.2em auto;
   }
 
   .pointListElements {
