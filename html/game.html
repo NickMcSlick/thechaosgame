@@ -10,6 +10,9 @@
     <link href="../css/main.css" rel="stylesheet">
     <link href="../css/select_points.css" rel="stylesheet">
 
+    <!-- Library for play/pause button -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <!-- Libraries -->
     <script src="../lib/cuon-utils.js"></script>
     <script src="../lib/cuon-matrix.js"></script>
@@ -79,17 +82,16 @@
             <canvas id="webGL"> Your browser does not support canvas or WebGL. Try using an update major browser, like Google Chrome or Mozilla FireFox </canvas>
           </div>
           <div id="controls">
-              <span id="points_placed">Points: ---</span>
+              <span id="points_placed">Points: 0</span>
               <form style="display: inline">
                 <!-- Default keyboard input disabled on these inputs -->
                 <label>Speed:</label>
                 <input id="speed" class="slider" type="range" min="0" max="2000" onkeydown="event.preventDefault()"></input>
+                <i class="material-icons unselectable" id="play_pause">pause</i>
                 <label>Color:</label>
                 <input id="color" class="slider" type="range" min="0" max="365" onkeydown="event.preventDefault()"></input>
                 <input id="new" type="button" value="new"></input>
                 <input id="run" type="button" value="run"></input>
-                <input id="play" type="button" value="play"></input>
-                <input id="pause" type="button" value="pause"></input>
                 <input id="reset" type="button" value="reset"></input>
                 <input id="undo" type="button" value="undo"></input>
                 <input id="redo" type="button" value="redo"></input>

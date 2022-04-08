@@ -56,7 +56,6 @@ function testPointObjectMethods() {
     obj.unit();
 
     if (Math.sqrt(obj.x * obj.x + obj.y * obj.y) !== 1.0) {
-        console.log(Math.sqrt(obj.x * obj.x + obj.y * obj.y));
         return false;
     } else {
         return true;

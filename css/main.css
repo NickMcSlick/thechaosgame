@@ -35,6 +35,12 @@ html, body {
     height: 65%;
 }
 
+.unselectable {
+    -moz-user-select: -moz-none;
+    -khtml-user-select: none;
+    -webkit-user-select: none;
+}
+
 /* Padding so the user doesn't draw right on the edge */
 @media only screen and (min-width : 1224px) {
   #game_board {
@@ -61,6 +67,7 @@ html, body {
   display: flex;
   flex-direction: column;
 }
+
 .red_message_box
 {
   margin: 0.5em auto 0.5em auto;
