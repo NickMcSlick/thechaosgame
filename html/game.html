@@ -84,17 +84,17 @@
           <div id="controls">
               <span id="points_placed">Points: 0</span>
               <form style="display: inline">
-                <!-- Default keyboard input disabled on these inputs -->
+                <!-- Default keyboard input disabled on sliders -->
                 <label>Speed:</label>
                 <input id="speed" class="slider" type="range" min="0" max="2000" onkeydown="event.preventDefault()"></input>
-                <i class="material-icons unselectable" id="play_pause">pause</i>
+                <i id="play_pause" class="material-icons unselectable">pause</i>
                 <label>Color:</label>
                 <input id="color" class="slider" type="range" min="0" max="365" onkeydown="event.preventDefault()"></input>
-                <input id="new" type="button" value="new"></input>
                 <input id="run" type="button" value="run"></input>
-                <input id="reset" type="button" value="reset"></input>
                 <input id="undo" type="button" value="undo"></input>
                 <input id="redo" type="button" value="redo"></input>
+                  <input id="reset" type="button" value="reset"></input>
+                <input id="new" type="button" value="new"></input>
               </form>
             </div>
         </div>
