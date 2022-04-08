@@ -51,6 +51,13 @@ ul.topnav li a.active {background-color: #00ffff;}
     padding: 1em;
 }
 
+#pointSelection
+{
+    display: flex;
+    object-fit: scale-down;
+
+}
+
 #tutorial_box {
     display: flex;
     flex-direction: column;
@@ -58,7 +65,7 @@ ul.topnav li a.active {background-color: #00ffff;}
 }
 
 #video-wrapper {
-    width: 40%;
+    width: 60%;
     aspect-ratio: 16/9;
 }
 
@@ -74,6 +81,7 @@ ul.topnav li a.active {background-color: #00ffff;}
 
 #content> #messages     { flex: 1 }
 #content > #tutorial    { flex: 20 }
+
 
 
 
