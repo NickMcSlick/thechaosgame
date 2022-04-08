@@ -9,6 +9,8 @@
     <link href="../css/tutorial.css" rel="stylesheet">
     <!-- Navigation code -->
     <script src="../js/mainPage.js"></script>
+    <script src="../js/confetti.js"></script>
+
 </head>
     <body>
         <div id="section">
@@ -44,14 +46,30 @@
                 </div>
                 <div id="tutorial">
                     <div id="tutorial_box">
-                        <h2>What is "The Chaos Game"?</h2>
+                        <div id = "tutorial_section">
+                            <h2>What is "The Chaos Game"?</h2>
+                            <p>
+                                The “Chaos Game” is a game in which multiple points are selected, along with an initial starting point.
+                                Each selected point, excluding the initial start, is associated with a number. Then, a random number is
+                                selected, and a new point is drawn from the starting point to the point which is associated with that
+                                random number. It should be noted that how far the initial starting point is to go towards a selected
+                                point is determined by a formula, n / (n + 3), where n is the number of points selected. This continues
+                                on, with the currently drawn point replacing the starting position. When enough points have been drawn,
+                                a fractal pattern will begin to emerge.
+
+                                Our version of this game will allow the user to select points on a board, undo and redo selected points,
+                                change the point color, select a new number of points to choose, reset the board, run the game, and
+                                control the speed of point insertion.
+
+                                See the Numberphile video below to see our inspiration.
+                            </p>
+                        </div>
                         <h2>Importance of Fractals</h2>
                         <h2>Numberphile Video</h2>
                         <div id="video-wrapper">
                             <iframe id="video" src="https://www.youtube.com/embed/kbKtFN71Lfs">
                             </iframe>
                         </div>
-
                     </div>
                 </div>
             </div>
