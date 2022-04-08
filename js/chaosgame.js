@@ -238,10 +238,10 @@ function main(selection) {
     function updatePlayPause(playPause, config) {
         if (config.PLAY) {
             config.PLAY = false;
-            playPause.innerHTML = "play_arrow";
+            playPause.value = "\u23F5";
         } else {
             config.PLAY = true;
-            playPause.innerHTML = "pause";
+            playPause.value = "\u23F8";
         }
     }
 
