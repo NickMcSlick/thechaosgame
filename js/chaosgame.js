@@ -397,9 +397,12 @@ function main(selection) {
                     // Also clear point data
                     state.points.length = 0;
 
-                    // Update the message and clear the labels
+                    // We need to do some quick changes when we end the game
+                    // We need to update the user and clear the labels, as well as call update
+                    // one last time to make sure that all the buttons are properly set
                     updateInnerHtml(messageBox, "Look at your fascinating fractal pattern!");
                     clearChildren(innerGame);
+                    update();
 
                     // TO-DO for Kathlyn - insert the celebration gif and music here
                 }
