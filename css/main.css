@@ -1,3 +1,4 @@
+/* Global CSS */
 html, body {
     font-family: "Courier New", Monospace;
     font-weight: bold;
@@ -15,34 +16,169 @@ html, body {
 
 /* temporary: show element positions on the screen */
 #section > * {
-  border: 1px solid black;
-  margin: 0.2em;
+  margin: 0.5em;
   padding: 0;
 }
 
-/* Padding so the user doesn't draw right on the edge */
-#game_board {
+#mainGameWrapper {
+    flex-direction: column;
     height: 100%;
-    margin: 1% 10% 5% 10%;
+    padding: 2em;
+}
+
+#game_board {
     padding: 3em;
     border-radius: 2em;
     border-width: 0.3em;
     border-color: rgba(0, 0, 0, 0);
     box-shadow: 0em 0em 1em grey;
+    height: 65%;
 }
 
+/* Padding so the user doesn't draw right on the edge */
+@media only screen and (min-width : 1224px) {
+  #game_board {
+    padding: 3em;
+    border-radius: 2em;
+    border-width: 0.3em;
+    border-color: rgba(0, 0, 0, 0);
+    box-shadow: 0em 0em 1em grey;
+    height: 60%;
+  }
+  .message_box {
+    margin: 1em auto 2.75em auto;
+    padding: 0;
+    position: relative;
+    color: aqua;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    font-size: 3.2vw;
+    /* Styles */
+}
+.textButtonsDiv
+{
+  display: flex;
+  flex-direction: column;
+}
+.red_message_box
+{
+  margin: 0.5em auto 0.5em auto;
+  padding: 0;
+  position: relative;
+  color: red;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  font-size: 2.6vw;
+}
+.message_container
+{
+  flex-direction: row;
+  display: flex;
+}
+}
+@media only screen and (max-width:1223px) {
+#game_board {
+    height: 60%;
+    margin: 1% 2% 10%;
+    padding: 3em;
+    border-radius: 2em;
+    border-width: 0.3em;
+    border-color: rgba(0, 0, 0, 0);
+    box-shadow: 0em 0em 1em grey;
+  }
+  .message_box {
+    margin: 1em auto 5em auto;
+    padding: 0;
+    position: relative;
+    color: aqua;
+    text-align: center;
+    display: flex;
+    min-width: max-content;
+    flex-direction: column;
+    font-size: 3.2vw;
+}
+.red_message_box
+{
+  margin: 0.5em auto 0.5em auto;
+  padding: 0;
+  position: relative;
+  color: red;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  font-size: 2.6vw;
+}
+.message_container
+{
+  flex-direction: row;
+  display: flex;
+}
+.textButtonsDiv
+{
+  display: flex;
+  flex-direction: column;
+}
+}
 /* The formatting for the point drawing area */
 #inner_game {
     height: 100%;
     width: 100%;
 }
 
+/* Formatting for the messages on the game page */
 #message_box {
-    margin: 0.5em auto 0.5em auto;
+    margin: 0em auto 0.5em auto;
     padding: 0;
     color: aqua;
     text-align: center;
     font-size: 3.2vw;
+}
+
+/* Formatting for the header on all pages */
+#page_header {
+  text-align: center;
+  display: block;
+  margin: 0;
+  padding: 0;
+  color: white;
+  background-color: aqua;
+  font-size: 3.2vw;
+  width: 100%;
+}
+
+#header_text {
+  position: absolute;
+
+  left: 32.87vw;
+  font-size: larger;
+
+}
+
+#nav_bar {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nav_element {
+  float: left;
+  margin-left: 8px;
+  margin-top: 8px;
+  width: 3%;
+  cursor: pointer;
+}
+
+.squareImage {
+  float: right;
+  width: 40%;
+  max-height: 86.1%;
+}
+
+.triangleImage {
+    float: left;
+    width: 40%;
 }
 
 /* isn't used at the moment, need to fix */
@@ -58,11 +194,29 @@ html, body {
 
 #controls {
     text-align: center;
+
+}
+
+.headerImages
+{
+  width: 100%;
+  height: 100%;
 }
 
 #section > #nav         { flex: 2 }
 #section > #messages    { flex: 2 }
 #section > #game_board  { flex: 30 }
 #section > #controls    { flex: 2 }
+
+.highlightedText{
+  
+  color: darkcyan;
+}
+
+.slider {
+
+}
+
+
 
 
