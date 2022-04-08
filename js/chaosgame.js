@@ -435,18 +435,8 @@ function main(selection) {
                     updateInnerHtml(messageBox, "Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65));
                 }
 
-                // Clear, bind, and draw
-                webGL.clear(webGL.COLOR_BUFFER_BIT);
-                bindVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0));
-
-                // Draw all points but exclude the initial border
-                // Note that if the game ends, we get rid of the last border
-                // So, we need a different point drawing number
-                if (!flags.endGame && config.PLAY) {
-                    webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders - 1);
-                } else {
-                    webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders - 2);
-                }
+                // Draw
+                drawVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0));
 
                 // Update the number of points drawn (excluding the mouse position)
                 updateInnerHtml(pointsPlaced, "Points: " + (totalPoints.length - 1));
@@ -467,11 +457,8 @@ function main(selection) {
 
         // If we are not running the game, bind and draw the current positions
         } else {
-            webGL.clear(webGL.COLOR_BUFFER_BIT);
-            bindVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0), state.n);
-            // Draw the total points including the borders
-            webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders);
-
+            // Draw
+            drawVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0), state.n);
             // Update the number of points drawn
             if (totalPoints.length === 0)
                 updateInnerHtml(pointsPlaced, "Points: " + totalPoints.length);
@@ -675,8 +662,8 @@ function readjustPoints(points, canvas, n) {
     }
 }
 
-// A function used to bind data to the GPU
-function bindVertices(webGL, pointArray, color) {
+// A function used draw a set of points of a certain color
+function drawVertices(webGL, pointArray, color) {
     let vertexArray = [];
     let borderArray = [];
     for (let i = 0; i < pointArray.length; i++) {
@@ -715,6 +702,9 @@ function bindVertices(webGL, pointArray, color) {
 
     webGL.uniform1f(u_pointSize, 8.0);
     webGL.uniform4f(u_Color, color.r / 255,  color.g / 255, color.b / 255, 1.0);
+
+    webGL.clear(webGL.COLOR_BUFFER_BIT);
+    webGL.drawArrays(webGL.POINTS, 0, vertexArray.length / 2);
 }
 
 // A function to enable canvas events
