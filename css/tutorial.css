@@ -28,6 +28,12 @@ ul.topnav li a:hover:not(.active) {background-color: #111;}
 
 ul.topnav li a.active {background-color: #00ffff;}
 
+#canvas {
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
+}
+
 #content {
     display: flex;
     flex-direction: column;
