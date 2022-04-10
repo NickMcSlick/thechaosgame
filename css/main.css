@@ -185,14 +185,14 @@ html, body {
 .squareImage {
   margin-top: 1em;
   float: right;
-  width: 38%;
+  width: 45%;
   max-height: 85.1%;
 }
 
 .triangleImage {
     margin-top: 2em;
     float: left;
-    width: 40%;
+    width: 32%;
 }
 
 /* isn't used at the moment, need to fix */
