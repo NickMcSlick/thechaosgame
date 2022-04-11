@@ -136,10 +136,6 @@ html, body {
       display: flex;
       flex-direction: column;
     }
-    .squareImage {
-            float: right;
-            max-height: 85.1%;
-    }
 }
 /* The formatting for the point drawing area */
 #inner_game {
@@ -193,14 +189,14 @@ html, body {
 .squareImage {
   margin-top: 1em;
   float: right;
-  /* width: 40%; */
+  width: 40%;
   max-height: 85.1%;
 }
 
 .triangleImage {
     margin-top: 2em;
     float: left;
-    /* width: 32%; */
+    width: 40%;
 }
 
 /* isn't used at the moment, need to fix */
