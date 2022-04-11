@@ -290,13 +290,6 @@ function main(selection) {
             totalPoints.push(pointObject);
         });
 
-        // Determine the amount of borders
-        totalPoints.forEach(pointObject => {
-            if (pointObject.border) {
-                borders++;
-            }
-        })
-
         // Only label the points if they are the initial ones
         if (state.points.length < state.n + 1 && !flags.endGame) {
             // Update the message
@@ -479,7 +472,6 @@ function updateMousePosition(e, mousePosition, canvas) {
 function resize(webGL, canvas, innerGame) {
     canvas.width = innerGame.getBoundingClientRect().width;
     canvas.height = innerGame.getBoundingClientRect().height;
-    webGL = canvas.getContext("webgl");
     webGL.viewport(0, 0, canvas.width, canvas.height);
 }
 

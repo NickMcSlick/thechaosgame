@@ -129,7 +129,6 @@ html, body {
     }
     .squareImage {
             float: right;
-            width: 40% !important;
             max-height: 85.1%;
     }
 }
@@ -185,7 +184,7 @@ html, body {
 .squareImage {
   margin-top: 1em;
   float: right;
-  width: 45%;
+  width: 38%;
   max-height: 85.1%;
 }
 
