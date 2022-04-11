@@ -393,7 +393,7 @@ function main(selection) {
                     // We need to do some quick changes when we end the game
                     // We need to update the user and clear the labels, as well as call update
                     // one last time to make sure that all the buttons are properly set
-                    updateInnerHtml(messageBox, "Look at your fascinating fractal pattern!");
+                    updateInnerHtml(messageBox, "Look at your fascinating fractal pattern! Press refresh or restart to play again!");
                     clearChildren(innerGame);
                     update();
 

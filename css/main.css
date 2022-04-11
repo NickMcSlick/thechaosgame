@@ -16,16 +16,17 @@ html, body {
 
 /* temporary: show element positions on the screen */
 #section > * {
-  margin: 0.5em;
   padding: 0;
 }
 
+/* Styling for the wrapper of the game */
 #mainGameWrapper {
     flex-direction: column;
     height: 100%;
-    padding: 2em;
+    padding: 2em 2em 0em 2em;
 }
 
+/* Styling for the board on which the game is played */
 #game_board {
     padding: 3em;
     border-radius: 2em;
@@ -35,21 +36,29 @@ html, body {
     height: 65%;
 }
 
+/* A class to make items unselectable */
+/* FROM: https://stackoverflow.com/questions/6900124/how-to-make-certain-text-not-selectable-with-css */
 .unselectable {
-    -moz-user-select: -moz-none;
-    -khtml-user-select: none;
-    -webkit-user-select: none;
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
+}
+
+/* The wrapper for the canvas element, the 'inner' game */
+#inner_game {
+    margin-bottom: 1em;
 }
 
 /* Padding so the user doesn't draw right on the edge */
 @media only screen and (min-width : 1224px) {
       #game_board {
-        padding: 3em;
+        /* padding: 3em; */
         border-radius: 2em;
         border-width: 0.3em;
         border-color: rgba(0, 0, 0, 0);
         box-shadow: 0em 0em 1em grey;
-        height: 60%;
+        height: 65%;
       }
       .message_box {
         margin: 1em auto 0.2em auto;
@@ -87,7 +96,7 @@ html, body {
 }
 @media only screen and (max-width:1223px) {
   #game_board {
-    height: 60%;
+    height: 65%;
     margin: 1% 2% 10%;
     padding: 3em;
     border-radius: 2em;
@@ -184,7 +193,7 @@ html, body {
 .squareImage {
   margin-top: 1em;
   float: right;
-  width: 38%;
+  width: 40%;
   max-height: 85.1%;
 }
 
