@@ -1,9 +1,25 @@
-// Run the point selection
+/***** Title *****/
+// CS4500, Group Project
+// The Chaos Game
+// The Web Devs
+// Latest Revision: 4/11/22
+/*****************/
+
+/****** Description *****/
+// This program takes in the user input for point number selection
+// and spawns an instance of the game using main(n)
+/************************/
+
+/***** Major data structures *****/
+// Defined within selectMain():
+// DOM elements, and an array of DOM elements
+/*********************************/
+
+// Main point selection script
 function selectMain() {
   let pointSelectionDiv = document.getElementById("pointSelection");
   let gameDiv = document.getElementById("mainGameWrapper");
 
-  // TO-DO: put these into an array and use the array
   let three = document.getElementById("three");
   let four = document.getElementById("four");
   let five = document.getElementById("five");
@@ -13,19 +29,19 @@ function selectMain() {
 
   let tableArray = [three, four, five, six, seven, eight];
 
-  three.associatedValue = 3;
-  four.associatedValue = 4;
-  five.associatedValue = 5;
-  six.associatedValue = 6;
-  seven.associatedValue = 7;
-  eight.associatedValue = 8;
+  // Give each DOM element in the table its corresponding value
+  for (let i = 0; i < tableArray.length; i++) {
+    tableArray[i].associatedValue = i + 3;
+  }
 
+  // Initialize the values
   gameDiv.hidden = true;
   let current = three;
   let prev = three;
   updateSpecialFactor(3);
   selected(three);
 
+  // Set events for using mouse navigation
   window.onkeydown = function(e) {
     // left or down
     if (e.keyCode === 37 || e.keyCode === 40) {
@@ -54,81 +70,19 @@ function selectMain() {
 
   }
 
-  three.onmouseover = function() {
-    prev = current;
-    current = three;
-    deSelected(prev);
-    selected(current);
-    updateSpecialFactor(3);
-    three.onclick = function () {
-      pointSelectionDiv.hidden = true;
-      gameDiv.hidden = false;
-      main(3);
-    }
-  }
-
-  four.onmouseover = function() {
-    prev = current;
-    current = four;
-    deSelected(prev);
-    selected(current);
-    updateSpecialFactor(4);
-    four.onclick = function() {
-      pointSelectionDiv.hidden = true;
-      gameDiv.hidden = false;
-      main(4);
-    }
-  }
-
-  five.onmouseover = function() {
-    prev = current;
-    current = five;
-    deSelected(prev);
-    selected(current);
-    updateSpecialFactor(5);
-    five.onclick = function() {
-      pointSelectionDiv.hidden = true;
-      gameDiv.hidden = false;
-      main(5);
-    }
-  }
-
-  six.onmouseover = function() {
-    prev = current;
-    current = six;
-    deSelected(prev);
-    selected(current);
-    updateSpecialFactor(6);
-    six.onclick = function() {
-      pointSelectionDiv.hidden = true;
-      gameDiv.hidden = false;
-      main(6);
-    }
-  }
-
-  seven.onmouseover = function() {
-    prev = current;
-    current = seven;
-    deSelected(prev);
-    selected(current);
-    updateSpecialFactor(7);
-    seven.onclick = function() {
-      pointSelectionDiv.hidden = true;
-      gameDiv.hidden = false;
-      main(7);
-    }
-  }
-
-  eight.onmouseover = function() {
-    prev = current;
-    current = eight;
-    deSelected(prev);
-    selected(current);
-    updateSpecialFactor(8);
-    eight.onclick = function() {
-      pointSelectionDiv.hidden = true;
-      gameDiv.hidden = false;
-      main(8);
+  // Loop through table elements to assign the mouse events
+  for (let i = 0; i < tableArray.length; i++) {
+    tableArray[i].onmouseover = function() {
+      prev = current;
+      current = tableArray[i];
+      deSelected(prev);
+      selected(current);
+      updateSpecialFactor(tableArray[i].associatedValue);
+      tableArray[i].onclick = function () {
+        pointSelectionDiv.hidden = true;
+        gameDiv.hidden = false;
+        main(tableArray[i].associatedValue);
+      }
     }
   }
 }
@@ -137,7 +91,7 @@ function selectMain() {
 // Select an option
 function selected(domElement) {
   domElement.innerHTML = "&gt; " + domElement.innerHTML + " &lt;";
-  domElement.style.color = "blue";
+  domElement.style.color = "darkcyan";
 }
 
 // De-select an option

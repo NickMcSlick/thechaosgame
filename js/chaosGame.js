@@ -1,7 +1,8 @@
 /***** Title *****/
+// CS4500, Group Project
 // The Chaos Game
 // The Web Devs
-// Latest Revision: 3/30/22
+// Latest Revision: 4/11/22
 /*****************/
 
 /****** Description *****/
@@ -11,15 +12,15 @@
 
 /***** Major data structures *****/
 // Defined Globally:
-// config: is the go-between object for the user input data and animation information (the user manipulates the config which manipulates animation)
+// config: is the go-between object for the user input data and animation configuration (the user manipulates the config which manipulates animation)
 // Point: a class for handling point information
 // Color: a class for handling color information
 
 // Within main():
-// DOM objects: as often occurs in JS programs, DOM elements are accessed and manipulated
-// Multiple point arrays: to keep track of the different points, multiple arrays are used (includes generated points, undid points, etc.)
-// Vertex array: since the GPU can't understand a point object, each x and y component is inserted into an array to be sent to the GPU
+// DOM objects: as often occurs in JS programs, DOM elements are accessed and manipulated through a DOM object
+// State object: Encapsulates animation data, and multiple arrays are used (includes generated points, undid points, etc.)
 // Flags object: flags for the state of the program are encapsulated in a flag object
+// Controls object: object to hold DOM controls
 // WebGL context object: used for animating and to communicate with the GPU and canvas element
 /*********************************/
 
@@ -28,7 +29,7 @@
 let config = {
     SPEED: 1000,
     COLOR: 180,
-    PLAY: false,
+    PLAY: true,
     TOTAL_POINTS: 3000,
 }
 
@@ -44,8 +45,10 @@ function Point(x = 0, y = 0, label = "N/A", border = false) {
     this.label = label;
 
     this.unit = function () {
-        this.x = this.x / Math.sqrt(this.x * this.x + this.y * this.y);
-        this.y = this.y / Math.sqrt(this.x * this.x + this.y * this.y);
+        let tempX = this.x;
+        let tempY = this.y;
+        this.x = tempX / Math.sqrt(tempX * tempX + tempY * tempY);
+        this.y = tempY / Math.sqrt(tempX * tempX + tempY * tempY);
     }
 }
 
@@ -104,20 +107,9 @@ let FSHADER = `
 
     }`;
 
-// Main program
+// Main game program
 function main(selection) {
-    let canvas;                                     // Canvas element
-    let innerGame;                                  // Inner div where the points are drawn
     let webGL;                                      // The drawing context
-    let animID;                                     // The animation frame ID
-
-    let run;                                        // The run button
-    let reset;                                      // The reset button
-    let speed;                                      // The speed slider
-    let color;                                      // The color slider
-    let undo;                                       // The undo button
-    let redo;                                       // The redo button
-    let newN;                                       // Get a new number of points
 
     // Encapsulating the flags in an object
     let flags = {
@@ -126,232 +118,170 @@ function main(selection) {
         endGame: false                              // flag to alert to program to end the game
     }
 
-    let n;                                          // The number of points
-    let mousePosition = new Point(0, 0, "", true);        // Current mouse position
-    let current = new Point(0, 0, "");              // Current position for drawing
-    let points = [];                                // Selected point array
-    let generatedPoints = [];                       // Generated points array
-    let undid = [];                                 // The undone points
+    // Encapsulate the data needed for animation in the state object
+    // Since we are working with low level graphics, we constantly
+    // need access to the state data to change how we are drawing
+    let state = {
+        n: selection,                                                          // The number of points
+        mousePosition: new Point(0, 0, "", true),            // Current mouse position
+        current: new Point(0, 0, ""),                               // Current position for drawing
+        points: [],                                                             // Selected point array
+        generatedPoints: [],                                                    // Generated points array
+        undid: [],                                                              // The undone points
+        animID: 1,                                                              // The current animation frame
+    }
 
-    // Let n be the number of points passed
-    n = selection;
+    // Encapsulate the DOM elements for the controls
+    let controls = {
+        run: document.getElementById("run"),                // The run button
+        reset: document.getElementById("reset"),            // The reset button
+        speed: document.getElementById("speed"),            // The speed slider
+        playPause: document.getElementById("play_pause"),   // The play/pause button
+        color: document.getElementById("color"),            // The color slider
+        undo: document.getElementById("undo"),              // The undo button
+        redo: document.getElementById("redo"),              // The redo button
+        newN: document.getElementById("new"),               // The new number of points button
+    }
 
-    // Get DOM elements
-    canvas = document.getElementById("webGL");
-    innerGame = document.getElementById("inner_game");
-    run = document.getElementById("run");
-    reset = document.getElementById("reset")
-    speed = document.getElementById("speed");
-    color = document.getElementById("color");
-    undo = document.getElementById("undo");
-    redo = document.getElementById("redo")
-    newN = document.getElementById("new");
+    // Encapsulate DOM elements
+    let dom = {
+        canvas: document.getElementById("webGL"),
+        innerGame: document.getElementById("inner_game"),
+        messageBox: document.getElementById("message_box"),
+        pointsPlaced: document.getElementById("points_placed"),
+    }
+
+    // Loop through each object of objects to make sure they exist
+    for (let key in dom) {
+        if (!dom[key]) {
+            console.log("Error! " + key + " does not exist");
+            return;
+        }
+    }
+    for (let key in controls) {
+        if (!controls[key]) {
+            console.log("Error! " + key + " does not exist");
+            return;
+        }
+    }
+    for (let key in state) {
+        if (!state[key]) {
+            console.log("Error! " + state[key] + " does not exist");
+            return;
+        }
+    }
 
     // Resize canvas
-    canvas.width = innerGame.getBoundingClientRect().width;
-    canvas.height = innerGame.getBoundingClientRect().height;
+    dom.canvas.width = dom.innerGame.getBoundingClientRect().width;
+    dom.canvas.height = dom.innerGame.getBoundingClientRect().height;
 
     // Get context and initialize the shaders
-    webGL = canvas.getContext("webgl");
+    webGL = dom.canvas.getContext("webgl");
     webGL.getExtension('OES_standard_derivatives');
     webGL.getExtension('EXT_shader_texture_lod');
     initShaders(webGL, VSHADER, FSHADER);
     webGL.enable(webGL.BLEND);
     webGL.blendFunc(webGL.SRC_ALPHA, webGL.ONE_MINUS_SRC_ALPHA);
 
-    // Set slider events (also initialize the slider values)
-    speed.oninput = function() {
-        config.SPEED = speed.max - speed.value;
-        update();
-    }
-    speed.value = speed.max - config.SPEED;
-    color.oninput = function() {
-        config.COLOR = color.value;
-        update();
-    }
-    color.value = config.COLOR;
+    // Initialize the control events
+    initializeControlEvents(controls, state, flags, dom, update);
 
-    // Undo Button
-    undo.onclick = function() {
-        // Remove the label and its point
-        removePointAndLabel(points, undid, innerGame);
-        // Note that the mousePosition will still be included for the first undo
-        // which will cause the point to still be drawn. To remedy this, the mouse
-        // position is moved completely off the canvas
-        mousePosition = new Point(2, 2, "", true);
-        update();
-    }
+    // Bind canvas events
+    enableCanvasEvents(dom.canvas, update, state);
 
-    // Redo Button
-    redo.onclick = function () {
-        // Since labels are automatic within the update function,
-        // no need to specify any particular label to add
-        redoPoint(points, undid);
-        update();
-    }
-
-    // Reset button
-    // Clear all animation information
-    // and previously drawn elements
-    reset.onclick = function () {
-        flags.run = false;
-        flags.spawnAnimation = false;
-        flags.endGame = false;
-        points = [];
-        generatedPoints = [];
-        undid = [];
-        mousePosition = new Point(2, 2, "", true);
-        config.COLOR = color.value = "180";
-        config.SPEED = speed.value = "1000";
-        cancelAnimationFrame(animID);
-        clearChildren(innerGame);
-        disable(play)
-        disable(pause)
-        update();
-    }
-
-    // For a new set of points, just refresh the page
-    newN.onclick = function() {
-        window.location.reload();
-    }
-
-    // Run button
-    // Set the flags to true
-    run.onclick = function () {
-        flags.run = true;
-        flags.spawnAnimation = true;
-        enable(play)
-        enable(pause)
-        update();
-    }
-    // Enable the events
-    function enableCanvasEvents() {
-        // When the user mouses over the canvas, update the mouse position and render
-        canvas.onmousemove = function (e) {
-            updateMousePosition(e, mousePosition, canvas);
-            update();
-        }
-
-        // If the user mouses out, put the mouse in an unviewable position and render
-        canvas.onmouseout = function () {
-            mousePosition = new Point(2, 2, "", true);
-            update();
-        }
-
-        // If the user clicks on the canvas, add a point to the point array
-        canvas.onclick = function (e) {
-            placePoint(e, mousePosition, points, canvas, undid);
-            update();
-        }
-    }
-
-    // Call the function to bind the events
-    enableCanvasEvents();
-
-    // Update the number of points
-    updatePoints(0);
-
-    // Disable the events
-    // Update is still called, but the point events are disabled
-    function disableCanvasEvents() {
-        canvas.onmousemove = update;
-        canvas.onmouseout = update;
-        canvas.onclick = update;
-    }
+    // Initialize the number of points displayed as zero
+    updateInnerHtml(dom.pointsPlaced, "Points: " + 0);
 
     // If the window resizes, adjust the rendering context accordingly
     window.onresize = function() {
-        resize(webGL, canvas, innerGame);
+        resize(webGL, dom.canvas, dom.innerGame);
         update();
     }
-
-    // Start with buttons disabled
-    disable(run);
-    disable(undo);
-    disable(redo);
-    disable(play);
-    disable(pause)
 
     // The update function
     // Called to make rendering changes
     function update() {
         // The output vertex array
-        let totalPoints = [ mousePosition ];
+        let totalPoints = [state.mousePosition];
 
         // Letting the program know how many borders to draw
         let borders = 0;
 
         // Insert the selected points into the output vertices
-        points.forEach(pointObject => {
+        state.points.forEach(pointObject => {
             totalPoints.push(pointObject);
         });
 
-        // Determine the amount of borders
-        totalPoints.forEach(pointObject => {
-            if (pointObject.border) {
-                borders++;
-            }
-        })
-
         // Only label the points if they are the initial ones
-        if (points.length < n + 1 && !flags.endGame) {
+        if (state.points.length < state.n + 1 && !flags.endGame) {
             // Update the message
-            updateMessage("Click on the board to select points!");
-            addLabels(points, canvas);
+            updateInnerHtml(dom.messageBox, "Click on the board to select points!");
+            addLabels(state.points, dom.canvas);
 
             // Tell the user to select a starting position
-            if (points.length === n && !flags.endGame) {
-                updateMessage("Select a starting position!");
+            if (state.points.length === state.n && !flags.endGame) {
+                updateInnerHtml(dom.messageBox, "Select a starting position!");
             }
 
             // If a point is the starting point, label it
-        } else if (points.length === n + 1 && flags.run === false && !flags.endGame) {
-            addCustomLabel(points[n], canvas, "Start");
-            current = new Point(points[n].x, points[n].y, "", false);
+        } else if (state.points.length === state.n + 1 && !flags.run && !flags.endGame) {
+            addCustomLabel(state.points[state.n], dom.canvas, "Start");
+            state.current = new Point(state.points[state.n].x, state.points[state.n].y, "", false);
 
             // Update the message to tell the user to press run
-            updateMessage("Press the 'Run' button to start the game!");
+            updateInnerHtml(dom.messageBox, "Press the 'Run' button to start the game!");
         }
 
         // Readjust the points
         /* IT IS IMPORTANT THAT THIS IS CALLED AFTER THE LABELS ARE CREATED SINCE IT MANIPULATES THOSE LABELS */
         /* If the game ends there are no labels, so do not readjust them either */
-        if (points.length >= n && !flags.endGame) {
-            readjustPoints(points, canvas, n);
+        if (state.points.length >= state.n && !flags.endGame) {
+            readjustPoints(state.points, dom.canvas, state.n);
         }
 
         /* Possible cases for which buttons should be enabled */
+        // The game has ended
+        if (flags.endGame) {
+            disable(controls.run);
+            disable(controls.undo);
+            disable(controls.redo);
+            disable(controls.playPause);
+            disableCanvasEvents(dom.canvas, update);
         // There are enough points and the user is running the game
-        if (points.length >= n + 1 && flags.run || flags.endGame) {
-            disable(run);
-            disable(undo);
-            disable(redo);
-            disableCanvasEvents();
-            // There are enough points but the user has yet to run the game (so you can still undo points)
-        } else if (points.length === n + 1 && flags.run !== true) {
-            enable(run);
-            disable(redo);
-            disableCanvasEvents();
-            // If we have no points to draw, disable
-        } else if (points.length === 0) {
-            if (undid.length !== 0) {
-                enable(redo);
+        } else if (state.points.length >= state.n + 1 && flags.run) {
+            disable(controls.run);
+            disable(controls.undo);
+            disable(controls.redo);
+            enable(controls.playPause);
+            disableCanvasEvents(dom.canvas, update);
+        // There are enough points but the user has yet to run the game (so you can still undo points)
+        } else if (state.points.length === state.n + 1 && flags.run !== true) {
+            enable(controls.run);
+            disable(controls.redo);
+            disable(controls.playPause);
+            disableCanvasEvents(dom.canvas, update);
+        // If we have no points to draw, disable
+        } else if (state.points.length === 0) {
+            if (state.undid.length !== 0) {
+                enable(controls.redo);
             } else {
-                disable(redo);
+                disable(controls.redo);
             }
-            disable(run);
-            disable(undo);
-            enableCanvasEvents();
-            // This situation occurs when the user is currently drawing
+            disable(controls.run);
+            disable(controls.undo);
+            disable(controls.playPause);
+            enableCanvasEvents(dom.canvas, update, state);
+        // This situation occurs when the user is currently drawing
         } else {
-            if (undid.length !== 0) {
-                enable(redo);
+            if (state.undid.length !== 0) {
+                enable(controls.redo);
             } else {
-                disable(redo);
+                disable(controls.redo);
             }
-            enable(undo);
-            disable(run);
-            enableCanvasEvents();
+            enable(controls.undo);
+            disable(controls.run);
+            disable(controls.playPause);
+            enableCanvasEvents(dom.canvas, update, state);
         }
 
         // If the user presses the run button, run the game
@@ -359,7 +289,7 @@ function main(selection) {
         if (flags.run) {
             if (!flags.endGame) {
                 totalPoints[0].border = false;
-                totalPoints[n + 1].border = false;
+                totalPoints[state.n + 1].border = false;
             }
 
             // Initialize the time variables to control the speed of point insertion
@@ -368,7 +298,7 @@ function main(selection) {
             deltaTime = Date.now() - prevTime;
 
             // Clear the undone points for the next game
-            undid = [];
+            state.undid.length = 0;
 
             // Animation function to generate and draw a new point
             let animate = function () {
@@ -377,14 +307,17 @@ function main(selection) {
                 if (totalPoints.length - 1 >= config.TOTAL_POINTS) {
                     // End the game and update the last point generated to get rid of its border
                     flags.endGame = true;
-                    totalPoints[totalPoints.length - n - 2].border = false;
+                    totalPoints[totalPoints.length - state.n - 2].border = false;
 
                     // Also clear point data
-                    points = [];
+                    state.points.length = 0;
 
-                    // Update the message and clear the labels
-                    updateMessage("Look at your fascinating fractal pattern! If you would like to play again, press the reset or new button!");
-                    clearChildren(innerGame);
+                    // We need to do some quick changes when we end the game
+                    // We need to update the user and clear the labels, as well as call update
+                    // one last time to make sure that all the buttons are properly set
+                    updateInnerHtml(dom.messageBox, "Look at your fascinating fractal pattern! Press refresh or restart to play again!");
+                    clearChildren(dom.innerGame);
+                    update();
 
                     // TO-DO for Kathlyn - insert the celebration gif and music here
                 }
@@ -394,48 +327,39 @@ function main(selection) {
 
                 // If the time elapsed has become greater than the speed
                 // specified by the user, then generate a new point and draw it
-                if (deltaTime > config.SPEED && !flags.endGame) {
+                if (deltaTime > config.SPEED && !flags.endGame && config.PLAY) {
                     // Update previous time
                     prevTime = Date.now();
 
                     // Generate a random number
-                    let rand = randomNumber(0, n - 1);
+                    let rand = randomNumber(0, state.n - 1);
 
                     // Generate a point based on that number
-                    current.border = false;
-                    generatedPoints.push(generateFactorPoint(current, points[rand], n / (n + 3)));
+                    state.current.border = false;
+                    state.generatedPoints.push(generateFactorPoint(state.current, state.points[rand], state.n / (state.n + 3)));
 
-                    // Insert it into the drawing vertices
-                    totalPoints.splice(totalPoints.length - n - 1, 0, generatedPoints[generatedPoints.length - 1]);
+                    // Insert it into the drawing vertices (the splice is used for drawing order)
+                    // We want this point to be drawn underneath the initial points and above the generated points
+                    totalPoints.splice(totalPoints.length - state.n - 1, 0, state.generatedPoints[state.generatedPoints.length - 1]);
 
                     // Update current vertex and label it
-                    current = generatedPoints[generatedPoints.length - 1];
-                    current.border = true;
-                    addCustomLabel(current, canvas, "Current");
+                    state.current = state.generatedPoints[state.generatedPoints.length - 1];
+                    state.current.border = true;
+                    addCustomLabel(state.current, dom.canvas, "Current");
 
                     // Update the message to tell the user the random number and point chosen
-                    updateMessage("Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65));
+                    updateInnerHtml(dom.messageBox, "Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65));
                 }
 
-                // Clear, bind, and draw
-                webGL.clear(webGL.COLOR_BUFFER_BIT);
-                bindVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0));
-
-                // Draw all points but exclude the initial border
-                // Note that if the game ends, we get rid of the last border
-                // So, we need a different point drawing number
-                if (!flags.endGame) {
-                    webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders - 1);
-                } else {
-                    webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders - 2);
-                }
+                // Draw
+                drawVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0));
 
                 // Update the number of points drawn (excluding the mouse position)
-                updatePoints(totalPoints.length - 1);
+                updateInnerHtml(dom.pointsPlaced, "Points: " + (totalPoints.length - 1));
 
                 // Spawn the animation recursively using requestAnimationFrame
-                cancelAnimationFrame(animID);
-                animID = requestAnimationFrame(animate);
+                cancelAnimationFrame(state.animID);
+                state.animID = requestAnimationFrame(animate);
             }
 
             // IMPORTANT - we DO NOT want multiple animations occurring
@@ -449,18 +373,106 @@ function main(selection) {
 
         // If we are not running the game, bind and draw the current positions
         } else {
-            webGL.clear(webGL.COLOR_BUFFER_BIT);
-            bindVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0), n);
-            // Draw the total points including the borders
-            webGL.drawArrays(webGL.POINTS, 0, totalPoints.length + borders);
-
+            // Draw
+            drawVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0), state.n);
             // Update the number of points drawn
             if (totalPoints.length === 0)
-                updatePoints(totalPoints.length);
+                updateInnerHtml(dom.pointsPlaced, "Points: " + totalPoints.length);
             else
-                updatePoints(totalPoints.length - 1);
+                updateInnerHtml(dom.pointsPlaced, "Points: " + (totalPoints.length - 1));
         }
     }
+}
+
+function initializeControlEvents(controls, state, flags, dom, update) {
+    // Set slider events (also initialize the slider values)
+    controls.speed.oninput = function() {
+        config.SPEED = controls.speed.max - controls.speed.value;
+        update();
+    }
+    controls.speed.value = controls.speed.max - config.SPEED;
+    controls.color.oninput = function() {
+        config.COLOR = controls.color.value;
+        update();
+    }
+    controls.color.value = config.COLOR;
+
+    // Undo Button
+    controls.undo.onclick = function() {
+        // Remove the label and its point and store it in undid
+        removePointAndLabel(state.points, state.undid, dom.innerGame);
+
+        // Note that the mousePosition will still be included for the first undo
+        // which will cause the point to still be drawn. To remedy this, the mouse
+        // position is moved completely off the canvas
+        state.mousePosition.x = 2.0;
+        state.mousePosition.y = 2.0;
+
+        update();
+    }
+
+    // Redo Button
+    controls.redo.onclick = function () {
+        // Since labels are automatic within the update function,
+        // no need to specify any particular label to add
+        redoPoint(state.points, state.undid);
+        update();
+    }
+
+    // Reset button
+    // Clear all animation information
+    // and previously drawn elements
+    controls.reset.onclick = function () {
+        flags.run = false;
+        flags.spawnAnimation = false;
+        flags.endGame = false;
+        state.points.length = 0;
+        state.generatedPoints.length = 0;
+        state.undid.length = 0;
+        state.mousePosition.x = 2.0;
+        state.mousePosition.y = 2.0;
+        state.mousePosition.border = true;
+        config.COLOR = controls.color.value = "180";
+        config.SPEED = controls.speed.value = "1000";
+        config.PLAY = false;
+        cancelAnimationFrame(state.animID);
+        clearChildren(dom.innerGame);
+        updatePlayPause(controls.playPause, config);
+        update();
+    }
+
+    controls.playPause.onclick = function() {
+        updatePlayPause(controls.playPause, config);
+    }
+
+    function updatePlayPause(playPause, config) {
+        if (config.PLAY) {
+            config.PLAY = false;
+            playPause.value = "\u23F5";
+        } else {
+            config.PLAY = true;
+            playPause.value = "\u23F8";
+        }
+    }
+
+    // For a new set of points, just refresh the page
+    controls.newN.onclick = function() {
+        window.location.reload();
+    }
+
+    // Run button
+    // Set the flags to true
+    controls.run.onclick = function () {
+        flags.run = true;
+        flags.spawnAnimation = true;
+        update();
+    }
+
+    // Start with buttons disabled
+    disable(controls.run);
+    disable(controls.undo);
+    disable(controls.redo);
+    disable(controls.playPause);
 }
 
 // Update the mouse position
@@ -474,7 +486,6 @@ function updateMousePosition(e, mousePosition, canvas) {
 function resize(webGL, canvas, innerGame) {
     canvas.width = innerGame.getBoundingClientRect().width;
     canvas.height = innerGame.getBoundingClientRect().height;
-    webGL = canvas.getContext("webgl");
     webGL.viewport(0, 0, canvas.width, canvas.height);
 }
 
@@ -501,6 +512,8 @@ function removePointAndLabel(points, undid, innerGame) {
 function redoPoint(points, undid) {
     points.push(undid.pop());
 }
+
+// Create a new label
 function newLabel(id, zIndex) {
     let p = document.createElement("p");
 
@@ -513,7 +526,8 @@ function newLabel(id, zIndex) {
 
     return p;
 }
-// Basic point labeling for initial points "A, B, C"
+
+// Point labeling for initial points "A, B, C"
 function addLabels(points, canvas) {
     for (let i = 0; i < points.length; i++) {
         let div = document.getElementById("inner_game");
@@ -534,7 +548,7 @@ function addLabels(points, canvas) {
         let point = new Point(direction.x + 20 * unitVector.x + center.x, direction.y + 20 * unitVector.y + center.y);
 
         if (!label) {
-            let p = newLabel("pointLabel"+i, i+"");
+            let p = newLabel("pointLabel" + i, i + "");
             let node = document.createTextNode(points[i].label);
             p.appendChild(node);
             p.style.top = div.getBoundingClientRect().top + window.scrollY + point.y - 10 + "px";
@@ -546,7 +560,8 @@ function addLabels(points, canvas) {
         }
     }
 }
-// Basic point labeling for starting vertex and current vertex
+
+// Point labeling for starting vertex and current vertex
 function addCustomLabel(labelPoint, canvas, labelMessage) {
     let div = document.getElementById("inner_game");
     let label = document.getElementById("customLabel");
@@ -576,7 +591,7 @@ function addCustomLabel(labelPoint, canvas, labelMessage) {
 // Clear the children elements - used to clear labels here
 // Based off of this code: https://stackoverflow.com/questions/19885788/removing-every-child-element-except-first-child
 function clearChildren(div) {
-    while (div.childNodes.length > 2) {
+    while (div.children.length > 1) {
         div.removeChild(div.lastChild);
     }
 }
@@ -584,19 +599,13 @@ function clearChildren(div) {
 
 // HSV to RGB color conversion
 // Based off of this code: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
-// This is interim code - it is not meant to stay
 /**
  * Converts an HSV color value to RGB. Conversion formula
  * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
  * Assumes h, s, and v are contained in the set [0, 1] and
  * returns r, g, and b in the set [0, 255].
- *
- * @param   Number  h       The hue
- * @param   Number  s       The saturation
- * @param   Number  v       The value
- * @return  Array           The RGB representation
  */
-function hsvToRgb(h, s, v){
+function hsvToRgb(h, s, v) {
     var r, g, b;
 
     var i = Math.floor(h * 6);
@@ -617,7 +626,7 @@ function hsvToRgb(h, s, v){
     return new Color(r * 255, g * 255, b * 255);
 }
 
-// Calculate the center and readjust the points accordingly
+// Calculate the new center and readjust the points accordingly
 // TO-DO: if the user chooses points that are close to each other or are in a line, issues occur
 // Therefore, we might have to do some checking before actually applying this function
 // OF NOTE - this works using screen space instead of webGL coordinates - otherwise it gets stretched
@@ -650,24 +659,17 @@ function readjustPoints(points, canvas, n) {
         ];
 
         let label = document.getElementById("pointLabel" + i);
-        label.style.top = div.getBoundingClientRect().top + window.scrollY + (point[1]) - 10 + "px";
-        label.style.left = div.getBoundingClientRect().left + (point[0]) - 10 + "px";
+        if (label) {
+            label.style.top = div.getBoundingClientRect().top + window.scrollY + (point[1]) - 10 + "px";
+            label.style.left = div.getBoundingClientRect().left + (point[0]) - 10 + "px";
+        } else {
+            console.log("label does not exist");
+        }
     }
 }
 
-// Generate a new point that is a certain factor
-// from the original point going towards the destination
-function generateFactorPoint(ori, dest, factor) {
-    return new Point((dest.x - ori.x) * factor + ori.x, (dest.y - ori.y) * factor + ori.y);
-}
-
-// Generate random number
-function randomNumber(lower, upper) {
-    return Math.floor(Math.random() * (upper - lower + 1) + lower);
-}
-
-// A function used to bind data to the GPU
-function bindVertices(webGL, pointArray, color) {
+// A function used draw a set of points of a certain color
+function drawVertices(webGL, pointArray, color) {
     let vertexArray = [];
     let borderArray = [];
     for (let i = 0; i < pointArray.length; i++) {
@@ -706,6 +708,42 @@ function bindVertices(webGL, pointArray, color) {
 
     webGL.uniform1f(u_pointSize, 8.0);
     webGL.uniform4f(u_Color, color.r / 255,  color.g / 255, color.b / 255, 1.0);
+
+    webGL.clear(webGL.COLOR_BUFFER_BIT);
+    webGL.drawArrays(webGL.POINTS, 0, vertexArray.length / 2);
+}
+
+// A function to enable canvas events
+// This is done to enable user drawing
+function enableCanvasEvents(canvas, update, state) {
+    // When the user mouses over the canvas, update the mouse position and render
+    canvas.onmousemove = function (e) {
+        updateMousePosition(e, state.mousePosition, canvas);
+        update();
+    }
+
+    // If the user mouses out, put the mouse in an unviewable position and render
+    canvas.onmouseout = function () {
+        // NOTE - JS is pass-by-value if you reassign a variable to another
+        // To actually modify the variable, you need to edit its attributes
+        state.mousePosition.x = 2.0;
+        state.mousePosition.y = 2.0;
+        update();
+    }
+
+    // If the user clicks on the canvas, add a point to the point array
+    canvas.onclick = function (e) {
+        placePoint(e, state.mousePosition, state.points, canvas, state.undid);
+        update();
+    }
+}
+
+// Disabling the canvas events
+// This is done to disable user drawing
+function disableCanvasEvents(canvas, update) {
+    canvas.onmousemove = update;
+    canvas.onmouseout = update;
+    canvas.onclick = update;
 }
 
 // Enable a button
@@ -720,14 +758,18 @@ function disable(domElement) {
     domElement.style.opacity = "0.5";
 }
 
-// Update message for the message area of the game
-function updateMessage(message) {
-    let messageBox = document.getElementById("message_box");
-    messageBox.innerHTML = "<span>" + message + "</span>";
+// Update messages
+function updateInnerHtml(domElement, message) {
+    domElement.innerHTML = "<span>" + message + "</span>";
 }
 
-// Update the number of points shown to the user on the canvas
-function updatePoints(n) {
-    let numberOfPoints = document.getElementById("points_placed");
-    numberOfPoints.innerHTML = "<span>Points: " + n + "</span>";
+// Generate a new point that is a certain factor
+// from the original point going towards the destination
+function generateFactorPoint(ori, dest, factor) {
+    return new Point((dest.x - ori.x) * factor + ori.x, (dest.y - ori.y) * factor + ori.y);
+}
+
+// Generate random number
+function randomNumber(lower, upper) {
+    return Math.floor(Math.random() * (upper - lower + 1) + lower);
 }
