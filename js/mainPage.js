@@ -16,7 +16,7 @@ function tutorialButton()
 
 function indexHomeButton()
 {
-    location.assign(".")
+    location.assign("index.html")
 }
 
 function indexGameButton()
@@ -39,7 +39,7 @@ function indexPlayText()
     location.assign("./html/game.html")
 }
 
-var tutorialSelected = false
+var tutorialSelected = true
 var playSelected = false
 
 document.addEventListener('keyup', (event) =>
