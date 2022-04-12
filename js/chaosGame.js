@@ -184,7 +184,7 @@ function main(selection) {
     // Initialize the control events
     initializeControlEvents(controls, state, flags, dom, update);
 
-    // Bind events
+    // Bind canvas events
     enableCanvasEvents(dom.canvas, update, state);
 
     // Initialize the number of points displayed as zero

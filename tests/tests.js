@@ -10,6 +10,15 @@ let dummyCanvas = document.createElement("canvas");
 let dummyGL = dummyCanvas.getContext("webgl");
 let dummyEvent = new MouseEvent("click", { clientX: 400, clientY: 400 });
 Object.defineProperty(dummyEvent, "target", { writable: false, value: dummyCanvas });
+let dummyState = {
+    n: 3,                                                          // The number of points
+    mousePosition: new Point(0, 0, "", true),            // Current mouse position
+    current: new Point(0, 0, ""),                               // Current position for drawing
+    points: [],                                                             // Selected point array
+    generatedPoints: [],                                                    // Generated points array
+    undid: [],                                                              // The undone points
+    animID: 1,
+}
 
 // Size the canvas for standard testing
 dummyCanvas.width = 500;
@@ -260,10 +269,21 @@ function testUpdateInnerHtml() {
     } else {
         return true;
     }
+}
 
+function testEnableCanvasEvents() {
+    let dummyCanvas = document.createElement("canvas");
+    let dummyUpdate = function() { };
+    enableCanvasEvents(dummyCanvas, dummyState, dummyUpdate);
+    if (dummyCanvas.onmousemove && dummyCanvas.onclick && dummyCanvas.onmouseout) {
+        return true;
+    } else {
+        return false;
+    }
 }
 
 // INSERT TESTS FOR:
+// Canvas event binding, control binding
 // These two are visual, creating visual system tests:
 // addLabels
 // addCustomLabel
@@ -303,4 +323,5 @@ function runTests() {
     console.log("Enabling buttons: " + testEnable());
     console.log("Disabling buttons: " + testDisable());
     console.log("Test updating messages: " + testUpdateInnerHtml());
+    console.log("Test enabling canvas events: " + testEnableCanvasEvents());
 }
