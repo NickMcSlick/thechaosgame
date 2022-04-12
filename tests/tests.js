@@ -64,10 +64,10 @@ function testPointObjectMethods() {
 
     obj.unit();
 
-    if (Math.sqrt(obj.x * obj.x + obj.y * obj.y) !== 1.0) {
-        return false;
-    } else {
+    if (Math.abs(Math.sqrt(obj.x * obj.x + obj.y * obj.y) - 1.0) <= 0.00001) {
         return true;
+    } else {
+        return false;
     }
 }
 

@@ -45,8 +45,10 @@ function Point(x = 0, y = 0, label = "N/A", border = false) {
     this.label = label;
 
     this.unit = function () {
-        this.x = this.x / Math.sqrt(this.x * this.x + this.y * this.y);
-        this.y = this.y / Math.sqrt(this.x * this.x + this.y * this.y);
+        let tempX = this.x;
+        let tempY = this.y;
+        this.x = tempX / Math.sqrt(tempX * tempX + tempY * tempY);
+        this.y = tempY / Math.sqrt(tempX * tempX + tempY * tempY);
     }
 }
 
@@ -603,7 +605,7 @@ function clearChildren(div) {
  * Assumes h, s, and v are contained in the set [0, 1] and
  * returns r, g, and b in the set [0, 255].
  */
-function hsvToRgb(h, s, v){
+function hsvToRgb(h, s, v) {
     var r, g, b;
 
     var i = Math.floor(h * 6);
