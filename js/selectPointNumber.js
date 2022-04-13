@@ -41,7 +41,7 @@ function selectMain() {
   updateSpecialFactor(3);
   selected(three);
 
-  // Set events for using mouse navigation
+  // Set events for using arrow navigation
   window.onkeydown = function(e) {
     // left or down
     if (e.keyCode === 37 || e.keyCode === 40) {
