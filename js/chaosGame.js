@@ -478,8 +478,17 @@ function initializeControlEvents(controls, state, flags, dom, update) {
 // Update the mouse position
 function updateMousePosition(e, mousePosition, canvas) {
     let rect = e.target.getBoundingClientRect();
-    mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
-    mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
+    let tempX = 2 * (e.clientX - rect.left) / canvas.width - 1;
+    let tempY = - 2 * (e.clientY - rect.top) / canvas.height + 1;
+
+    // This is done so the user does not draw "half-circles" that are cut off
+    if (Math.abs(tempX) < 0.95 && Math.abs(tempY) < 0.95) {
+        mousePosition.x = tempX;
+        mousePosition.y = tempY;
+    } else {
+        mousePosition.x = 2.0;
+        mousePosition.y = 2.0;
+    }
 }
 
 // Resize the window
@@ -497,9 +506,13 @@ function placePoint(e, mousePosition, points, canvas, undid) {
     undid.length = 0;
 
     let rect = e.target.getBoundingClientRect();
-    mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
-    mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
-    points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65), true));
+    let tempX = 2 * (e.clientX - rect.left) / canvas.width - 1;
+    let tempY = - 2 * (e.clientY - rect.top) / canvas.height + 1;
+
+    // This is done so the user does not draw "half-circles" that are cut off
+    if (Math.abs(tempX) < 0.95 && Math.abs(tempY) < 0.95) {
+        points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65), true));
+    }
 }
 
 // Remove points and label
