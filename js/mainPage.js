@@ -88,3 +88,22 @@ document.addEventListener('keyup', (event) =>
         indexTutorialText()
     }
 })
+
+/* IF THE TUTORIAL SESSION OBJECT HAS NOT BEEN CREATED, DISPLAY THE TUTORIAL MESSAGE */
+/* IT SHOULD BE NOTED THAT THIS WON'T WORK FOR EVERY BROWSER DUE TO COOKIE RESTRICTIONS */
+function updateTutorialMessageVisibility() {
+    let tutorial = sessionStorage.getItem("tutorial");
+    let tutorialMessage = document.getElementById("tutorial_warning");
+
+    if (!tutorialMessage) {
+        console.log("Tutorial message does not exist!");
+        console.log(tutorialMessage);
+    }
+
+    // If the tutorial has been seen, hide the warning message
+    if (tutorial && tutorialMessage) {
+        tutorialMessage.style.visibility = "hidden";
+    } else if (tutorialMessage) {
+        tutorialMessage.style.visibility = "visible";
+    }
+}
