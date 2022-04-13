@@ -89,7 +89,7 @@ html, body {
 
     .red_message_box
     {
-      margin: 0.5em auto 0.5em auto;
+      margin: 0em auto 0em auto;
       padding: 0;
       position: relative;
       color: red;
@@ -126,7 +126,7 @@ html, body {
     }
     .red_message_box
     {
-      margin: 0.5em auto 0.5em auto;
+      margin: 0em auto 0em auto;
       padding: 0;
       position: relative;
       color: red;
