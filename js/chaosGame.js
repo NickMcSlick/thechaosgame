@@ -32,7 +32,21 @@ let config = {
     PLAY: true,
     TOTAL_POINTS: 3000,
 }
-
+// Get the average of an array of numbers
+function average(arr) {
+    let s = 0.0;
+    arr.forEach( i => { s += i } );
+    return s / arr.length;
+}
+// Get the standard Deviation of an array of numbers
+function standardDeviation(arr) {
+    let sd = 0.0;
+    arr.forEach( i => {
+        sd += (i - average(arr)) ** 2;
+    });
+    sd = (sd / arr.length) ** 0.5;
+    return sd;
+}
 // Point constructor
 // This is a class to handle point information
 // Label information is included, though not always used
@@ -236,7 +250,21 @@ function main(selection) {
         /* IT IS IMPORTANT THAT THIS IS CALLED AFTER THE LABELS ARE CREATED SINCE IT MANIPULATES THOSE LABELS */
         /* If the game ends there are no labels, so do not readjust them either */
         if (state.points.length >= state.n && !flags.endGame) {
-            readjustPoints(state.points, dom.canvas, state.n);
+            // 1. Get the slopes formed by a point and its neighbor
+            // 2. Get the standard deviation of the slopes of the points
+            // 3. If the standard deviation of the slopes is under a certain threshold, the slopes are similar enough 
+            //    to each other that they are considered to be in a line, and so point readjustment is not carried out.
+            let threshold = 0.75;
+            let slopes = [];
+            for(let i = 0; i < state.points.length; i++) {
+                let p1 = state.points[i];
+                let p2 = state.points[ (i+1) % state.points.length ];
+                let slope = ((p2.y-p1.y) / (p2.x-p1.x));
+
+                slopes.push( slope );
+            }
+            if( standardDeviation(slopes) > threshold )
+                readjustPoints(state.points, dom.canvas, state.n);
         }
 
         /* Possible cases for which buttons should be enabled */
@@ -478,17 +506,8 @@ function initializeControlEvents(controls, state, flags, dom, update) {
 // Update the mouse position
 function updateMousePosition(e, mousePosition, canvas) {
     let rect = e.target.getBoundingClientRect();
-    let tempX = 2 * (e.clientX - rect.left) / canvas.width - 1;
-    let tempY = - 2 * (e.clientY - rect.top) / canvas.height + 1;
-
-    // This is done so the user does not draw "half-circles" that are cut off
-    if (Math.abs(tempX) < 0.95 && Math.abs(tempY) < 0.95) {
-        mousePosition.x = tempX;
-        mousePosition.y = tempY;
-    } else {
-        mousePosition.x = 2.0;
-        mousePosition.y = 2.0;
-    }
+    mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
+    mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
 }
 
 // Resize the window
@@ -506,13 +525,9 @@ function placePoint(e, mousePosition, points, canvas, undid) {
     undid.length = 0;
 
     let rect = e.target.getBoundingClientRect();
-    let tempX = 2 * (e.clientX - rect.left) / canvas.width - 1;
-    let tempY = - 2 * (e.clientY - rect.top) / canvas.height + 1;
-
-    // This is done so the user does not draw "half-circles" that are cut off
-    if (Math.abs(tempX) < 0.95 && Math.abs(tempY) < 0.95) {
-        points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65), true));
-    }
+    mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
+    mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
+    points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65), true));
 }
 
 // Remove points and label
