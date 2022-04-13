@@ -18,8 +18,9 @@
 
     <!-- Navigation script -->
     <script src="./js/mainPage.js"></script>
+    <script src="./js/mainPageArrowKeys.js"></script>
     </head>
-    <body onload="updateTutorialMessageVisibility()">
+    <body onload="updateTutorialMessageVisibility(); presetTutorialText();">
         <div id="section">
             <!-- Header -->
             <header id="page_header">
@@ -55,8 +56,8 @@
             <img class="triangleImage" src="./images/triangle.PNG">
             <div class="textButtonsDiv">
             <p id="tutorial_warning" class="red_message_box">Make sure to see the tutorial first!</p>
-            <span id="indexTutorialText" onclick="indexTutorialText()" class="message_box">Tutorial</span>
-            <span id="indexPlayText" onclick="indexPlayText()" class="message_box">Play</span>
+            <span id="indexTutorialText" onclick="indexTutorialButton()" class="highlightedText message_box"> Tutorial </span>
+            <span id="indexPlayText" onclick="indexPlayButton()" class="message_box">Play</span>
             </div>
             <img class="squareImage" src="./images/square.PNG">
           </div>
