@@ -47,6 +47,9 @@ function standardDeviation(arr) {
     sd = (sd / arr.length) ** 0.5;
     return sd;
 }
+function distance(p1, p2) {
+    return ( (p2.x-p1.x)**2 + (p2.y-p1.y)**2 ) ** 0.5;
+}
 // Point constructor
 // This is a class to handle point information
 // Label information is included, though not always used
@@ -259,7 +262,7 @@ function main(selection) {
             for(let i = 0; i < state.points.length; i++) {
                 let p1 = state.points[i];
                 let p2 = state.points[ (i+1) % state.points.length ];
-                let slope = ((p2.y-p1.y) / (p2.x-p1.x));
+                let slope = (p2.y-p1.y) / (p2.x-p1.x);
 
                 slopes.push( slope );
             }
@@ -527,6 +530,13 @@ function placePoint(e, mousePosition, points, canvas, undid) {
     let rect = e.target.getBoundingClientRect();
     mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
     mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
+
+    let tooClose = 0.05;
+    for(let p of points) {
+        if( distance(mousePosition, p) < tooClose )
+            return;
+    }
+
     points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65), true));
 }
 
@@ -761,6 +771,7 @@ function enableCanvasEvents(canvas, update, state) {
 
     // If the user clicks on the canvas, add a point to the point array
     canvas.onclick = function (e) {
+        //let dist = distance(
         placePoint(e, state.mousePosition, state.points, canvas, state.undid);
         update();
     }
