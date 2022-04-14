@@ -187,8 +187,8 @@ function testClearChildren() {
     clearChildren(dummyDiv);
 
     // In our particular function, clearing the children actually clears
-    // all but one element, so we need to check if there is only one node left
-    if (dummyDiv.children.length === 1) {
+    // all but two elements, so we test to see if two elements exist
+    if (dummyDiv.children.length === 2) {
         return true;
     } else {
         console.log(dummyDiv);

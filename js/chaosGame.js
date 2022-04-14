@@ -32,24 +32,7 @@ let config = {
     PLAY: true,
     TOTAL_POINTS: 3000,
 }
-// Get the average of an array of numbers
-function average(arr) {
-    let s = 0.0;
-    arr.forEach( i => { s += i } );
-    return s / arr.length;
-}
-// Get the standard Deviation of an array of numbers
-function standardDeviation(arr) {
-    let sd = 0.0;
-    arr.forEach( i => {
-        sd += (i - average(arr)) ** 2;
-    });
-    sd = (sd / arr.length) ** 0.5;
-    return sd;
-}
-function distance(p1, p2) {
-    return ( (p2.x-p1.x)**2 + (p2.y-p1.y)**2 ) ** 0.5;
-}
+
 // Point constructor
 // This is a class to handle point information
 // Label information is included, though not always used
@@ -96,6 +79,7 @@ let VSHADER = `
     }`;
 
 // The fragment shader
+// FRAGMENT SHADER CODE BASED ON: https://www.desultoryquest.com/blog/drawing-anti-aliased-circular-points-using-opengl-slash-webgl/
 let FSHADER = `
     #extension GL_EXT_shader_texture_lod : enable
     #extension GL_OES_standard_derivatives : enable
@@ -107,8 +91,6 @@ let FSHADER = `
     void main() {
         float d = distance(vec2(0.5, 0.5), gl_PointCoord);
         vec4 cout = u_Color;
-
-        // FRAGMENT SHADER CODE BASED ON: https://www.desultoryquest.com/blog/drawing-anti-aliased-circular-points-using-opengl-slash-webgl/
         
         if (v_border > 0.5) {
             cout = vec4(0.0, 0.0, 0.0, 1.0);
@@ -194,6 +176,11 @@ function main(selection) {
 
     // Get context and initialize the shaders
     webGL = dom.canvas.getContext("webgl");
+    // Check to make sure we get context
+    if (!webGL) {
+        console.log("Failed to get animation context!");
+        return;
+    }
     webGL.getExtension('OES_standard_derivatives');
     webGL.getExtension('EXT_shader_texture_lod');
     initShaders(webGL, VSHADER, FSHADER);
@@ -250,8 +237,7 @@ function main(selection) {
         }
 
         // Readjust the points
-        /* IT IS IMPORTANT THAT THIS IS CALLED AFTER THE LABELS ARE CREATED SINCE IT MANIPULATES THOSE LABELS */
-        /* If the game ends there are no labels, so do not readjust them either */
+        // If the game ends there are no labels, so do not readjust them either
         if (state.points.length >= state.n && !flags.endGame) {
             // 1. Get the slopes formed by a point and its neighbor
             // 2. Get the standard deviation of the slopes of the points
@@ -415,6 +401,9 @@ function main(selection) {
     }
 }
 
+/****** INITIALIZING/BINDING/DEBINDING EVENT FUNCTIONS ******/
+
+// Initialize controls and bind their respective events
 function initializeControlEvents(controls, state, flags, dom, update) {
     // Set slider events (also initialize the slider values)
     controls.speed.oninput = function() {
@@ -506,11 +495,50 @@ function initializeControlEvents(controls, state, flags, dom, update) {
     disable(controls.playPause);
 }
 
-// Update the mouse position
-function updateMousePosition(e, mousePosition, canvas) {
-    let rect = e.target.getBoundingClientRect();
-    mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
-    mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
+// A function to enable canvas events
+// This is done to enable user drawing
+function enableCanvasEvents(canvas, update, state) {
+    // When the user mouses over the canvas, update the mouse position and render
+    canvas.onmousemove = function (e) {
+        updateMousePosition(e, state.mousePosition, canvas);
+        update();
+    }
+
+    // If the user mouses out, put the mouse in an unviewable position and render
+    canvas.onmouseout = function () {
+        // NOTE - JS is pass-by-value if you reassign a variable to another
+        // To actually modify the variable, you need to edit its attributes
+        state.mousePosition.x = 2.0;
+        state.mousePosition.y = 2.0;
+        update();
+    }
+
+    // If the user clicks on the canvas, add a point to the point array
+    canvas.onclick = function (e) {
+        //let dist = distance(
+        placePoint(e, state.mousePosition, state.points, canvas, state.undid);
+        update();
+    }
+}
+
+// Disabling the canvas events
+// This is done to disable user drawing
+function disableCanvasEvents(canvas, update) {
+    canvas.onmousemove = update;
+    canvas.onmouseout = update;
+    canvas.onclick = update;
+}
+
+// Enable a button
+function enable(domElement) {
+    domElement.disabled = false;
+    domElement.style.opacity = "1.0";
+}
+
+// Disable a button
+function disable(domElement) {
+    domElement.disabled = true;
+    domElement.style.opacity = "0.5";
 }
 
 // Resize the window
@@ -520,21 +548,39 @@ function resize(webGL, canvas, innerGame) {
     webGL.viewport(0, 0, canvas.width, canvas.height);
 }
 
+/****** POINT FUNCTIONS ******/
+
+// Update the mouse position
+function updateMousePosition(e, mousePosition, canvas) {
+    let rect = e.target.getBoundingClientRect();
+    let tempX = 2 * (e.clientX - rect.left) / canvas.width - 1;
+    let tempY = - 2 * (e.clientY - rect.top) / canvas.height + 1;
+
+    // This is done so the user does not draw "half-circles" that are cut off
+    if (Math.abs(tempX) < 0.95 && Math.abs(tempY) < 0.95) {
+        mousePosition.x = tempX;
+        mousePosition.y = tempY;
+    } else {
+        mousePosition.x = 2.0;
+        mousePosition.y = 2.0;
+    }
+}
+
 // Place points
 function placePoint(e, mousePosition, points, canvas, undid) {
     // Clear the array
-    /* For some odd reason JS requires that I change the attribute instead of the array */
-    /* If I set it to an empty array it does nothing - possibly a pass-by-reference/value rule issue */
     undid.length = 0;
 
     let rect = e.target.getBoundingClientRect();
     mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
     mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
 
-    let tooClose = 0.05;
+    // Check if points are too close
+    let tooClose = 0.1;
     for(let p of points) {
-        if( distance(mousePosition, p) < tooClose )
+        if( distance(mousePosition, p) < tooClose ) {
             return;
+        }
     }
 
     points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65), true));
@@ -550,6 +596,8 @@ function removePointAndLabel(points, undid, innerGame) {
 function redoPoint(points, undid) {
     points.push(undid.pop());
 }
+
+/****** LABELING FUNCTIONS ******/
 
 // Create a new label
 function newLabel(id, zIndex) {
@@ -626,47 +674,7 @@ function addCustomLabel(labelPoint, canvas, labelMessage) {
     }
 }
 
-// Clear the children elements - used to clear labels here
-// Based off of this code: https://stackoverflow.com/questions/19885788/removing-every-child-element-except-first-child
-function clearChildren(div) {
-    while (div.children.length > 1) {
-        div.removeChild(div.lastChild);
-    }
-}
-
-
-// HSV to RGB color conversion
-// Based off of this code: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
-/**
- * Converts an HSV color value to RGB. Conversion formula
- * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
- * Assumes h, s, and v are contained in the set [0, 1] and
- * returns r, g, and b in the set [0, 255].
- */
-function hsvToRgb(h, s, v) {
-    var r, g, b;
-
-    var i = Math.floor(h * 6);
-    var f = h * 6 - i;
-    var p = v * (1 - s);
-    var q = v * (1 - f * s);
-    var t = v * (1 - (1 - f) * s);
-
-    switch(i % 6){
-        case 0: r = v, g = t, b = p; break;
-        case 1: r = q, g = v, b = p; break;
-        case 2: r = p, g = v, b = t; break;
-        case 3: r = p, g = q, b = v; break;
-        case 4: r = t, g = p, b = v; break;
-        case 5: r = v, g = p, b = q; break;
-    }
-
-    return new Color(r * 255, g * 255, b * 255);
-}
-
 // Calculate the new center and readjust the points accordingly
-// TO-DO: if the user chooses points that are close to each other or are in a line, issues occur
-// Therefore, we might have to do some checking before actually applying this function
 // OF NOTE - this works using screen space instead of webGL coordinates - otherwise it gets stretched
 function readjustPoints(points, canvas, n) {
     let div = document.getElementById("inner_game");
@@ -705,6 +713,8 @@ function readjustPoints(points, canvas, n) {
         }
     }
 }
+
+/***** WEBGL DRAWING FUNCTION *****/
 
 // A function used draw a set of points of a certain color
 function drawVertices(webGL, pointArray, color) {
@@ -751,56 +761,22 @@ function drawVertices(webGL, pointArray, color) {
     webGL.drawArrays(webGL.POINTS, 0, vertexArray.length / 2);
 }
 
-// A function to enable canvas events
-// This is done to enable user drawing
-function enableCanvasEvents(canvas, update, state) {
-    // When the user mouses over the canvas, update the mouse position and render
-    canvas.onmousemove = function (e) {
-        updateMousePosition(e, state.mousePosition, canvas);
-        update();
-    }
+/***** DOM MANIPULATION FUNCTIONS *****/
 
-    // If the user mouses out, put the mouse in an unviewable position and render
-    canvas.onmouseout = function () {
-        // NOTE - JS is pass-by-value if you reassign a variable to another
-        // To actually modify the variable, you need to edit its attributes
-        state.mousePosition.x = 2.0;
-        state.mousePosition.y = 2.0;
-        update();
-    }
-
-    // If the user clicks on the canvas, add a point to the point array
-    canvas.onclick = function (e) {
-        //let dist = distance(
-        placePoint(e, state.mousePosition, state.points, canvas, state.undid);
-        update();
+// Clear the children elements - used to clear labels here
+// Based off of this code: https://stackoverflow.com/questions/19885788/removing-every-child-element-except-first-child
+function clearChildren(div) {
+    while (div.children.length > 2) {
+        div.removeChild(div.lastChild);
     }
 }
 
-// Disabling the canvas events
-// This is done to disable user drawing
-function disableCanvasEvents(canvas, update) {
-    canvas.onmousemove = update;
-    canvas.onmouseout = update;
-    canvas.onclick = update;
-}
-
-// Enable a button
-function enable(domElement) {
-    domElement.disabled = false;
-    domElement.style.opacity = "1.0";
-}
-
-// Disable a button
-function disable(domElement) {
-    domElement.disabled = true;
-    domElement.style.opacity = "0.5";
-}
-
-// Update messages
+// Update the innerHtml using a span element
 function updateInnerHtml(domElement, message) {
     domElement.innerHTML = "<span>" + message + "</span>";
 }
+
+/****** MATH/COMPUTATION FUNCTIONS ******/
 
 // Generate a new point that is a certain factor
 // from the original point going towards the destination
@@ -811,4 +787,55 @@ function generateFactorPoint(ori, dest, factor) {
 // Generate random number
 function randomNumber(lower, upper) {
     return Math.floor(Math.random() * (upper - lower + 1) + lower);
+}
+
+// Get the average of an array of numbers
+function average(arr) {
+    let s = 0.0;
+    arr.forEach( i => { s += i } );
+    return s / arr.length;
+}
+
+// Get the standard Deviation of an array of numbers
+function standardDeviation(arr) {
+    let sd = 0.0;
+    arr.forEach( i => {
+        sd += (i - average(arr)) ** 2;
+    });
+    sd = (sd / arr.length) ** 0.5;
+    return sd;
+}
+
+// Get the distance between two points
+function distance(p1, p2) {
+    return ( (p2.x-p1.x)**2 + (p2.y-p1.y)**2 ) ** 0.5;
+}
+
+// HSV to RGB color conversion
+// Based off of this code: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+/**
+ * Converts an HSV color value to RGB. Conversion formula
+ * adapted from http://en.wikipedia.org/wiki/HSV_color_space.
+ * Assumes h, s, and v are contained in the set [0, 1] and
+ * returns r, g, and b in the set [0, 255].
+ */
+function hsvToRgb(h, s, v) {
+    var r, g, b;
+
+    var i = Math.floor(h * 6);
+    var f = h * 6 - i;
+    var p = v * (1 - s);
+    var q = v * (1 - f * s);
+    var t = v * (1 - (1 - f) * s);
+
+    switch(i % 6){
+        case 0: r = v, g = t, b = p; break;
+        case 1: r = q, g = v, b = p; break;
+        case 2: r = p, g = v, b = t; break;
+        case 3: r = p, g = q, b = v; break;
+        case 4: r = t, g = p, b = v; break;
+        case 5: r = v, g = p, b = q; break;
+    }
+
+    return new Color(r * 255, g * 255, b * 255);
 }
