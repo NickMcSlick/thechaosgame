@@ -30,7 +30,7 @@ function indexTutorialButton()
 }
 
 /* IF THE TUTORIAL SESSION OBJECT HAS NOT BEEN CREATED, DISPLAY THE TUTORIAL MESSAGE */
-/* IT SHOULD BE NOTED THAT THIS WON'T WORK FOR EVERY BROWSER DUE TO COOKIE RESTRICTIONS */
+
 function updateTutorialMessageVisibility() {
     let tutorial = sessionStorage.getItem("tutorial");
     let tutorialMessage = document.getElementById("tutorial_warning");

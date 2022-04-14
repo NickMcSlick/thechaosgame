@@ -410,9 +410,17 @@ function initializeControlEvents(controls, state, flags, dom, update) {
         config.SPEED = controls.speed.max - controls.speed.value;
         update();
     }
+
+    // Set initial style of slider
+    let currentColor = hsvToRgb(config.COLOR / 360, 1, 1);
+    controls.color.style.accentColor = "rgb( " + currentColor.r + ", " + currentColor.g + ", " + currentColor.b + ")";
     controls.speed.value = controls.speed.max - config.SPEED;
+
+    // Update slider
     controls.color.oninput = function() {
         config.COLOR = controls.color.value;
+        currentColor = hsvToRgb(config.COLOR / 360, 1, 1);
+        controls.color.style.accentColor = "rgb( " + currentColor.r + ", " + currentColor.g + ", " + currentColor.b + ")";
         update();
     }
     controls.color.value = config.COLOR;
