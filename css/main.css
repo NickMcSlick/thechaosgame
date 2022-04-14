@@ -156,7 +156,6 @@ html, body {
 @media only screen and (max-width:1223px) {
   #game_board {
     height: 65%;
-    margin: 1% 2% 10%;
     padding: 3em;
     border-radius: 2em;
     border-width: 0.3em;
@@ -290,6 +289,13 @@ html, body {
 
 .highlightedText{
   color: darkcyan;
+}
+.controlsClass
+{
+  background-color: grey;
+  border-radius: 2em;
+  box-shadow: 0em 0em 1em grey;
+  padding: 1em;
 }
 
 /* FORMATTING FOR THE WARNING MESSAGE */

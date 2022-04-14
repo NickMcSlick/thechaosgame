@@ -32,7 +32,7 @@
     <!-- Test script (contains unit testing and function testing) -->
     <script src="../tests/tests.js"></script>
   </head>
-  <body onload="selectMain(); runTests();">
+  <body onload="selectMain(); runTests();" style="">
     <div id="section">
         <!-- Header -->
         <header id="page_header">
@@ -85,24 +85,23 @@
             <div id="game_board">
               <div id="inner_game">
                 <canvas id="webGL"> Your browser does not support canvas or WebGL. Try using an update major browser, like Google Chrome or Mozilla FireFox </canvas>
-                <div id="controls">
-                  <span id="points_placed">Points: 0</span>
-                  <form style="display: inline">
-                    <!-- Default keyboard input disabled on sliders -->
-                    <label>Speed:</label>
-                    <input id="speed" class="slider" type="range" min="0" max="2000" onkeydown="event.preventDefault()"></input>
-                    <input id="play_pause" type="button" value="&#x23F8"></input>
-                    <label>Color:</label>
-                    <input id="color" class="slider" type="range" min="0" max="365" onkeydown="event.preventDefault()"></input>
-                    <input id="run" type="button" value="Run"></input>
-                    <input id="undo" type="button" value="&#x21B6"></input>
-                    <input id="redo" type="button" value="&#x21B7"></input>
-                    <input id="reset" type="button" value="&#x27F2"></input>
-                    <input id="new" type="button" value="Restart"></input>
-                  </form>
-                </div>
               </div>
-              
+            </div>
+            <div id="controls" class="controlsClass">
+              <span id="points_placed">Points: 0</span>
+              <form style="display: inline">
+                <!-- Default keyboard input disabled on sliders -->
+                <label>Speed:</label>
+                <input id="speed" class="slider" type="range" min="0" max="2000" onkeydown="event.preventDefault()"></input>
+                <input id="play_pause" type="button" value="&#x23F8"></input>
+                <label>Color:</label>
+                <input id="color" class="slider" type="range" min="0" max="365" onkeydown="event.preventDefault()"></input>
+                <input id="run" type="button" value="Run"></input>
+                <input id="undo" type="button" value="&#x21B6"></input>
+                <input id="redo" type="button" value="&#x21B7"></input>
+                <input id="reset" type="button" value="&#x27F2"></input>
+                <input id="new" type="button" value="Restart"></input>
+              </form>
             </div>
         </div>
     </div>
