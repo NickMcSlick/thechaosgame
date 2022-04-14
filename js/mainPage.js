@@ -19,7 +19,7 @@ function indexHomeButton()
     location.assign("index.html")
 }
 
-function indexGameButton()
+function indexPlayButton()
 {
     location.assign("./html/game.html")
 }
@@ -42,7 +42,8 @@ function updateTutorialMessageVisibility() {
 
     // If the tutorial has been seen, hide the warning message
     if (tutorial && tutorialMessage) {
-        tutorialMessage.style.visibility = "hidden";
+        tutorialMessage.remove()
+
     } else if (tutorialMessage) {
         tutorialMessage.style.visibility = "visible";
     }

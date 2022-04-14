@@ -81,11 +81,6 @@ html, body {
         font-size: 3.2vw;
         /* Styles */
     }
-    .textButtonsDiv
-    {
-      display: flex;
-      flex-direction: column;
-    }
 
     .red_message_box
     {
@@ -97,10 +92,24 @@ html, body {
       display: flex;
       flex-direction: column;
       font-size: 2.3vw;
-    }    .message_container
+    }
+    .squareImage {
+      float: right;
+      width: 30em;
+    }
+    
+    .triangleImage {
+        margin-top: 5%;
+        float: left;
+        width: 30em;
+    }
+    .message_container
     {
       flex-direction: row;
       display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: -5%;
     }
 }
 @media only screen and (max-width:1223px) {
@@ -122,6 +131,8 @@ html, body {
     display: flex;
     min-width: max-content;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
     font-size: 3.2vw;
     }
     .red_message_box
@@ -135,15 +146,22 @@ html, body {
       flex-direction: column;
       font-size: 2.3vw;
     }
+    .squareImage {
+      float: right;
+      width: 20em;
+    }
+    
+    .triangleImage {
+        margin-top: 5%;
+        float: left;
+        width: 20em;
+    }
     .message_container
     {
       flex-direction: row;
       display: flex;
-    }
-    .textButtonsDiv
-    {
-      display: flex;
-      flex-direction: column;
+      align-items: center;
+      justify-content: center;
     }
 }
 /* The formatting for the point drawing area */
@@ -175,7 +193,6 @@ html, body {
 
 #header_text {
   position: absolute;
-
   left: 32.87vw;
   font-size: larger;
 
@@ -194,19 +211,14 @@ html, body {
   width: 3%;
   cursor: pointer;
 }
-
-.squareImage {
-  margin-top: 1em;
-  float: right;
-  width: 40%;
-  max-height: 85.1%;
-}
-
-.triangleImage {
-    margin-top: 2em;
-    float: left;
-    width: 40%;
-}
+ .textButtonsDiv
+    {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      min-width: 23.044%;
+    }
 
 /* isn't used at the moment, need to fix */
 #game_wrapper {
