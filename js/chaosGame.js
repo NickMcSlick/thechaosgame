@@ -413,14 +413,14 @@ function initializeControlEvents(controls, state, flags, dom, update) {
 
     // Set initial style of slider
     let currentColor = hsvToRgb(config.COLOR / 360, 1, 1);
-    controls.color.style.accentColor = "rgb( " + currentColor.r + ", " + currentColor.g + ", " + currentColor.b + ")";
+    controls.color.style.backgroundColor = "rgb( " + currentColor.r + ", " + currentColor.g + ", " + currentColor.b + ")";
     controls.speed.value = controls.speed.max - config.SPEED;
 
     // Update slider
     controls.color.oninput = function() {
         config.COLOR = controls.color.value;
         currentColor = hsvToRgb(config.COLOR / 360, 1, 1);
-        controls.color.style.accentColor = "rgb( " + currentColor.r + ", " + currentColor.g + ", " + currentColor.b + ")";
+        controls.color.style.backgroundColor = "rgb( " + currentColor.r + ", " + currentColor.g + ", " + currentColor.b + ")";
         update();
     }
     controls.color.value = config.COLOR;
@@ -463,6 +463,11 @@ function initializeControlEvents(controls, state, flags, dom, update) {
         config.COLOR = controls.color.value = "180";
         config.SPEED = controls.speed.value = "1000";
         config.PLAY = false;
+
+        currentColor = hsvToRgb(config.COLOR / 360, 1, 1);
+        controls.color.style.backgroundColor = "rgb( " + currentColor.r + ", " + currentColor.g + ", " + currentColor.b + ")";
+        controls.speed.value = controls.speed.max - config.SPEED;
+
         cancelAnimationFrame(state.animID);
         clearChildren(dom.innerGame);
         updatePlayPause(controls.playPause, config);
