@@ -599,6 +599,11 @@ function placePoint(e, mousePosition, points, canvas, undid) {
         }
     }
 
+    // Check to make sure the user isn't drawing too close to the border
+    if (Math.abs(mousePosition.x) > 0.95 && Math.abs(mousePosition.y) > 0.95) {
+        return;
+    }
+
     points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65), true));
 }
 
