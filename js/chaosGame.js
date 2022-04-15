@@ -254,6 +254,8 @@ function main(selection) {
             }
             if( standardDeviation(slopes) > threshold )
                 readjustPoints(state.points, dom.canvas, state.n);
+            else
+                addLabels(state.points, dom.canvas);
         }
 
         /* Possible cases for which buttons should be enabled */
@@ -478,16 +480,17 @@ function initializeControlEvents(controls, state, flags, dom, update) {
     controls.playPause.onclick = function() {
         updatePlayPause(controls.playPause, config);
     }
+    controls.playPause.innerHTML = "\u23F8";
 
     // Update play/pause
     // This function is abstracted and is not anonymous because it is needed in the reset event
     function updatePlayPause(playPause, config) {
         if (config.PLAY) {
             config.PLAY = false;
-            playPause.value = "\u23F5";
+            playPause.innerHTML = "\u23F5";
         } else {
             config.PLAY = true;
-            playPause.value = "\u23F8";
+            playPause.innerHTML = "\u23F8";
         }
     }
 
