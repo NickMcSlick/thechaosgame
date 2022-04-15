@@ -32,6 +32,7 @@ html, body {
     transition: opacity .2s;
     border-radius: 10px;
     width: 20vw;
+    vertical-align: text-bottom;
 }
 
 /* Mouse-over effects */
