@@ -24,13 +24,14 @@
 // WebGL context object: used for animating and to communicate with the GPU and canvas element
 /*********************************/
 
+let partying;
 // The configuration object
 // Interface with this object to manipulate the animation of points
 let config = {
     SPEED: 1000,
     COLOR: 180,
     PLAY: true,
-    TOTAL_POINTS: 3000,
+    TOTAL_POINTS: 30,
 }
 
 // Point constructor
@@ -111,11 +112,13 @@ let FSHADER = `
 function main(selection) {
     let webGL;                                      // The drawing context
 
+    let confettiCounter = 0;                        // number of confetti on screen
+    let confettiAmount = 250;                       // max number of confetti
     // Encapsulating the flags in an object
     let flags = {
         run: false,                                 // flag to alert the program that the user wants to run the game
         spawnAnimation: false,                      // flag to alert the program to spawn an animation
-        endGame: false                              // flag to alert to program to end the game
+        endGame: false,                             // flag to alert the program to end the game
     }
 
     // Encapsulate the data needed for animation in the state object
@@ -308,7 +311,6 @@ function main(selection) {
                     // End the game and update the last point generated to get rid of its border
                     flags.endGame = true;
                     totalPoints[totalPoints.length - state.n - 2].border = false;
-
                     // Also clear point data
                     state.points.length = 0;
 
@@ -319,7 +321,16 @@ function main(selection) {
                     clearChildren(dom.innerGame);
                     update();
 
-                    // TO-DO for Kathlyn - insert the celebration gif and music here
+                    // Celebration gif and music here
+                    if (confettiCounter++ < confettiAmount) {
+                        confetti(); //with current modification, only one confetti spawned per call
+                    }
+
+                }
+                //not end game condition
+                else {
+                    confettiCounter = 0;
+                    
                 }
 
                 // Update the time elapsed
@@ -436,6 +447,8 @@ function initializeControlEvents(controls, state, flags, dom, update) {
         config.SPEED = controls.speed.value = "1000";
         config.PLAY = false;
         cancelAnimationFrame(state.animID);
+        cancelAnimationFrame(partying);
+
         clearChildren(dom.innerGame);
         updatePlayPause(controls.playPause, config);
         update();

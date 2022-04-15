@@ -29,11 +29,20 @@ html, body {
   padding: 0;
 }
 
+#confettiContainer {
+    position: relative;
+    height: 100%;
+    /*padding: 2em 2em 0em 2em;*/
+    background-color: black;
+    overflow: auto;
+}
+
 /* Styling for the wrapper of the game */
 #mainGameWrapper {
     flex-direction: column;
     height: 100%;
     padding: 2em 2em 0em 2em;
+
 }
 
 /* Styling for the board on which the game is played */

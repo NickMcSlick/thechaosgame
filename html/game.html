@@ -11,6 +11,7 @@
 <html lang="en">
   <head>
     <title>The Chaos Game | Play</title>
+      <link rel="shortcut icon" type="image/png" href="../images/faviconRed.png"/>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- CSS stylesheets -->
@@ -31,6 +32,11 @@
 
     <!-- Test script (contains unit testing and function testing) -->
     <script src="../tests/tests.js"></script>
+
+      <!-- Confetti script -->
+      <script src="../js/confetti.js"></script>
+<!--      <script src="../js/endMusic.js"></script>-->
+
   </head>
   <body onload="selectMain(); runTests();">
     <div id="section">
@@ -73,8 +79,8 @@
             </table>
             <div id="selectPointsFactor"><span>Special factor needed to get a fractal pattern:</span></div>
         </div>
+    <!--             The game 'page' which appears after a point is selected-->
 
-        <!-- The game 'page' which appears after a point is selected -->
         <div id="mainGameWrapper" hidden>
             <!-- Message box to send messages to the user -->
             <div id="messages">
@@ -99,7 +105,7 @@
                     <input id="undo" type="button" value="&#x21B6"></input>
                     <input id="redo" type="button" value="&#x21B7"></input>
                     <input id="reset" type="button" value="&#x27F2"></input>
-                    <input id="new" type="button" value="Restart"></input>
+                    <input id="new" type="button" value="Restart"></input
                   </form>
                 </div>
             </div>

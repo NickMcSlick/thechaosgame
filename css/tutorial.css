@@ -1,32 +1,37 @@
 
-ul.topnav {
-    display: flex;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
+/*ul.topnav {*/
+/*    display: flex;*/
+/*    list-style-type: none;*/
+/*    margin: 0;*/
+/*    padding: 0;*/
+/*    overflow: hidden;*/
+/*    background-color: #333;*/
+/*}*/
+
+/*ul.topnav #title{*/
+/*    display: block;*/
+/*    flex-grow: 4;*/
+/*    color: white;*/
+/*    text-align: center;*/
+/*    padding: 14px 16px;*/
+/*    text-decoration: none;}*/
+
+/*ul.topnav li a {*/
+/*    display: block;*/
+/*    color: #ffffff;*/
+/*    text-align: center;*/
+/*    padding: 14px 16px;*/
+/*    text-decoration: none;*/
+/*}*/
+
+/*ul.topnav li a:hover:not(.active) {background-color: #111;}*/
+
+/*ul.topnav li a.active {background-color: #00ffff;}*/
+
+body
+{
+    color: darkblue;
 }
-
-ul.topnav #title{
-    display: block;
-    flex-grow: 4;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;}
-
-ul.topnav li a {
-    display: block;
-    color: #ffffff;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-ul.topnav li a:hover:not(.active) {background-color: #111;}
-
-ul.topnav li a.active {background-color: #00ffff;}
 
 #canvas {
     position: absolute;
@@ -41,27 +46,44 @@ ul.topnav li a.active {background-color: #00ffff;}
     overflow: auto;
 }
 
-#content > * {
-    border: 3px solid black;
-    margin: 0.2em;
-    padding: 0;
-}
-
 #content > #tutorial {
-    padding: 1em;
+    padding: 1px;
 }
 
-#pointSelection
+#h3
 {
-    display: flex;
-    object-fit: scale-down;
-
+    font-weight: bolder;
 }
 
-#tutorial_box {
+.imageContainer
+{
     display: flex;
     flex-direction: column;
     flex: 1 1 auto;
+
+}
+
+.image
+{
+    width: 100%;
+}
+
+.controlButton
+{
+    max-height: 2em;
+    max-width: 2em;
+    width: 100%;
+
+}
+
+#tutorial_box
+{
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+    padding-bottom: 2em;
+    padding-left: 2em;
+    padding-right: 2em;
 }
 
 #video-wrapper {
@@ -74,13 +96,10 @@ ul.topnav li a.active {background-color: #00ffff;}
     width: 100%;
 }
 
-@media screen and (max-width: 200px) {
-    ul.topnav  {flex-direction: column;
-                justify-content:center;}
-}
-
-#content> #messages     { flex: 1 }
-#content > #tutorial    { flex: 20 }
+/*@media screen and (max-width: 200px) {*/
+/*    ul.topnav  {flex-direction: column;*/
+/*                justify-content:center;}*/
+/*}*/
 
 
 

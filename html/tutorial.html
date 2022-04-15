@@ -11,13 +11,15 @@
 <html lang="en">
 <head>
     <title>The Chaos Game | Tutorial</title>
+    <link rel="shortcut icon" type="image/png" href="../images/faviconRed.png"/>
+
     <!-- CSS stylesheets -->
     <link href="../css/main.css" rel="stylesheet">
     <link href="../css/tutorial.css" rel="stylesheet">
 
     <!-- Navigation code -->
     <script src="../js/mainPage.js"></script>
-    <script src="../js/confetti.js"></script>
+
 
 </head>
     <body>
@@ -64,6 +66,10 @@
                                 where n is the number of points selected. This continues on, with the currently drawn point replacing the
                                 starting position. After several thousand iterations, a fractal, or self-similar, pattern will be observable.
                                 <br>
+                                For example, let's assume that the player choose three starting points.
+                                <div class="imageContainer">
+                                    <img class="controlButton" src="../images/refreshButton.png" alt="Picture of the game board">
+                                </div>
                                 <br>
                                 See the <a href="#video">Numberphile video</a> below to see our inspiration.
                             </p>
@@ -77,16 +83,20 @@
                             </p>
                             <h2>Game Controls</h2>
                             <ul>
-                                <li> <h3>Number Point Selection</h3>
+                                <li> <h3>Number of Points Selection</h3>
                                     <p>
                                         Upon navigating to the game page. The user will be asked to select the initial number of points,
                                         3 to 8, that will be used to create the image.
                                     </p>
-                                    <img id="pointSelection" src="../images/selectPointsScreen.png" alt="Picture of the point selection menu">
+                                    <div class="imageContainer">
+                                        <img class="image" id="pointSelection" src="../images/selectPointsScreen.png" alt="Picture of the point selection menu">
+                                    </div>
                                     <p>Note: The new button will allow the user to return here and change the number of initial points.</p>
                                 </li>
                             </ul>
-                            <img src="../images/gameBoard.png" alt="Picture of the game board">
+                            <div class="imageContainer">
+                                <img id="gameBoardPic" src="../images/gameBoard.png" alt="Picture of the game board">
+                            </div>
                             <ol type="1">
                                 <li> <h3>Point Selection</h3>
                                     <p>Click on the the game board to place an initial point</p>
@@ -97,7 +107,8 @@
                                         the the board, a celebration will occur
                                     </p>
                                 </li>
-                                <li> <h3>Speed Slider</h3>
+                                <li>
+                                    <h3>Speed Slider</h3>
                                     <p>Changes point production speed. Moving the slider to the left slows down point production.
                                         Moving the slider to the right speeds up point production.
                                     </p>
@@ -105,10 +116,15 @@
                                 <li> <h3>Color Slider</h3>
                                     <p>Color ranges from red, orange, yellow, green, blue, indigo, violet, back to red</p>
                                 </li>
-                                <li> <h3>New Button</h3>
+                                <li>
+                                    <h3>Refresh Button</h3>
+                                    <div class="imageContainer">
+                                        <img class="controlButton" src="../images/refreshButton.png" alt="Picture of the game board">
+                                    </div>
                                     <p>Returns the user to the initial point selection screen and restarts the game</p>
                                 </li>
-                                <li> <h3>Run Button</h3>
+                                <li>
+                                    <h3>Run Button</h3>
                                     <p>Begins point production</p>
                                 </li>
                                 <li> <h3>Play Button</h3>
@@ -120,10 +136,18 @@
                                 <li> <h3>Reset Button</h3>
                                     <p>Clears the board and restarts game without changing the number of initial points</p>
                                 </li>
-                                <li> <h3>Undo Button</h3>
+                                <li>
+                                    <h3>Undo Button</h3>
+                                    <div class="imageContainer">
+                                        <img class="controlButton" id="undoButton" src="../images/undoButton.png" alt="Picture of the game board">
+                                    </div>
                                     <p>Removes last point placed on the board. Once no points are placed on board the button is disabled</p>
                                 </li>
-                                <li> <h3>Redo Button</h3>
+                                <li>
+                                    <div class="imageContainer">
+                                        <img class="controlButton" id="redoButton" src="../images/redoButton.png" alt="Picture of the game board">
+                                    </div>
+                                    <h3>Redo Button</h3>
                                     <p>Replaces the point removed by the undo button</p>
                                 </li>
                             </ol>
@@ -135,11 +159,29 @@
                             </p>
                             <ul>
                                 <li>3 Points</li>
+                                    <div class="imageContainer">
+                                        <img id="triangle" src="../images/triangle.png" alt="Picture of the game board">
+                                    </div>
                                 <li>4 Points</li>
+                                    <div class="imageContainer">
+                                        <img id="square" src="../images/greenSqaure.png" alt="Picture of the game board">
+                                    </div>
                                 <li>5 Points</li>
+                                    <div class="imageContainer">
+                                        <img id="pentagon" src="../images/pentagon2.png" alt="Picture of the game board">
+                                    </div>
                                 <li>6 Points</li>
+                                    <div class="imageContainer">
+                                        <img id="hexagon" src="../images/hexagon2.png" alt="Picture of the game board">
+                                    </div>
                                 <li>7 Points</li>
+                                    <div class="imageContainer">
+                                        <img id="septagon" src="../images/septagon.png" alt="Picture of the game board">
+                                    </div>
                                 <li>8 Points</li>
+                                    <div class="imageContainer">
+                                        <img id="octagon" src="../images/octagon2.png" alt="Picture of the game board">
+                                    </div>
                             </ul>
                         </div>
                         <div class= "tutorial_section">

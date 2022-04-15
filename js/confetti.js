@@ -1,117 +1,244 @@
-//-----------Var Inits--------------
-canvas = document.getElementById("canvas");
-ctx = canvas.getContext("2d");
-canvas.width = window.innerWidth;
-canvas.height = window.innerHeight;
-cx = ctx.canvas.width/2;
-cy = ctx.canvas.height/2;
+/***** Title *****/
+// CS4500, Group Project
+// The Chaos Game
+// The Web Devs
+// Latest Revision: 4/13/22
+/*****************/
 
-let confetti = [];
-const confettiCount = 300;
-const gravity = 0.5;
-const terminalVelocity = 5;
-const drag = 0.075;
-const colors = [
-    { front : 'red', back: 'darkred'},
-    { front : 'green', back: 'darkgreen'},
-    { front : 'blue', back: 'darkblue'},
-    { front : 'yellow', back: 'darkyellow'},
-    { front : 'orange', back: 'darkorange'},
-    { front : 'pink', back: 'darkpink'},
-    { front : 'purple', back: 'darkpurple'},
-    { front : 'turquoise', back: 'darkturquoise'},
-];
+/****** Description *****/
+// This program renders confetti on a loop
+/************************/
 
-//-----------Functions--------------
-resizeCanvas = () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    cx = ctx.canvas.width/2;
-    cy = ctx.canvas.height/2;
-}
+/***** Major data structures *****/
+// Defined within confetti():
+/*********************************/
 
-randomRange = (min, max) => Math.random() * (max - min) + min
+/*****Sources*****/
+//https://codepen.io/bananascript/pen/EyZeWm
+/*********************************/
 
-initConfetti = () => {
-    for (let i = 0; i < confettiCount; i++) {
-        confetti.push({
-            color      : colors[Math.floor(randomRange(0, colors.length))],
-            dimensions : {
-                x: randomRange(10, 20),
-                y: randomRange(10, 30),
-            },
-            position   : {
-                x: randomRange(0, canvas.width),
-                y: canvas.height - 1,
-            },
-            rotation   : randomRange(0, 2 * Math.PI),
-            scale      : {
-                x: 1,
-                y: 1,
-            },
-            velocity   : {
-                x: randomRange(-25, 25),
-                y: randomRange(0, -50),
-            },
-        });
+'use strict';
+
+let confetti = function() {
+    // Globals
+    var random = Math.random
+        , cos = Math.cos
+        , sin = Math.sin
+        , PI = Math.PI
+        , PI2 = PI * 2
+        , timer = undefined
+        , frame = undefined
+        , confetti = [];
+
+
+
+    var particles = 10
+        , spread = 40
+        , sizeMin = 3
+        , sizeMax = 12 - sizeMin
+        , eccentricity = 10
+        , deviation = 100
+        , dxThetaMin = -.1
+        , dxThetaMax = -dxThetaMin - dxThetaMin
+        , dyMin = .13
+        , dyMax = .18
+        , dThetaMin = .4
+        , dThetaMax = .7 - dThetaMin;
+
+    var colorThemes = [
+        function() {
+            return color(200 * random()|0, 200 * random()|0, 200 * random()|0);
+        }, function() {
+            var black = 200 * random()|0; return color(200, black, black);
+        }, function() {
+            var black = 200 * random()|0; return color(black, 200, black);
+        }, function() {
+            var black = 200 * random()|0; return color(black, black, 200);
+        }, function() {
+            return color(200, 100, 200 * random()|0);
+        }, function() {
+            return color(200 * random()|0, 200, 200);
+        }, function() {
+            var black = 256 * random()|0; return color(black, black, black);
+        }, function() {
+            return colorThemes[random() < .5 ? 1 : 2]();
+        }, function() {
+            return colorThemes[random() < .5 ? 3 : 5]();
+        }, function() {
+            return colorThemes[random() < .5 ? 2 : 4]();
+        }
+    ];
+
+    function color(r, g, b) {
+        return 'rgb(' + r + ',' + g + ',' + b + ')';
     }
-}
 
-//---------Render-----------
-render = () => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Cosine interpolation
+    function interpolation(a, b, t) {
+        return (1-cos(PI*t))/2 * (b-a) + a;
+    }
 
-    confetti.forEach((confetto, index) => {
-        let width = (confetto.dimensions.x * confetto.scale.x);
-        let height = (confetto.dimensions.y * confetto.scale.y);
+    // Create a 1D Maximal Poisson Disc over [0, 1]
+    var radius = 1/eccentricity, radius2 = radius+radius;
+    function createPoisson() {
+        // domain is the set of points which are still available to pick from
+        // D = union{ [d_i, d_i+1] | i is even }
+        var domain = [radius, 1-radius], measure = 1-radius2, spline = [0, 1];
+        while (measure) {
+            var dart = measure * random(), i, l, interval, a, b, c, d;
 
-        // Move canvas to position and rotate
-        ctx.translate(confetto.position.x, confetto.position.y);
-        ctx.rotate(confetto.rotation);
+            // Find where dart lies
+            for (i = 0, l = domain.length, measure = 0; i < l; i += 2) {
+                a = domain[i], b = domain[i+1], interval = b-a;
+                if (dart < measure+interval) {
+                    spline.push(dart += a-measure);
+                    break;
+                }
+                measure += interval;
+            }
+            c = dart-radius, d = dart+radius;
 
-        // Apply forces to velocity
-        confetto.velocity.x -= confetto.velocity.x * drag;
-        confetto.velocity.y = Math.min(confetto.velocity.y + gravity, terminalVelocity);
-        confetto.velocity.x += Math.random() > 0.5 ? Math.random() : -Math.random();
+            // Update the domain
+            for (i = domain.length-1; i > 0; i -= 2) {
+                l = i-1, a = domain[l], b = domain[i];
+                // c---d          c---d  Do nothing
+                //   c-----d  c-----d    Move interior
+                //   c--------------d    Delete interval
+                //         c--d          Split interval
+                //       a------b
+                if (a >= c && a < d)
+                    if (b > d) domain[l] = d; // Move interior (Left case)
+                    else domain.splice(l, 2); // Delete interval
+                else if (a < c && b > c)
+                    if (b <= d) domain[i] = c; // Move interior (Right case)
+                    else domain.splice(i, 0, c, d); // Split interval
+            }
 
-        // Set position
-        confetto.position.x += confetto.velocity.x;
-        confetto.position.y += confetto.velocity.y;
+            // Re-measure the domain
+            for (i = 0, l = domain.length, measure = 0; i < l; i += 2)
+                measure += domain[i+1]-domain[i];
+        }
 
-        // Delete confetti when out of frame
-        if (confetto.position.y >= canvas.height) confetti.splice(index, 1);
+        return spline.sort();
+    }
 
-        // Loop confetto x position
-        if (confetto.position.x > canvas.width) confetto.position.x = 0;
-        if (confetto.position.x < 0) confetto.position.x = canvas.width;
+    // Create the overarching container
+    var container = document.createElement('div');
+    container.style.position = 'fixed';
+    container.style.top      = '0';
+    container.style.left     = '0';
+    container.style.width    = '100%';
+    container.style.height   = '0';
+    container.style.overflow = 'visible';
+    container.style.zIndex   = '9999';
 
-        // Spin confetto by scaling y
-        confetto.scale.y = Math.cos(confetto.position.y * 0.1);
-        ctx.fillStyle = confetto.scale.y > 0 ? confetto.color.front : confetto.color.back;
+    // Confetto constructor
+    function Confetto(theme) {
+        this.frame = 0;
+        this.outer = document.createElement('div');
+        this.inner = document.createElement('div');
+        this.outer.appendChild(this.inner);
 
-        // Draw confetto
-        ctx.fillRect(-width / 2, -height / 2, width, height);
+        var outerStyle = this.outer.style, innerStyle = this.inner.style;
+        outerStyle.position = 'absolute';
+        outerStyle.width  = (sizeMin + sizeMax * random()) + 'px';
+        outerStyle.height = (sizeMin + sizeMax * random()) + 'px';
+        innerStyle.width  = '100%';
+        innerStyle.height = '100%';
+        innerStyle.backgroundColor = theme();
 
-        // Reset transform matrix
-        ctx.setTransform(1, 0, 0, 1, 0, 0);
-    });
+        outerStyle.perspective = '50px';
+        outerStyle.transform = 'rotate(' + (360 * random()) + 'deg)';
+        this.axis = 'rotate3D(' +
+            cos(360 * random()) + ',' +
+            cos(360 * random()) + ',0,';
+        this.theta = 360 * random();
+        this.dTheta = dThetaMin + dThetaMax * random();
+        innerStyle.transform = this.axis + this.theta + 'deg)';
 
-    // Fire off another round of confetti
-    if (confetti.length <= 10) initConfetti();
+        this.x = window.innerWidth * random();
+        this.y = -deviation;
+        this.dx = sin(dxThetaMin + dxThetaMax * random());
+        this.dy = dyMin + dyMax * random();
+        outerStyle.left = this.x + 'px';
+        outerStyle.top  = this.y + 'px';
 
-    window.requestAnimationFrame(render);
-}
+        // Create the periodic spline
+        this.splineX = createPoisson();
+        this.splineY = [];
+        for (var i = 1, l = this.splineX.length-1; i < l; ++i)
+            this.splineY[i] = deviation * random();
+        this.splineY[0] = this.splineY[l] = deviation * random();
 
-//---------Execution--------
-initConfetti();
-render();
+        this.update = function(height, delta) {
+            this.frame += delta;
+            this.x += this.dx * delta;
+            this.y += this.dy * delta;
+            this.theta += this.dTheta * delta;
 
-//----------Resize----------
-window.addEventListener('resize', function () {
-    resizeCanvas();
-});
+            // Compute spline and convert to polar
+            var phi = this.frame % 7777 / 7777, i = 0, j = 1;
+            while (phi >= this.splineX[j]) i = j++;
+            var rho = interpolation(
+                this.splineY[i],
+                this.splineY[j],
+                (phi-this.splineX[i]) / (this.splineX[j]-this.splineX[i])
+            );
+            phi *= PI2;
 
-//------------Click------------
-window.addEventListener('click', function() {
-    initConfetti();
-});
+            outerStyle.left = this.x + rho * cos(phi) + 'px';
+            outerStyle.top  = this.y + rho * sin(phi) + 'px';
+            innerStyle.transform = this.axis + this.theta + 'deg)';
+            return this.y > height+deviation;
+        };
+    }
+
+    function poof() {
+        if (!frame) {
+            // Append the container
+            document.body.appendChild(container);
+
+            // Add confetti
+            var theme = colorThemes[0]
+                , count = 0;
+            (function addConfetto() {
+                var confetto = new Confetto(theme);
+                confetti.push(confetto);
+                container.appendChild(confetto.outer);
+                // timer = setTimeout(addConfetto, spread * random()); // will cause confetti to loop by itself
+            })(0);
+
+            // Start the loop
+            var prev = undefined;
+
+            requestAnimationFrame(function loop(timestamp) {
+
+                var delta = prev ? timestamp - prev : 0;
+                prev = timestamp;
+                var height = window.innerHeight;
+
+                for (var i = confetti.length-1; i >= 0; --i) {
+                    if (confetti[i].update(height, delta)) {
+                        container.removeChild(confetti[i].outer);
+                        confetti.splice(i, 1);
+                    }
+
+                }
+
+
+                if (timer || confetti.length)
+                {
+                    return frame = requestAnimationFrame(loop);
+                }
+
+                // Cleanup
+                document.body.removeChild(container);
+                frame = undefined;
+
+            });
+        }
+    }
+
+    poof();
+
+};
