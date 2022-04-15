@@ -188,7 +188,7 @@ function testClearChildren() {
 
     // In our particular function, clearing the children actually clears
     // all but two elements, so we test to see if two elements exist
-    if (dummyDiv.children.length === 2) {
+    if (dummyDiv.children.length === 1) {
         return true;
     } else {
         console.log(dummyDiv);

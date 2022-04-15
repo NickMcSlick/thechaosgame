@@ -573,7 +573,7 @@ function updateMousePosition(e, mousePosition, canvas) {
     let tempY = - 2 * (e.clientY - rect.top) / canvas.height + 1;
 
     // This is done so the user does not draw "half-circles" that are cut off
-    if (Math.abs(tempX) < 0.95 && Math.abs(tempY) < 0.95) {
+    if (Math.abs(tempX) < 0.85 && Math.abs(tempY) < 0.85) {
         mousePosition.x = tempX;
         mousePosition.y = tempY;
     } else {
@@ -600,7 +600,7 @@ function placePoint(e, mousePosition, points, canvas, undid) {
     }
 
     // Check to make sure the user isn't drawing too close to the border
-    if (Math.abs(mousePosition.x) > 0.95 && Math.abs(mousePosition.y) > 0.95) {
+    if (Math.abs(mousePosition.x) > 0.85 && Math.abs(mousePosition.y) > 0.85) {
         return;
     }
 
@@ -721,8 +721,8 @@ function readjustPoints(points, canvas, n) {
             dir[1] / Math.sqrt( dir[0]**2 + dir[1]**2 )
         ]
         let point = [
-            dir[0] + 30 * unitVec[0] + screenCenterX,
-            dir[1] + 30 * unitVec[1] + screenCenterY
+            dir[0] + 20 * unitVec[0] + screenCenterX,
+            dir[1] + 20 * unitVec[1] + screenCenterY
         ];
 
         let label = document.getElementById("pointLabel" + i);
@@ -787,7 +787,7 @@ function drawVertices(webGL, pointArray, color) {
 // Clear the children elements - used to clear labels here
 // Based off of this code: https://stackoverflow.com/questions/19885788/removing-every-child-element-except-first-child
 function clearChildren(div) {
-    while (div.children.length > 2) {
+    while (div.children.length > 1) {
         div.removeChild(div.lastChild);
     }
 }
