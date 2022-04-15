@@ -79,8 +79,8 @@
             </table>
             <div id="selectPointsFactor"><span>Special factor needed to get a fractal pattern:</span></div>
         </div>
-    <!--             The game 'page' which appears after a point is selected-->
 
+        <!-- The game 'page' which appears after a point is selected -->
         <div id="mainGameWrapper" hidden>
             <!-- Message box to send messages to the user -->
             <div id="messages">
@@ -92,22 +92,22 @@
               <div id="inner_game">
                 <canvas id="webGL"> Your browser does not support canvas or WebGL. Try using an update major browser, like Google Chrome or Mozilla FireFox </canvas>
               </div>
-              <div id="controls">
-                  <span id="points_placed">Points: 0</span>
-                  <form style="display: inline">
-                    <!-- Default keyboard input disabled on sliders -->
-                    <label>Speed:</label>
-                    <input id="speed" class="slider" type="range" min="0" max="2000" onkeydown="event.preventDefault()"></input>
-                    <input id="play_pause" type="button" value="&#x23F8"></input>
-                    <label>Color:</label>
-                    <input id="color" class="slider" type="range" min="0" max="365" onkeydown="event.preventDefault()"></input>
-                    <input id="run" type="button" value="Run"></input>
-                    <input id="undo" type="button" value="&#x21B6"></input>
-                    <input id="redo" type="button" value="&#x21B7"></input>
-                    <input id="reset" type="button" value="&#x27F2"></input>
-                    <input id="new" type="button" value="Restart"></input
-                  </form>
-                </div>
+            </div>
+            <div id="controls" class="controlsClass">
+              <span id="points_placed">Points: 0</span>
+              <form>
+                <!-- Default keyboard input disabled on sliders -->
+                <label>Speed:</label>
+                <input id="speed" class="slider" type="range" min="0" max="2000" onkeydown="event.preventDefault()"></input>
+                <button id="play_pause" type="button" class="btn btn-primary">&#x23F8;</button>
+                <label>Color:</label>
+                <input id="color" class="slider" type="range" min="0" max="365" onkeydown="event.preventDefault()"></input>
+                <button id="run" type="button" class="btn btn-primary">Run</button>
+                <button id="undo" type="button" class="btn btn-primary" value="">&#x21B6;</button>
+                <button id="redo" type="button" class="btn btn-primary" value="">&#x21B7;</button>
+                <button id="reset" type="button" class="btn btn-primary" value="">&#x27F2;</button>
+                <button id="new" type="button" class="btn btn-primary">New</button>
+              </form>
             </div>
         </div>
     </div>

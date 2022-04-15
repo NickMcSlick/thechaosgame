@@ -20,6 +20,14 @@ function selectMain() {
   let pointSelectionDiv = document.getElementById("pointSelection");
   let gameDiv = document.getElementById("mainGameWrapper");
 
+  // Check that these elements exits
+  if (!pointSelectionDiv) {
+    console.log("Point selection div does not exist!");
+    return;
+  } else if (!gameDiv) {
+    console.log("Main game wrapper does not exist!");
+  }
+
   let three = document.getElementById("three");
   let four = document.getElementById("four");
   let five = document.getElementById("five");
@@ -34,6 +42,15 @@ function selectMain() {
     tableArray[i].associatedValue = i + 3;
   }
 
+  // Check that these elements exist
+  tableArray.forEach(object => function () {
+        if (!object) {
+          console.log(object.associatedValue + " element does not exist!");
+          return;
+        }
+      }
+  )
+
   // Initialize the values
   gameDiv.hidden = true;
   let current = three;
@@ -41,7 +58,7 @@ function selectMain() {
   updateSpecialFactor(3);
   selected(three);
 
-  // Set events for using mouse navigation
+  // Set events for using arrow navigation
   window.onkeydown = function(e) {
     // left or down
     if (e.keyCode === 37 || e.keyCode === 40) {
