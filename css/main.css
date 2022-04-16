@@ -246,8 +246,16 @@ html, body {
 }
 
 /* Formatting for the messages on the game page */
-#message_box {
-    margin: 0em auto 0.5em auto;
+.game_message_box {
+    margin: 0.5em auto .5em auto;
+    padding: 0;
+    color: aqua;
+    text-align: center;
+    font-size: 2.4vw;
+}
+
+.general_message_box {
+    margin: 0.5em auto .5em auto;
     padding: 0;
     color: aqua;
     text-align: center;

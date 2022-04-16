@@ -119,6 +119,7 @@ function main(selection) {
 
     let confettiCounter = 0;                        // number of confetti on screen
     let confettiAmount = 250;                       // max number of confetti
+
     // Encapsulating the flags in an object
     let flags = {
         run: false,                                 // flag to alert the program that the user wants to run the game
@@ -213,13 +214,9 @@ function main(selection) {
 
     // The update function
     // Called to make rendering changes
-    
     function update() {
         // The output vertex array
         let totalPoints = [state.mousePosition];
-
-        // Letting the program know how many borders to draw
-        let borders = 0;
 
         // Insert the selected points into the output vertices
         state.points.forEach(pointObject => {
@@ -345,7 +342,7 @@ function main(selection) {
                     // We need to do some quick changes when we end the game
                     // We need to update the user and clear the labels, as well as call update
                     // one last time to make sure that all the buttons are properly set
-                    updateInnerHtml(dom.messageBox, "Look at your fascinating fractal pattern! Press refresh or restart to play again!");
+                    updateInnerHtml(dom.messageBox, "What a fascinating pattern! Press 'New' or '\u27F2' to play again!");
                     clearChildren(dom.innerGame);
                     update();
 
