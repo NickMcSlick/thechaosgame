@@ -604,10 +604,12 @@ function updateMousePosition(e, mousePosition, points, canvas) {
     let tempX = 2 * (e.clientX - rect.left) / canvas.width - 1;
     let tempY = - 2 * (e.clientY - rect.top) / canvas.height + 1;
 
-    // Check if points are too close
+    // Check if points are too close and if they are, move the mouse out of sight
     let tooClose = 0.1;
     for(let p of points) {
         if( distance(new Point(tempX, tempY), p) < tooClose ) {
+            mousePosition.x = 2.0;
+            mousePosition.y = 2.0;
             return;
         }
     }
