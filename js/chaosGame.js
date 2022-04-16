@@ -423,9 +423,9 @@ function main(selection) {
 /****** INITIALIZING/BINDING/DEBINDING EVENT FUNCTIONS ******/
 
 //SliderSound defined as variable 
-var SliderSound = new Audio("../Audio/SliderS.wav");
+var SliderSound = new Audio("../audio/SliderS.wav");
 //run button sound effect
-var run_button = new Audio("../Audio/Run_Button.wav");
+var run_button = new Audio("../audio/Run_Button.wav");
 
 // Initialize controls and bind their respective events
 function initializeControlEvents(controls, state, flags, dom, update) {
