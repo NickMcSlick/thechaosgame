@@ -6,23 +6,61 @@
 /***** TESTS *****/
 
 // Dummy variables used for the tests
-let dummyCanvas = document.createElement("canvas");
-let dummyGL = dummyCanvas.getContext("webgl");
-let dummyEvent = new MouseEvent("click", { clientX: 400, clientY: 400 });
-Object.defineProperty(dummyEvent, "target", { writable: false, value: dummyCanvas });
+
+// Usually, local variables are declared for each test
+// However some functions require these objects to test
+
+// Dummy configuration
+let dummyConfig = {
+    SPEED: 1000,
+    COLOR: 180,
+    PLAY: true,
+    TOTAL_POINTS: 3000,
+}
+
+// Dummy state
 let dummyState = {
-    n: 3,                                                          // The number of points
-    mousePosition: new Point(0, 0, "", true),            // Current mouse position
-    current: new Point(0, 0, ""),                               // Current position for drawing
-    points: [],                                                             // Selected point array
-    generatedPoints: [],                                                    // Generated points array
-    undid: [],                                                              // The undone points
+    n: 3,
+    mousePosition: new Point(2.0, 2.0, "", true),
+    current: new Point(0, 0, ""),
+    points: [],
+    generatedPoints: [],
+    undid: [],
     animID: 1,
 }
 
+// Dummy controls
+let dummyControls = {
+    run: document.createElement("input"),
+    reset: document.createElement("input"),
+    speed: document.createElement("input"),
+    playPause: document.createElement("input"),
+    color: document.createElement("input"),
+    undo: document.createElement("input"),
+    redo: document.createElement("input"),
+    newN: document.createElement("input"),
+}
+
+// Dummy dom elements
+let dummyDom = {
+    canvas: document.createElement("canvas"),
+    innerGame: document.createElement("div"),
+    messageBox: document.createElement("div"),
+    pointsPlaced: document.createElement("div"),
+}
+
+// Dummy flags
+let dummyFlags = {
+    run: false,
+    spawnAnimation: false,
+    endGame: false
+}
+
 // Size the canvas for standard testing
-dummyCanvas.width = 500;
-dummyCanvas.height = 500;
+let dummyEvent = new MouseEvent("click", { clientX: 400, clientY: 400 });
+Object.defineProperty(dummyEvent, "target", { writable: false, value: dummyDom.canvas });
+dummyDom.canvas.width = 500;
+dummyDom.canvas.height = 500;
 
 // Test if the fragment shader exists
 function fShaderTest() {
@@ -95,8 +133,8 @@ function testElementExists(name) {
 
 // Test that the mouseover event handler is properly translating coordinates
 function testMouseOver() {
-    let dummyMouse = new Point();
-    updateMousePosition(dummyEvent, dummyMouse, dummyCanvas);
+    let dummyMouse = new Point(2.0, 2.0, "", true);
+    updateMousePosition(dummyEvent, dummyMouse, dummyDom.canvas);
     if (Math.abs(dummyMouse.x) > 1 || Math.abs(dummyMouse.y) > 1) {
         return false;
     } else {
@@ -106,10 +144,10 @@ function testMouseOver() {
 
 // Test that the point placing event properly translates coordinates
 function testMouseDown() {
-    let dummyMouse = new Point();
+    let dummyMouse = new Point(2.0, 2.0, "", false);
     let dummyPoints = [];
     let dummyUndid = [];
-    placePoint(dummyEvent, dummyMouse, dummyPoints, dummyCanvas, dummyUndid);
+    placePoint(dummyEvent, dummyMouse, dummyPoints, dummyDom.canvas, dummyUndid);
     if (Math.abs(dummyPoints[0].x) > 1 || Math.abs(dummyPoints[0].y) > 1) {
         return false;
     } else {
@@ -282,8 +320,20 @@ function testEnableCanvasEvents() {
     }
 }
 
+function testInitializeControlEvents() {
+    initializeControlEvents(dummyControls, dummyState, dummyFlags, dummyDom, new function() {})
+    if (dummyControls.speed.oninput && dummyControls.color.oninput && dummyControls.undo.onclick
+        && dummyControls.redo.onclick && dummyControls.reset.onclick && dummyControls.playPause.onclick
+        && dummyControls.newN.onclick && dummyControls.run.onclick && dummyControls.run.disabled
+        && dummyControls.undo.disabled && dummyControls.redo.disabled && dummyControls.playPause.disabled) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 // INSERT TESTS FOR:
-// Canvas event binding, control binding
+// Control binding
 // These two are visual, creating visual system tests:
 // addLabels
 // addCustomLabel
@@ -324,4 +374,5 @@ function runTests() {
     console.log("Disabling buttons: " + testDisable());
     console.log("Test updating messages: " + testUpdateInnerHtml());
     console.log("Test enabling canvas events: " + testEnableCanvasEvents());
+    console.log("Test initializing controls: " + testInitializeControlEvents());
 }

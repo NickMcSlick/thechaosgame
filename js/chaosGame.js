@@ -24,7 +24,10 @@
 // WebGL context object: used for animating and to communicate with the GPU and canvas element
 /*********************************/
 
+// Music made available by "https://mixkit.co/free-sound-effects/" and "https://patrickdearteaga.com/arcade-music/".
+
 let partying;
+
 // The configuration object
 // Interface with this object to manipulate the animation of points
 let config = {
@@ -201,7 +204,7 @@ function main(selection) {
 
     // If the window resizes, adjust the rendering context accordingly
     window.onresize = function() {
-        resize(webGL, dom.canvas, dom.innerGame);
+        resize(webGL, state, dom, flags);
         update();
     }
 
@@ -246,7 +249,7 @@ function main(selection) {
             // 2. Get the standard deviation of the slopes of the points
             // 3. If the standard deviation of the slopes is under a certain threshold, the slopes are similar enough 
             //    to each other that they are considered to be in a line, and so point readjustment is not carried out.
-            let threshold = 0.75;
+            let threshold = 1.0;
             let slopes = [];
             for(let i = 0; i < state.points.length; i++) {
                 let p1 = state.points[i];
@@ -255,10 +258,11 @@ function main(selection) {
 
                 slopes.push( slope );
             }
+
             if( standardDeviation(slopes) > threshold )
                 readjustPoints(state.points, dom.canvas, state.n);
             else
-                addLabels(state.points, dom.canvas);
+                addLabels(state.points.slice(0, state.n), dom.canvas);
         }
 
         /* Possible cases for which buttons should be enabled */
@@ -418,22 +422,26 @@ function main(selection) {
 
 // Initialize controls and bind their respective events
 function initializeControlEvents(controls, state, flags, dom, update) {
+    // SliderSound defined as variable
+    var SliderSound = new Audio("../audio/woodSlider.wav");
     // Set slider events (also initialize the slider values)
     controls.speed.oninput = function() {
         config.SPEED = controls.speed.max - controls.speed.value;
+        SliderSound.play();
         update();
     }
 
     // Set initial style of slider
     let currentColor = hsvToRgb(config.COLOR / 360, 1, 1);
     controls.color.style.backgroundColor = "rgb( " + currentColor.r + ", " + currentColor.g + ", " + currentColor.b + ")";
-    controls.speed.value = controls.speed.max - config.SPEED;
+    controls.speed.value = controls.speed.max - config.SPEED + "";
 
     // Update slider
     controls.color.oninput = function() {
         config.COLOR = controls.color.value;
         currentColor = hsvToRgb(config.COLOR / 360, 1, 1);
         controls.color.style.backgroundColor = "rgb( " + currentColor.r + ", " + currentColor.g + ", " + currentColor.b + ")";
+        SliderSound.play();
         update();
     }
     controls.color.value = config.COLOR;
@@ -547,7 +555,6 @@ function enableCanvasEvents(canvas, update, state) {
 
     // If the user clicks on the canvas, add a point to the point array
     canvas.onclick = function (e) {
-        //let dist = distance(
         placePoint(e, state.mousePosition, state.points, canvas, state.undid);
         update();
     }
@@ -574,10 +581,13 @@ function disable(domElement) {
 }
 
 // Resize the window
-function resize(webGL, canvas, innerGame) {
-    canvas.width = innerGame.getBoundingClientRect().width;
-    canvas.height = innerGame.getBoundingClientRect().height;
-    webGL.viewport(0, 0, canvas.width, canvas.height);
+function resize(webGL, state, dom, flags) {
+    dom.canvas.width = dom.innerGame.getBoundingClientRect().width;
+    dom.canvas.height = dom.innerGame.getBoundingClientRect().height;
+    if (flags.run && !flags.endGame) {
+        addCustomLabel(state.current, dom.canvas, "Current");
+    }
+    webGL.viewport(0, 0, dom.canvas.width, dom.canvas.height);
 }
 
 /****** POINT FUNCTIONS ******/
