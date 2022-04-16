@@ -637,6 +637,8 @@ function placePoint(e, mousePosition, points, canvas, undid) {
     let tooClose = 0.1;
     for(let p of points) {
         if( distance(mousePosition, p) < tooClose ) {
+            mousePosition.x = 2.0;
+            mousePosition.y = 2.0;
             return;
         }
     }
