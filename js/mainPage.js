@@ -1,4 +1,5 @@
-
+// Music made available by "https://mixkit.co/free-sound-effects/" and "https://patrickdearteaga.com/arcade-music/".
+// 
 function homeButton()
 {
     location.assign("../index.html")
