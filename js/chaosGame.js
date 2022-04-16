@@ -18,8 +18,8 @@
 
 // Within main():
 // DOM objects: as often occurs in JS programs, DOM elements are accessed and manipulated through a DOM object
-// State object: Encapsulates animation data, and multiple arrays are used (includes generated points, undid points, etc.)
-// Flags object: flags for the state of the program are encapsulated in a flag object
+// State object: Holds animation data, and multiple arrays are used (includes generated points, undid points, etc.)
+// Flags object: flags for the state of the program held in a flag object
 // Controls object: object to hold DOM controls
 // WebGL context object: used for animating and to communicate with the GPU and canvas element
 /*********************************/

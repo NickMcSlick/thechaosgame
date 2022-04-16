@@ -64,22 +64,28 @@ function selectMain() {
   window.onkeydown = function(e) {
     // left or down
     if (e.keyCode === 37 || e.keyCode === 40) {
-      if (current.associatedValue > 3) {
-        prev = current;
+      prev = current;
+      if (current.associatedValue === 3) {
+        current = getTableElement(tableArray, 8);
+      } else {
         current = getTableElement(tableArray, current.associatedValue - 1);
-        updateSpecialFactor(current.associatedValue);
-        selected(current);
-        deSelected(prev);
       }
+      updateSpecialFactor(current.associatedValue);
+      selected(current);
+      deSelected(prev);
+
     // right or up
     } else if (e.keyCode === 39 || e.keyCode === 38) {
-      if (current.associatedValue < 8) {
-        prev = current;
+      prev = current;
+      if (current.associatedValue === 8) {
+        current = getTableElement(tableArray, 3);
+      } else {
         current = getTableElement(tableArray, current.associatedValue + 1);
-        updateSpecialFactor(current.associatedValue);
-        selected(current);
-        deSelected(prev);
       }
+      updateSpecialFactor(current.associatedValue);
+      selected(current);
+      deSelected(prev);
+
     // Enter
     } else if (e.keyCode === 13) {
       sound.play();
