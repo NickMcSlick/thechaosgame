@@ -6,6 +6,11 @@
 
     Purpose:
     This is the main stylesheet for the website
+
+    Sources:
+    https://www.w3schools.com/howto/howto_js_rangeslider.asp
+    https://stackoverflow.com/questions/6900124/how-to-make-certain-text-not-selectable-with-css
+
  */
 
 /* Global CSS */
@@ -75,7 +80,6 @@ html, body {
 #confettiContainer {
     position: relative;
     height: 100%;
-    /*padding: 2em 2em 0em 2em;*/
     background-color: black;
     overflow: auto;
 }
@@ -108,7 +112,6 @@ html, body {
 /* Padding so the user doesn't draw right on the edge */
 @media only screen and (min-width : 1224px) {
       #game_board {
-        /* padding: 3em; */
         border-top-left-radius: 2em;
         border-top-right-radius: 2em;
         border-width: 0.3em;
@@ -146,7 +149,6 @@ html, body {
     }
     
     .triangleImage {
-        margin-top: 5%;
         float: left;
         width: 30em;
     }
@@ -156,7 +158,6 @@ html, body {
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: -5%;
     }
 }
 @media only screen and (max-width:1223px) {
@@ -199,7 +200,6 @@ html, body {
     }
     
     .triangleImage {
-        margin-top: 5%;
         float: left;
         width: 20em;
     }
