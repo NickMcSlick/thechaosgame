@@ -24,6 +24,8 @@
 // WebGL context object: used for animating and to communicate with the GPU and canvas element
 /*********************************/
 
+// Music made available by "https://mixkit.co/free-sound-effects/" and "https://patrickdearteaga.com/arcade-music/".
+
 // The configuration object
 // Interface with this object to manipulate the animation of points
 let config = {
@@ -402,12 +404,14 @@ function main(selection) {
 }
 
 /****** INITIALIZING/BINDING/DEBINDING EVENT FUNCTIONS ******/
-
+//SliderSound defined as variable 
+var SliderSound = new Audio("../Audio/SliderS.wav");
 // Initialize controls and bind their respective events
 function initializeControlEvents(controls, state, flags, dom, update) {
     // Set slider events (also initialize the slider values)
     controls.speed.oninput = function() {
         config.SPEED = controls.speed.max - controls.speed.value;
+        SliderSound.play();
         update();
     }
 
@@ -421,6 +425,7 @@ function initializeControlEvents(controls, state, flags, dom, update) {
         config.COLOR = controls.color.value;
         currentColor = hsvToRgb(config.COLOR / 360, 1, 1);
         controls.color.style.backgroundColor = "rgb( " + currentColor.r + ", " + currentColor.g + ", " + currentColor.b + ")";
+        SliderSound.play();
         update();
     }
     controls.color.value = config.COLOR;

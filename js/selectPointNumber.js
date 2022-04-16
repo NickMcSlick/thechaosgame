@@ -14,6 +14,8 @@
 // Defined within selectMain():
 // DOM elements, and an array of DOM elements
 /*********************************/
+//sound on click
+var sound = new Audio("../Audio/ButtonClickS.wav");
 
 // Main point selection script
 function selectMain() {
@@ -80,6 +82,7 @@ function selectMain() {
       }
     // Enter
     } else if (e.keyCode === 13) {
+      sound.play();
       pointSelectionDiv.hidden = true;
       gameDiv.hidden = false;
       main(current.associatedValue);
@@ -96,6 +99,7 @@ function selectMain() {
       selected(current);
       updateSpecialFactor(tableArray[i].associatedValue);
       tableArray[i].onclick = function () {
+        sound.play();
         pointSelectionDiv.hidden = true;
         gameDiv.hidden = false;
         main(tableArray[i].associatedValue);
