@@ -24,7 +24,10 @@
 // WebGL context object: used for animating and to communicate with the GPU and canvas element
 /*********************************/
 
+/***** Sources *****/
 // Music made available by "https://mixkit.co/free-sound-effects/" and "https://patrickdearteaga.com/arcade-music/".
+// TO-DO: DOCUMENT EXTERNAL SOURCES
+/*******************/
 
 let partying;
 
@@ -494,7 +497,7 @@ function initializeControlEvents(controls, state, flags, dom, update) {
 
         currentColor = hsvToRgb(config.COLOR / 360, 1, 1);
         controls.color.style.backgroundColor = "rgb( " + currentColor.r + ", " + currentColor.g + ", " + currentColor.b + ")";
-        controls.speed.value = controls.speed.max - config.SPEED;
+        controls.speed.value = (controls.speed.max - config.SPEED) + "";
 
         cancelAnimationFrame(state.animID);
         cancelAnimationFrame(partying);
@@ -565,7 +568,7 @@ function enableCanvasEvents(canvas, update, state) {
     canvas.onclick = function (e) {
         placePoint(e, state.mousePosition, state.points, canvas, state.undid);
         update();
-        sound.play();
+        new Audio("../audio/click.wav").play();
     }
 }
 
