@@ -407,10 +407,11 @@ function main(selection) {
 }
 
 /****** INITIALIZING/BINDING/DEBINDING EVENT FUNCTIONS ******/
-//SliderSound defined as variable 
-var SliderSound = new Audio("../Audio/SliderS.wav");
+
 // Initialize controls and bind their respective events
 function initializeControlEvents(controls, state, flags, dom, update) {
+    // SliderSound defined as variable
+    var SliderSound = new Audio("../audio/woodSlider.wav");
     // Set slider events (also initialize the slider values)
     controls.speed.oninput = function() {
         config.SPEED = controls.speed.max - controls.speed.value;
