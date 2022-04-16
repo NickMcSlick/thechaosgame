@@ -77,7 +77,7 @@
 
 /* Formatting for the messages on the game page */
 .game_message_box {
-    margin: 0.5em auto .5em auto;
+    margin: 0.5em auto 1.0em auto;
     padding: 0;
     color: aqua;
     text-align: center;
