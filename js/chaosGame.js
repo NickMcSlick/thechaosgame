@@ -206,6 +206,7 @@ function main(selection) {
 
     // The update function
     // Called to make rendering changes
+    
     function update() {
         // The output vertex array
         let totalPoints = [state.mousePosition];
@@ -216,6 +217,7 @@ function main(selection) {
         // Insert the selected points into the output vertices
         state.points.forEach(pointObject => {
             totalPoints.push(pointObject);
+            
         });
 
         // Only label the points if they are the initial ones
@@ -408,6 +410,9 @@ function main(selection) {
 /****** INITIALIZING/BINDING/DEBINDING EVENT FUNCTIONS ******/
 //SliderSound defined as variable 
 var SliderSound = new Audio("../Audio/SliderS.wav");
+//run button sound effect
+var run_button = new Audio("../Audio/Run_Button.wav");
+
 // Initialize controls and bind their respective events
 function initializeControlEvents(controls, state, flags, dom, update) {
     // Set slider events (also initialize the slider values)
@@ -510,6 +515,7 @@ function initializeControlEvents(controls, state, flags, dom, update) {
         flags.run = true;
         flags.spawnAnimation = true;
         update();
+        run_button.play();
     }
 
     // Start with buttons disabled
@@ -541,6 +547,7 @@ function enableCanvasEvents(canvas, update, state) {
     canvas.onclick = function (e) {
         placePoint(e, state.mousePosition, state.points, canvas, state.undid);
         update();
+        sound.play();
     }
 }
 
