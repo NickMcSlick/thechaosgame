@@ -243,7 +243,7 @@ function main(selection) {
             // 2. Get the standard deviation of the slopes of the points
             // 3. If the standard deviation of the slopes is under a certain threshold, the slopes are similar enough 
             //    to each other that they are considered to be in a line, and so point readjustment is not carried out.
-            let threshold = 0.75;
+            let threshold = 1.0;
             let slopes = [];
             for(let i = 0; i < state.points.length; i++) {
                 let p1 = state.points[i];
@@ -252,10 +252,11 @@ function main(selection) {
 
                 slopes.push( slope );
             }
+
             if( standardDeviation(slopes) > threshold )
                 readjustPoints(state.points, dom.canvas, state.n);
             else
-                addLabels(state.points, dom.canvas);
+                addLabels(state.points.slice(0, state.n), dom.canvas);
         }
 
         /* Possible cases for which buttons should be enabled */
