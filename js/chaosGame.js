@@ -26,13 +26,15 @@
 
 // Music made available by "https://mixkit.co/free-sound-effects/" and "https://patrickdearteaga.com/arcade-music/".
 
+let partying;
+
 // The configuration object
 // Interface with this object to manipulate the animation of points
 let config = {
     SPEED: 1000,
     COLOR: 180,
     PLAY: true,
-    TOTAL_POINTS: 3000,
+    TOTAL_POINTS: 30,
 }
 
 // Point constructor
@@ -112,11 +114,13 @@ let FSHADER = `
 function main(selection) {
     let webGL;                                      // The drawing context
 
+    let confettiCounter = 0;                        // number of confetti on screen
+    let confettiAmount = 250;                       // max number of confetti
     // Encapsulating the flags in an object
     let flags = {
         run: false,                                 // flag to alert the program that the user wants to run the game
         spawnAnimation: false,                      // flag to alert the program to spawn an animation
-        endGame: false                              // flag to alert to program to end the game
+        endGame: false,                             // flag to alert the program to end the game
     }
 
     // Encapsulate the data needed for animation in the state object
@@ -247,7 +251,7 @@ function main(selection) {
             // 2. Get the standard deviation of the slopes of the points
             // 3. If the standard deviation of the slopes is under a certain threshold, the slopes are similar enough 
             //    to each other that they are considered to be in a line, and so point readjustment is not carried out.
-            let threshold = 0.75;
+            let threshold = 1.0;
             let slopes = [];
             for(let i = 0; i < state.points.length; i++) {
                 let p1 = state.points[i];
@@ -256,10 +260,11 @@ function main(selection) {
 
                 slopes.push( slope );
             }
+
             if( standardDeviation(slopes) > threshold )
                 readjustPoints(state.points, dom.canvas, state.n);
             else
-                addLabels(state.points, dom.canvas);
+                addLabels(state.points.slice(0, state.n), dom.canvas);
         }
 
         /* Possible cases for which buttons should be enabled */
@@ -331,7 +336,6 @@ function main(selection) {
                     // End the game and update the last point generated to get rid of its border
                     flags.endGame = true;
                     totalPoints[totalPoints.length - state.n - 2].border = false;
-
                     // Also clear point data
                     state.points.length = 0;
 
@@ -342,7 +346,16 @@ function main(selection) {
                     clearChildren(dom.innerGame);
                     update();
 
-                    // TO-DO for Kathlyn - insert the celebration gif and music here
+                    // Celebration gif and music here
+                    if (confettiCounter++ < confettiAmount) {
+                        confetti(); //with current modification, only one confetti spawned per call
+                    }
+
+                }
+                //not end game condition
+                else {
+                    confettiCounter = 0;
+                    
                 }
 
                 // Update the time elapsed
@@ -408,13 +421,18 @@ function main(selection) {
 }
 
 /****** INITIALIZING/BINDING/DEBINDING EVENT FUNCTIONS ******/
+<<<<<<< HEAD
 //SliderSound defined as variable 
 var SliderSound = new Audio("../Audio/SliderS.wav");
 //run button sound effect
 var run_button = new Audio("../Audio/Run_Button.wav");
+=======
+>>>>>>> 466364309862b2cfb10eccdd8ef7461952604137
 
 // Initialize controls and bind their respective events
 function initializeControlEvents(controls, state, flags, dom, update) {
+    // SliderSound defined as variable
+    var SliderSound = new Audio("../audio/woodSlider.wav");
     // Set slider events (also initialize the slider values)
     controls.speed.oninput = function() {
         config.SPEED = controls.speed.max - controls.speed.value;
@@ -481,6 +499,8 @@ function initializeControlEvents(controls, state, flags, dom, update) {
         controls.speed.value = controls.speed.max - config.SPEED;
 
         cancelAnimationFrame(state.animID);
+        cancelAnimationFrame(partying);
+
         clearChildren(dom.innerGame);
         updatePlayPause(controls.playPause, config);
         update();

@@ -11,6 +11,8 @@
 <html lang="en">
 <head>
     <title>The Chaos Game | Tutorial</title>
+    <link rel="shortcut icon" type="image/png" href="../images/faviconRed.png"/>
+
     <!-- CSS stylesheets -->
     <link href="../css/main.css" rel="stylesheet">
     <link href="../css/tutorial.css" rel="stylesheet">
@@ -55,14 +57,147 @@
                 </div>
                 <div id="tutorial">
                     <div id="tutorial_box">
-                        <h2>What is "The Chaos Game"?</h2>
-                        <h2>Importance of Fractals</h2>
-                        <h2>Numberphile Video</h2>
-                        <div id="video-wrapper">
-                            <iframe id="video" src="https://www.youtube.com/embed/kbKtFN71Lfs">
-                            </iframe>
+                        <div class = "tutorial_section">
+                            <h2>What is "The Chaos Game"?</h2>
+                            <p>
+                                The "Chaos Game" is a game in which multiple points are selected, along with an initial starting point.
+                                Each selected point, excluding the initial start, is associated with a number. Then, a random number is
+                                selected, and a new point is drawn from the starting point to the point which is associated with that
+                                random number. How far the new point is from the selected point is determined by the formula, n / (n + 3),
+                                where n is the number of points selected. This continues on, with the currently drawn point replacing the
+                                starting position. After several thousand iterations, a fractal, or self-similar, pattern will be observable.
+                                <br>
+                                For example, let's assume that the player choose three starting points.
+                                <div class="imageContainer">
+                                    <img class="controlButton" src="../images/refreshButton.png" alt="Picture of the game board">
+                                </div>
+                                <br>
+                                See the <a href="#video">Numberphile video</a> below to see our inspiration.
+                            </p>
                         </div>
-
+                        <div class= "tutorial_section">
+                            <h2>Gameplay</h2>
+                            <p>
+                                Our version of this game will allow the user to select points on a board, undo and redo selected points,
+                                change the point color, select a new number of points to choose, reset the board, run the game, and
+                                control the speed of point insertion.
+                            </p>
+                            <h2>Game Controls</h2>
+                            <ul>
+                                <li> <h3>Number of Points Selection</h3>
+                                    <p>
+                                        Upon navigating to the game page. The user will be asked to select the initial number of points,
+                                        3 to 8, that will be used to create the image.
+                                    </p>
+                                    <div class="imageContainer">
+                                        <img class="image" id="pointSelection" src="../images/selectPointsScreen.png" alt="Picture of the point selection menu">
+                                    </div>
+                                    <p>Note: The new button will allow the user to return here and change the number of initial points.</p>
+                                </li>
+                            </ul>
+                            <div class="imageContainer">
+                                <img id="gameBoardPic" src="../images/gameBoard.png" alt="Picture of the game board">
+                            </div>
+                            <ol type="1">
+                                <li> <h3>Point Selection</h3>
+                                    <p>Click on the the game board to place an initial point</p>
+                                    <p>A pointer will appear on the board if the area is a valid spot for point placement.</p>
+                                </li>
+                                <li> <h3>Points</h3>
+                                    <p>Indicates the number of points on the board. Once there are 3000 points placed on
+                                        the the board, a celebration will occur
+                                    </p>
+                                </li>
+                                <li>
+                                    <h3>Speed Slider</h3>
+                                    <p>Changes point production speed. Moving the slider to the left slows down point production.
+                                        Moving the slider to the right speeds up point production.
+                                    </p>
+                                </li>
+                                <li> <h3>Color Slider</h3>
+                                    <p>Color ranges from red, orange, yellow, green, blue, indigo, violet, back to red</p>
+                                </li>
+                                <li>
+                                    <h3>Refresh Button</h3>
+                                    <div class="imageContainer">
+                                        <img class="controlButton" src="../images/refreshButton.png" alt="Picture of the game board">
+                                    </div>
+                                    <p>Returns the user to the initial point selection screen and restarts the game</p>
+                                </li>
+                                <li>
+                                    <h3>Run Button</h3>
+                                    <p>Begins point production</p>
+                                </li>
+                                <li> <h3>Play Button</h3>
+                                    <p>Resumes point production after pausing</p>
+                                </li>
+                                <li> <h3>Pause Button</h3>
+                                    <p>Pause point production</p>
+                                </li>
+                                <li> <h3>Reset Button</h3>
+                                    <p>Clears the board and restarts game without changing the number of initial points</p>
+                                </li>
+                                <li>
+                                    <h3>Undo Button</h3>
+                                    <div class="imageContainer">
+                                        <img class="controlButton" id="undoButton" src="../images/undoButton.png" alt="Picture of the game board">
+                                    </div>
+                                    <p>Removes last point placed on the board. Once no points are placed on board the button is disabled</p>
+                                </li>
+                                <li>
+                                    <div class="imageContainer">
+                                        <img class="controlButton" id="redoButton" src="../images/redoButton.png" alt="Picture of the game board">
+                                    </div>
+                                    <h3>Redo Button</h3>
+                                    <p>Replaces the point removed by the undo button</p>
+                                </li>
+                            </ol>
+                        </div>
+                        <div class= "tutorial_section">
+                            <h2>Initial Point Number and Fractal Image Produced</h2>
+                            <p>The fractal image produced is dependent on the number initial points placed. The starting
+                                point placement will have little effect on the image produced.
+                            </p>
+                            <ul>
+                                <li>3 Points</li>
+                                    <div class="imageContainer">
+                                        <img id="triangle" src="../images/triangle.png" alt="Picture of the game board">
+                                    </div>
+                                <li>4 Points</li>
+                                    <div class="imageContainer">
+                                        <img id="square" src="../images/greenSqaure.png" alt="Picture of the game board">
+                                    </div>
+                                <li>5 Points</li>
+                                    <div class="imageContainer">
+                                        <img id="pentagon" src="../images/pentagon2.png" alt="Picture of the game board">
+                                    </div>
+                                <li>6 Points</li>
+                                    <div class="imageContainer">
+                                        <img id="hexagon" src="../images/hexagon2.png" alt="Picture of the game board">
+                                    </div>
+                                <li>7 Points</li>
+                                    <div class="imageContainer">
+                                        <img id="septagon" src="../images/septagon.png" alt="Picture of the game board">
+                                    </div>
+                                <li>8 Points</li>
+                                    <div class="imageContainer">
+                                        <img id="octagon" src="../images/octagon2.png" alt="Picture of the game board">
+                                    </div>
+                            </ul>
+                        </div>
+                        <div class= "tutorial_section">
+                            <h2>Importance of Fractals</h2>
+                            <p>
+                                Fractal images are useful for generating realistic plants in video games.
+                            </p>
+                        </div>
+                        <div class= "tutorial_section">
+                            <h2>Numberphile Video</h2>
+                            <div id="video-wrapper">
+                                <iframe id="video" src="https://www.youtube.com/embed/kbKtFN71Lfs">
+                                </iframe>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -46,7 +46,7 @@ let dummyDom = {
     canvas: document.createElement("canvas"),
     innerGame: document.createElement("div"),
     messageBox: document.createElement("div"),
-    pointsPlaced: document.getElementById("div"),
+    pointsPlaced: document.createElement("div"),
 }
 
 // Dummy flags
