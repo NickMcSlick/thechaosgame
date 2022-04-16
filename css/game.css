@@ -115,6 +115,16 @@
 }
 
 /* Button formatting */
+.btn:hover
+{
+    filter:brightness(85%);
+}
+
+.btn:disabled
+{
+    cursor: default;
+    filter: brightness(100%);
+}
 .btn {
     display: inline-block;
     font-weight: 400;
