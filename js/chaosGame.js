@@ -34,7 +34,7 @@ let config = {
     SPEED: 1000,
     COLOR: 180,
     PLAY: true,
-    TOTAL_POINTS: 30,
+    TOTAL_POINTS: 3000,
 }
 
 // Point constructor
