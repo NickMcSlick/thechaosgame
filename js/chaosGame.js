@@ -551,14 +551,12 @@ function initializeControlEvents(controls, state, flags, dom, update) {
 function enableCanvasEvents(canvas, update, state) {
     // When the user mouses over the canvas, update the mouse position and render
     canvas.onmousemove = function (e) {
-        updateMousePosition(e, state.mousePosition, canvas);
+        updateMousePosition(e, state.mousePosition, state.points, canvas);
         update();
     }
 
     // If the user mouses out, put the mouse in an unviewable position and render
     canvas.onmouseout = function () {
-        // NOTE - JS is pass-by-value if you reassign a variable to another
-        // To actually modify the variable, you need to edit its attributes
         state.mousePosition.x = 2.0;
         state.mousePosition.y = 2.0;
         update();
@@ -568,7 +566,6 @@ function enableCanvasEvents(canvas, update, state) {
     canvas.onclick = function (e) {
         placePoint(e, state.mousePosition, state.points, canvas, state.undid);
         update();
-        new Audio("../audio/click.wav").play();
     }
 }
 
@@ -605,10 +602,18 @@ function resize(webGL, state, dom, flags) {
 /****** POINT FUNCTIONS ******/
 
 // Update the mouse position
-function updateMousePosition(e, mousePosition, canvas) {
+function updateMousePosition(e, mousePosition, points, canvas) {
     let rect = e.target.getBoundingClientRect();
     let tempX = 2 * (e.clientX - rect.left) / canvas.width - 1;
     let tempY = - 2 * (e.clientY - rect.top) / canvas.height + 1;
+
+    // Check if points are too close
+    let tooClose = 0.1;
+    for(let p of points) {
+        if( distance(new Point(tempX, tempY), p) < tooClose ) {
+            return;
+        }
+    }
 
     // This is done so the user does not draw "half-circles" that are cut off
     if (Math.abs(tempX) < 0.85 && Math.abs(tempY) < 0.85) {
@@ -638,9 +643,13 @@ function placePoint(e, mousePosition, points, canvas, undid) {
     }
 
     // Check to make sure the user isn't drawing too close to the border
-    if (Math.abs(mousePosition.x) > 0.85 && Math.abs(mousePosition.y) > 0.85) {
+    if (Math.abs(mousePosition.x) > 0.85 || Math.abs(mousePosition.y) > 0.85) {
+        mousePosition.x = 2.0;
+        mousePosition.y = 2.0;
         return;
     }
+
+    new Audio("../audio/click.wav").play();
 
     points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65), true));
 }

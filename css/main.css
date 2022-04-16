@@ -145,12 +145,12 @@ html, body {
     }
     .squareImage {
       float: right;
-      width: 30em;
+      width: 30%;
     }
     
     .triangleImage {
         float: left;
-        width: 30em;
+        width: 30%;
     }
     .message_container
     {
@@ -196,12 +196,12 @@ html, body {
     }
     .squareImage {
       float: right;
-      width: 20em;
+      width: 30%;
     }
     
     .triangleImage {
         float: left;
-        width: 20em;
+        width: 30%;
     }
     .message_container
     {
@@ -292,7 +292,7 @@ html, body {
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      min-width: 23.044%;
+      min-width: 33%;
     }
 
 /* isn't used at the moment, need to fix */
