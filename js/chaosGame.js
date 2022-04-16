@@ -200,7 +200,7 @@ function main(selection) {
 
     // If the window resizes, adjust the rendering context accordingly
     window.onresize = function() {
-        resize(webGL, dom.canvas, dom.innerGame);
+        resize(webGL, state, dom, flags);
         update();
     }
 
@@ -256,6 +256,8 @@ function main(selection) {
             }
             if( standardDeviation(slopes) > threshold )
                 readjustPoints(state.points, dom.canvas, state.n);
+            else
+                addLabels(state.points, dom.canvas);
         }
 
         /* Possible cases for which buttons should be enabled */
@@ -418,7 +420,7 @@ function initializeControlEvents(controls, state, flags, dom, update) {
     // Set initial style of slider
     let currentColor = hsvToRgb(config.COLOR / 360, 1, 1);
     controls.color.style.backgroundColor = "rgb( " + currentColor.r + ", " + currentColor.g + ", " + currentColor.b + ")";
-    controls.speed.value = controls.speed.max - config.SPEED;
+    controls.speed.value = controls.speed.max - config.SPEED + "";
 
     // Update slider
     controls.color.oninput = function() {
@@ -483,16 +485,17 @@ function initializeControlEvents(controls, state, flags, dom, update) {
     controls.playPause.onclick = function() {
         updatePlayPause(controls.playPause, config);
     }
+    controls.playPause.innerHTML = "\u23F8";
 
     // Update play/pause
     // This function is abstracted and is not anonymous because it is needed in the reset event
     function updatePlayPause(playPause, config) {
         if (config.PLAY) {
             config.PLAY = false;
-            playPause.value = "\u23F5";
+            playPause.innerHTML = "\u23F5";
         } else {
             config.PLAY = true;
-            playPause.value = "\u23F8";
+            playPause.innerHTML = "\u23F8";
         }
     }
 
@@ -536,7 +539,6 @@ function enableCanvasEvents(canvas, update, state) {
 
     // If the user clicks on the canvas, add a point to the point array
     canvas.onclick = function (e) {
-        //let dist = distance(
         placePoint(e, state.mousePosition, state.points, canvas, state.undid);
         update();
     }
@@ -563,10 +565,13 @@ function disable(domElement) {
 }
 
 // Resize the window
-function resize(webGL, canvas, innerGame) {
-    canvas.width = innerGame.getBoundingClientRect().width;
-    canvas.height = innerGame.getBoundingClientRect().height;
-    webGL.viewport(0, 0, canvas.width, canvas.height);
+function resize(webGL, state, dom, flags) {
+    dom.canvas.width = dom.innerGame.getBoundingClientRect().width;
+    dom.canvas.height = dom.innerGame.getBoundingClientRect().height;
+    if (flags.run && !flags.endGame) {
+        addCustomLabel(state.current, dom.canvas, "Current");
+    }
+    webGL.viewport(0, 0, dom.canvas.width, dom.canvas.height);
 }
 
 /****** POINT FUNCTIONS ******/
