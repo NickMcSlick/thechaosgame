@@ -134,7 +134,8 @@ function testElementExists(name) {
 // Test that the mouseover event handler is properly translating coordinates
 function testMouseOver() {
     let dummyMouse = new Point(2.0, 2.0, "", true);
-    updateMousePosition(dummyEvent, dummyMouse, dummyDom.canvas);
+    let dummyPoints = [new Point(1.0, 1.0, "", false)];
+    updateMousePosition(dummyEvent, dummyMouse, dummyPoints, dummyDom.canvas);
     if (Math.abs(dummyMouse.x) > 1 || Math.abs(dummyMouse.y) > 1) {
         return false;
     } else {

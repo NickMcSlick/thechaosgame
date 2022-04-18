@@ -16,6 +16,7 @@
 
     <!-- CSS stylesheets -->
     <link href="../css/main.css" rel="stylesheet">
+      <link href="../css/game.css" rel="stylesheet">
 
     <!-- Libraries -->
     <script src="../lib/cuon-utils.js"></script>
@@ -39,7 +40,7 @@
 
   </head>
   <body onload="selectMain(); runTests();">
-    <div id="section">
+    <div class="section">
         <!-- Header -->
         <header id="page_header">
           <ul id="nav_bar">
@@ -83,10 +84,8 @@
         <!-- The game 'page' which appears after a point is selected -->
         <div id="mainGameWrapper" hidden>
             <!-- Message box to send messages to the user -->
-            <div id="messages">
-                <div id="message_box">
-                  <span>Click on the board to select points!</span>
-                </div>
+            <div id="message_box" class="game_message_box">
+              <span>Click on the board to select points!</span>
             </div>
             <div id="game_board">
               <div id="inner_game">
