@@ -18,13 +18,16 @@
 
 // Within main():
 // DOM objects: as often occurs in JS programs, DOM elements are accessed and manipulated through a DOM object
-// State object: Encapsulates animation data, and multiple arrays are used (includes generated points, undid points, etc.)
-// Flags object: flags for the state of the program are encapsulated in a flag object
+// State object: Holds animation data, and multiple arrays are used (includes generated points, undid points, etc.)
+// Flags object: flags for the state of the program held in a flag object
 // Controls object: object to hold DOM controls
 // WebGL context object: used for animating and to communicate with the GPU and canvas element
 /*********************************/
 
+/***** Sources *****/
 // Music made available by "https://mixkit.co/free-sound-effects/" and "https://patrickdearteaga.com/arcade-music/".
+// TO-DO: DOCUMENT EXTERNAL SOURCES
+/*******************/
 
 
 // The configuration object
@@ -33,7 +36,7 @@ let config = {
     SPEED: 1000,
     COLOR: 180,
     PLAY: true,
-    TOTAL_POINTS: 10,
+    TOTAL_POINTS: 3000,
 }
 
 // Point constructor
@@ -116,6 +119,7 @@ function main(selection) {
     let musicCounter= 0                             // number of times music has played!
     let confettiCounter = 0;                        // number of confetti on screen
     let confettiAmount = 150;                       // max number of confetti
+
     // Encapsulating the flags in an object
     let flags = {
         run: false,                                 // flag to alert the program that the user wants to run the game
@@ -214,12 +218,10 @@ function main(selection) {
         // The output vertex array
         let totalPoints = [state.mousePosition];
 
-        // Letting the program know how many borders to draw
-        let borders = 0;
-
         // Insert the selected points into the output vertices
         state.points.forEach(pointObject => {
             totalPoints.push(pointObject);
+            
         });
 
         // Only label the points if they are the initial ones
@@ -340,7 +342,7 @@ function main(selection) {
                     // We need to do some quick changes when we end the game
                     // We need to update the user and clear the labels, as well as call update
                     // one last time to make sure that all the buttons are properly set
-                    updateInnerHtml(dom.messageBox, "Look at your fascinating fractal pattern! Press refresh or restart to play again!");
+                    updateInnerHtml(dom.messageBox, "What a fascinating pattern! Press 'New' or '\u27F2' to play again!");
                     clearChildren(dom.innerGame);
                     update();
 
@@ -425,6 +427,11 @@ function main(selection) {
 
 /****** INITIALIZING/BINDING/DEBINDING EVENT FUNCTIONS ******/
 
+//SliderSound defined as variable 
+var SliderSound = new Audio("../audio/SliderS.wav");
+//run button sound effect
+var run_button = new Audio("../audio/Run_Button.wav");
+
 // Initialize controls and bind their respective events
 function initializeControlEvents(controls, state, flags, dom, update) {
     // SliderSound defined as variable
@@ -492,7 +499,7 @@ function initializeControlEvents(controls, state, flags, dom, update) {
 
         currentColor = hsvToRgb(config.COLOR / 360, 1, 1);
         controls.color.style.backgroundColor = "rgb( " + currentColor.r + ", " + currentColor.g + ", " + currentColor.b + ")";
-        controls.speed.value = controls.speed.max - config.SPEED;
+        controls.speed.value = (controls.speed.max - config.SPEED) + "";
 
         cancelAnimationFrame(state.animID);
 
@@ -530,6 +537,7 @@ function initializeControlEvents(controls, state, flags, dom, update) {
         flags.run = true;
         flags.spawnAnimation = true;
         update();
+        run_button.play();
     }
 
     // Start with buttons disabled
@@ -544,14 +552,12 @@ function initializeControlEvents(controls, state, flags, dom, update) {
 function enableCanvasEvents(canvas, update, state) {
     // When the user mouses over the canvas, update the mouse position and render
     canvas.onmousemove = function (e) {
-        updateMousePosition(e, state.mousePosition, canvas);
+        updateMousePosition(e, state.mousePosition, state.points, canvas);
         update();
     }
 
     // If the user mouses out, put the mouse in an unviewable position and render
     canvas.onmouseout = function () {
-        // NOTE - JS is pass-by-value if you reassign a variable to another
-        // To actually modify the variable, you need to edit its attributes
         state.mousePosition.x = 2.0;
         state.mousePosition.y = 2.0;
         update();
@@ -597,10 +603,20 @@ function resize(webGL, state, dom, flags) {
 /****** POINT FUNCTIONS ******/
 
 // Update the mouse position
-function updateMousePosition(e, mousePosition, canvas) {
+function updateMousePosition(e, mousePosition, points, canvas) {
     let rect = e.target.getBoundingClientRect();
     let tempX = 2 * (e.clientX - rect.left) / canvas.width - 1;
     let tempY = - 2 * (e.clientY - rect.top) / canvas.height + 1;
+
+    // Check if points are too close and if they are, move the mouse out of sight
+    let tooClose = 0.1;
+    for(let p of points) {
+        if( distance(new Point(tempX, tempY), p) < tooClose ) {
+            mousePosition.x = 2.0;
+            mousePosition.y = 2.0;
+            return;
+        }
+    }
 
     // This is done so the user does not draw "half-circles" that are cut off
     if (Math.abs(tempX) < 0.85 && Math.abs(tempY) < 0.85) {
@@ -625,14 +641,20 @@ function placePoint(e, mousePosition, points, canvas, undid) {
     let tooClose = 0.1;
     for(let p of points) {
         if( distance(mousePosition, p) < tooClose ) {
+            mousePosition.x = 2.0;
+            mousePosition.y = 2.0;
             return;
         }
     }
 
     // Check to make sure the user isn't drawing too close to the border
-    if (Math.abs(mousePosition.x) > 0.85 && Math.abs(mousePosition.y) > 0.85) {
+    if (Math.abs(mousePosition.x) > 0.85 || Math.abs(mousePosition.y) > 0.85) {
+        mousePosition.x = 2.0;
+        mousePosition.y = 2.0;
         return;
     }
+
+    new Audio("../audio/click.wav").play();
 
     points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65), true));
 }
