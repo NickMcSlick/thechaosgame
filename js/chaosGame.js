@@ -29,7 +29,6 @@
 // TO-DO: DOCUMENT EXTERNAL SOURCES
 /*******************/
 
-let partying;
 
 // The configuration object
 // Interface with this object to manipulate the animation of points
@@ -117,8 +116,9 @@ let FSHADER = `
 function main(selection) {
     let webGL;                                      // The drawing context
 
+    let musicCounter= 0                             // number of times music has played!
     let confettiCounter = 0;                        // number of confetti on screen
-    let confettiAmount = 250;                       // max number of confetti
+    let confettiAmount = 150;                       // max number of confetti
 
     // Encapsulating the flags in an object
     let flags = {
@@ -348,14 +348,19 @@ function main(selection) {
 
                     // Celebration gif and music here
                     if (confettiCounter++ < confettiAmount) {
-                        confetti(); //with current modification, only one confetti spawned per call
+                        confetti(); //with current modification, only one confetti is spawned per call
                     }
+                    if (musicCounter++ < 1) {
+                        let audio = new Audio('../audio/Correct Answer.mp3');
+                        audio.play();
+                    }
+
 
                 }
                 //not end game condition
                 else {
                     confettiCounter = 0;
-                    
+                    musicCounter = 0;
                 }
 
                 // Update the time elapsed
@@ -497,7 +502,6 @@ function initializeControlEvents(controls, state, flags, dom, update) {
         controls.speed.value = (controls.speed.max - config.SPEED) + "";
 
         cancelAnimationFrame(state.animID);
-        cancelAnimationFrame(partying);
 
         clearChildren(dom.innerGame);
         updatePlayPause(controls.playPause, config);

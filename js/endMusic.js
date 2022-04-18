@@ -21,12 +21,14 @@
 // Music by https://www.fiftysounds.com
 /*********************************/
 
-let celebrationMusic = async function () {
+let celebrationMusic =  function () {
 
-    if (window.canPlayType('audio/mpeg')) {
-        let audio = new Audio('../audio/Correct Answer.mp3');
-        await audio.play();
+        if (window.canPlayType('audio/mpeg')) {
+            let audio = new Audio('../audio/Correct Answer.mp3');
+            audio.play();
+        }
 
-    }
+    celebrationMusic();
 
 }
+
