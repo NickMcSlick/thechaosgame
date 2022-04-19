@@ -594,9 +594,12 @@ function disable(domElement) {
 function resize(webGL, state, dom, flags) {
     dom.canvas.width = dom.innerGame.getBoundingClientRect().width;
     dom.canvas.height = dom.innerGame.getBoundingClientRect().height;
+
+    // Update the current label if the user changes the window
     if (flags.run && !flags.endGame) {
         addCustomLabel(state.current, dom.canvas, "Current");
     }
+
     webGL.viewport(0, 0, dom.canvas.width, dom.canvas.height);
 }
 
@@ -654,7 +657,9 @@ function placePoint(e, mousePosition, points, canvas, undid) {
         return;
     }
 
-    new Audio("../audio/click.wav").play();
+    let pointClick = new Audio("../audio/click.wav");
+    pointClick.volume = 0.2;
+    pointClick.play();
 
     points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65), true));
 }
