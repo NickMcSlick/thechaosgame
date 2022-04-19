@@ -511,10 +511,11 @@ function initializeControlEvents(controls, state, flags, dom, update) {
     }
 
     // Update the play pause button for onclick
+    // And initialize it
     controls.playPause.onclick = function() {
         updatePlayPause(controls.playPause, config);
     }
-    controls.playPause.innerHTML = "\u23F8";
+    updatePlayPause(controls.playPause, config);
 
     // Update play/pause
     // This function is abstracted and is not anonymous because it is needed in the reset event
