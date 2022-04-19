@@ -7,19 +7,27 @@
 
 /****** Description *****/
 // This program takes in the user input for point number selection
-// and spawns an instance of the game using main(n)
+// and spawns an instance of the game using main(n) - it also handles
+// the background music
 /************************/
 
 /***** Major data structures *****/
 // Defined within selectMain():
 // DOM elements, and an array of DOM elements
+// Audio elements
 /*********************************/
 
 
-//BackGround Music(Removed for testing audio tracks)
+// Background music
 var music = new Audio("../audio/Interplanetary Odyssey.ogg");
 music.volume = 0.2;
-music.play();
+
+// Unfortunately most browsers try to stop music from playing without
+// user interaction. So, to circumvent this, we play the background music
+// when the user mouses over the page
+window.onmouseover = function() {
+  music.play();
+}
 
 //sound on click
 var sound = new Audio("../Audio/ButtonClickS.wav");
