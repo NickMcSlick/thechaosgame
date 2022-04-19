@@ -243,7 +243,7 @@ function main(selection) {
             state.current = new Point(state.points[state.n].x, state.points[state.n].y, "", false);
 
             // Update the message to tell the user to press run
-            updateInnerHtml(dom.messageBox, "Press the 'Run' button to start the game!");
+            updateInnerHtml(dom.messageBox, "Press the 'Run' button to start! The game will end at 3000 points!");
         }
 
         // Readjust the points
