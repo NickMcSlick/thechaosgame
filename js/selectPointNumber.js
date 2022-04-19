@@ -17,23 +17,22 @@
 // Audio elements
 /*********************************/
 
-
-// Background music
-var music = new Audio("../audio/Interplanetary Odyssey.ogg");
-music.volume = 0.2;
-
-// Unfortunately most browsers try to stop music from playing without
-// user interaction. So, to circumvent this, we play the background music
-// when the user mouses over the page
-window.onmouseover = function() {
-  music.play();
-}
-
 //sound on click
 var sound = new Audio("../Audio/ButtonClickS.wav");
 
 // Main point selection script
 function selectMain() {
+  // Background music
+  var music = new Audio("../audio/Interplanetary Odyssey.ogg");
+  music.volume = 0.2;
+
+  // Unfortunately most browsers try to stop music from playing without
+  // user interaction. So, to circumvent this, we play the background music
+  // when the user mouses over the page
+  window.onmouseover = function() {
+    music.play();
+  }
+
   let pointSelectionDiv = document.getElementById("pointSelection");
   let gameDiv = document.getElementById("mainGameWrapper");
   let specialFactorElement = document.getElementById("selectPointsFactor");
