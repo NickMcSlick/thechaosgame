@@ -590,9 +590,12 @@ function disable(domElement) {
 function resize(webGL, state, dom, flags) {
     dom.canvas.width = dom.innerGame.getBoundingClientRect().width;
     dom.canvas.height = dom.innerGame.getBoundingClientRect().height;
+
+    // Update the current label if the user changes the window
     if (flags.run && !flags.endGame) {
         addCustomLabel(state.current, dom.canvas, "Current");
     }
+
     webGL.viewport(0, 0, dom.canvas.width, dom.canvas.height);
 }
 
