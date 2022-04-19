@@ -31,10 +31,6 @@ function indexTutorialButton()
 }
 
 /* IF THE TUTORIAL SESSION OBJECT HAS NOT BEEN CREATED, DISPLAY THE TUTORIAL MESSAGE */
-//BackGround Music(Removed for testing audio tracks)
-//var music = new Audio("../audio/Interplanetary Odyssey.ogg");
-//music.volume = 0.2;
-//music.play();
 
 function updateTutorialMessageVisibility() {
     let tutorial = sessionStorage.getItem("tutorial");

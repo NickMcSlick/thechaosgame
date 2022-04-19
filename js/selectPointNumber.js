@@ -14,6 +14,13 @@
 // Defined within selectMain():
 // DOM elements, and an array of DOM elements
 /*********************************/
+
+
+//BackGround Music(Removed for testing audio tracks)
+var music = new Audio("../audio/Interplanetary Odyssey.ogg");
+music.volume = 0.2;
+music.play();
+
 //sound on click
 var sound = new Audio("../Audio/ButtonClickS.wav");
 
