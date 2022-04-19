@@ -657,7 +657,9 @@ function placePoint(e, mousePosition, points, canvas, undid) {
         return;
     }
 
-    new Audio("../audio/click.wav").play();
+    let pointClick = new Audio("../audio/click.wav");
+    pointClick.volume = 0.2;
+    pointClick.play();
 
     points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65), true));
 }
