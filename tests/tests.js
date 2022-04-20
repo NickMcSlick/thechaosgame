@@ -1,7 +1,18 @@
-// The Chaos Game Unit Tests
-// The Web Devs 4/6/2022
+/***** Title *****/
+// CS4500, Group Project
+// The Chaos Game
+// The Web Devs
+// Latest Revision: 4/18/22
+/*****************/
 
-// These are simple unit tests, mostly covering function capabilities
+/****** Description *****/
+// This program contains test for our game page and its code
+/************************/
+
+/***** Major data structures *****/
+// Dummy variables and objects that mimic the game page
+// See chaosGame.js opening comment for reference
+/*********************************/
 
 /***** TESTS *****/
 
@@ -64,6 +75,18 @@ dummyDom.canvas.height = 500;
 
 // Get dummy drawing context
 let dummyWebGL = dummyDom.canvas.getContext("webgl");
+
+// Dummy table array of elements set up as in selectPointNumber.js
+// The only important information regarding these elements is actually
+// the associated value, so set up an array of associated values
+let tableArray = [
+    { associatedValue: 3, id: "three" },
+    { associatedValue: 4, id: "four"},
+    { associatedValue: 5, id: "five" },
+    { associatedValue: 6, id: "six" },
+    { associatedValue: 7, id: "seven" },
+    { associatedValue: 8, id: "eight" },
+];
 
 // Test if the fragment shader exists
 function fShaderTest() {
@@ -386,8 +409,71 @@ function testStandardDeviation() {
     }
 }
 
-// INSERT TESTS FOR:
-// These three are visual, creating visual system tests:
+// Test getting a table element
+function testGetTableElement() {
+    let element = getTableElement(tableArray, 3);
+    if (element.id === "three") {
+        return true;
+    } else {
+        return false
+    }
+}
+
+// Test that the special factor returned works
+function testDetermineSpecialFactor() {
+    let specialFactorInputs = [3, 4, 5, 6, 7, 8, 9]
+    let specialFactorOutputs = ["1/2", "4/7", "5/8", "2/3", "7/10", "8/11", "-1"];
+    for (let i = 0; i < specialFactorInputs.length; i++) {
+        if (determineSpecialFactor(specialFactorInputs[i]) !== specialFactorOutputs[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// Test the updating of the special factor
+function testUpdateSpecialFactor() {
+    let specialFactorInputs = [3, 4, 5, 6, 7, 8, 9]
+    let specialFactorOutputs = ["1/2", "4/7", "5/8", "2/3", "7/10", "8/11", "-1"];
+    let domElement = document.createElement("p");
+    for (let i = 0; i < specialFactorInputs.length; i++) {
+        updateSpecialFactor(specialFactorInputs[i], domElement);
+        if ( domElement.innerHTML !== "Special factor needed to get a fractal pattern: " + specialFactorOutputs[i]) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+// Test the selection function
+function testSelected() {
+    let dummyElement = document.createElement("p");
+    dummyElement.innerHTML = "string";
+    selected(dummyElement);
+    if (dummyElement.innerHTML === "&gt; string &lt;"
+        && dummyElement.style.color === "darkcyan") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// Test the deselection function
+function testDeSelected() {
+    let dummyElement = document.createElement("p");
+    dummyElement.innerHTML = "&gt; string &lt;";
+    deSelected(dummyElement);
+    if (dummyElement.innerHTML === "string"
+        && dummyElement.style.color === "aqua") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+// NOTE THAT WE USE VISUAL SYSTEM TESTS FOR THESE FUNCTIONS:
 // addLabels
 // addCustomLabel
 // readjustPoints
@@ -426,14 +512,12 @@ function runTests() {
     console.log("Reset button exists: " + testElementExists("reset"));
     console.log("New button exists: " + testElementExists("new"));
 
-    // TO-DO: insert to check if buttons exist
-
     // Objects
     console.log("Point object constructor: " + testPointObjectConstructor());
     console.log("Point object methods: " + testPointObjectMethods());
     console.log("Color object: " + testColorObject());
 
-    // Functions
+    // Functions from chaosGame.js
     console.log("Mouse over properly translates: " + testMouseOver());
     console.log("Mouse click properly translates: " + testMouseDown());
     console.log("Undo function works: " + testRemovePointAndLabel());
@@ -445,11 +529,18 @@ function runTests() {
     console.log("Random number generation: " + testRandomNumbers());
     console.log("Enabling buttons: " + testEnable());
     console.log("Disabling buttons: " + testDisable());
-    console.log("Test updating messages: " + testUpdateInnerHtml());
-    console.log("Test enabling canvas events: " + testEnableCanvasEvents());
-    console.log("Test initializing controls: " + testInitializeControlEvents());
-    console.log("Test window resizing: " + testResize());
-    console.log("Test average: " + testAverage());
-    console.log("Test distance: " + testDistance());
-    console.log("Test standard deviation: " + testStandardDeviation());
+    console.log("Updating messages works: " + testUpdateInnerHtml());
+    console.log("Enabling canvas events works: " + testEnableCanvasEvents());
+    console.log("Initializing of controls works: " + testInitializeControlEvents());
+    console.log("Window resizing works: " + testResize());
+    console.log("Average works: " + testAverage());
+    console.log("Distance works: " + testDistance());
+    console.log("Standard deviation works: " + testStandardDeviation());
+
+    // Functions from selectPointNumber.js
+    console.log("Returning the proper table element works: " + testGetTableElement());
+    console.log("Determination of the special factor works: " + testDetermineSpecialFactor());
+    console.log("Updating the special factor works: " + testUpdateSpecialFactor());
+    console.log("Test that the selection of a point number works: " + testSelected());
+    console.log("Test that the deselection of a point number works: " + testDeSelected());
 }

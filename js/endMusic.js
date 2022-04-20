@@ -13,11 +13,11 @@
 // playAudio():
 /*********************************/
 
-/*****Sources*****/
+/***** Sources *****/
 //https://developer.mozilla.org/en-US/docs/Web/Guide/Audio_and_video_delivery/Cross-browser_audio_basics/*********************************/
 
-/*****Attribution*****/
-//Track: A World of Color, SE
+/***** Attribution *****/
+// Track: A World of Color, SE
 // Music by https://www.fiftysounds.com
 /*********************************/
 
