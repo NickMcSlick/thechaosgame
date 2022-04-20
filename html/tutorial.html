@@ -12,19 +12,27 @@
 <head>
     <title>The Chaos Game | Tutorial</title>
     <link rel="shortcut icon" type="image/png" href="../images/faviconRed.png"/>
-
-
+<!--    <meta charset="utf-8">-->
+<!--    <meta name="viewport" content="width=device-width, initial-scale=1">-->
+<!--    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">-->
+<!--    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>-->
+<!--    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>-->
+<!--    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">-->
+<!--    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>-->
 
     <!-- CSS stylesheets -->
     <link href="../css/main.css" rel="stylesheet">
     <link href="../css/tutorial.css" rel="stylesheet">
-    <link href="../css/carousel.css">
+
 
     <!-- Navigation code -->
     <script src="../js/mainPage.js"></script>
 
     <!-- Session code (to check if user has visited this page) -->
     <script src="../js/tutorial.js"></script>
+
+<!--    &lt;!&ndash; Carousel &ndash;&gt;-->
+<!--    <script scr="../js/carousel.js"></script>-->
 
 </head>
     <body onload="setTutorialAsSeen()">
@@ -71,80 +79,12 @@
                                 where n is the number of points selected. This continues on, with the currently drawn point replacing the
                                 starting position. After several thousand iterations, a fractal, or self-similar, pattern will be observable.
                                 <br>
-                                For example, let's assume that the player choose three starting points.
-                                <section class="carousel" aria-label="Gallery">
-                                    <ol class="carousel__viewport">
-                                        <li id="carousel__slide1"
-                                            tabindex="0"
-                                            class="carousel__slide">
-                                            <div class="carousel__snapper">
-                                                <a href="#carousel__slide4"
-                                                   class="carousel__prev">Go to last slide</a>
-                                                <a href="#carousel__slide2"
-                                                   class="carousel__next">Go to next slide</a>
-                                            </div>
-                                        </li>
-                                        <li id="carousel__slide2"
-                                            tabindex="0"
-                                            class="carousel__slide">
-                                            <div class="carousel__snapper"></div>
-                                            <a href="#carousel__slide1"
-                                               class="carousel__prev">Go to previous slide</a>
-                                            <a href="#carousel__slide3"
-                                               class="carousel__next">Go to next slide</a>
-                                        </li>
-                                        <li id="carousel__slide3"
-                                            tabindex="0"
-                                            class="carousel__slide">
-                                            <div class="carousel__snapper"></div>
-                                            <a href="#carousel__slide2"
-                                               class="carousel__prev">Go to previous slide</a>
-                                            <a href="#carousel__slide4"
-                                               class="carousel__next">Go to next slide</a>
-                                        </li>
-                                        <li id="carousel__slide4"
-                                            tabindex="0"
-                                            class="carousel__slide">
-                                            <div class="carousel__snapper"></div>
-                                            <a href="#carousel__slide3"
-                                               class="carousel__prev">Go to previous slide</a>
-                                            <a href="#carousel__slide1"
-                                               class="carousel__next">Go to first slide</a>
-                                        </li>
-                                    </ol>
-                                    <aside class="carousel__navigation">
-                                        <ol class="carousel__navigation-list">
-                                            <li class="carousel__navigation-item">
-                                                <a href="#carousel__slide1"
-                                                   class="carousel__navigation-button">Go to slide 1</a>
-                                            </li>
-                                            <li class="carousel__navigation-item">
-                                                <a href="#carousel__slide2"
-                                                   class="carousel__navigation-button">Go to slide 2</a>
-                                            </li>
-                                            <li class="carousel__navigation-item">
-                                                <a href="../images/step1.png"
-                                                   class="carousel__navigation-button">Go to slide 3</a>
-                                            </li>
-                                            <li class="carousel__navigation-item">
-                                                <a href="#carousel__slide4"
-                                                   class="carousel__navigation-button">Go to slide 4</a>
-                                            </li>
-                                        </ol>
-                                    </aside>
-                                </section>
                                 <br>
                                 See the <a href="#video">Numberphile video</a> below to see our inspiration.
                             </p>
                         </div>
                         <div class= "tutorial_section">
                             <h2>Gameplay</h2>
-                            <p>
-                                Our version of this game will allow the user to select points on a board, undo and redo selected points,
-                                change the point color, select a new number of points to choose, reset the board, run the game, and
-                                control the speed of point insertion.
-                            </p>
-                            <h2>Game Controls</h2>
                             <ul>
                                 <li> <h3>Number of Points Selection</h3>
                                     <p>
@@ -156,9 +96,50 @@
                                     </div>
                                     <p>Note: The new button will allow the user to return here and change the number of initial points.</p>
                                 </li>
+                                <li> <h3>Special Factor</h3>
+                                    <p>
+                                        The special factor indicates the placement of the next point between the current point and one of the original association points chosen randomly.
+                                        (see <a href="#headingRandomPoint">Choosing the Association Point)</a>
+                                    </p>
+                                        <ol>
+                                            <li>The special factor for 3pts is 1/2</li>
+                                            <li>The special factor for 4pts is 4/7</li>
+                                            <li>The special factor for 5pts is 5/8</li>
+                                            <li>The special factor for 6pts is 6/9</li>
+                                            <li>The special factor for 7pts is 7/10</li>
+                                            <li>The special factor for 8pts is 8/11</li>
+                                        </ol>
+                                    <br>
+                                    <p>
+                                        For instance, in the example below there are 3 association points and a starting point. Every new point is placed 1/2 way between
+                                        the current point and one of the 3 association points (A,B, or C)
+                                        point
+                                    </p>
+                                    <div class="imageContainer">
+                                        <img class="image" id="specialFactor1" src="../images/explination1.png" alt="Picture of the point selection menu">
+                                        <img class="image" id="specialFactor2" src="../images/explination2.png" alt="Picture of the point selection menu">
+                                    </div>
+                                </li>
+                                <li> <h3 id="headingRandomPoint">Randomly Choosing the Association Point</h3>
+                                    <div class="imageContainer">
+                                        <img class="image" id="RandomPoint" src="../images/explanation3Banner.png" alt="Picture of the point selection menu">
+                                    </div>
+                                    <p>
+                                        For our game the point is chosen randomly by a random number generator. The number generator produces a number 1 through 8.
+                                        Each number is associated with a labeled point. For example, the number 0 is associated with point A.
+                                    </p>
+
+                                </li>
                             </ul>
+
+                            <h2>Game Controls</h2>
+                            <p>
+                                Our version of this game will allow the user to select points on a board, undo and redo selected points,
+                                change the point color, select a new number of points to choose, reset the board, run the game, and
+                                control the speed of point insertion.
+                            </p>
                             <div class="imageContainer">
-                                <img id="gameBoardPic" src="../images/gameBoard.png" alt="Picture of the game board">
+                                <img class="image" id="gameBoardPic" src="../images/gameBoard.png" alt="Picture of the game board">
                             </div>
                             <ol type="1">
                                 <li> <h3>Point Selection</h3>
@@ -166,51 +147,66 @@
                                     <p>A pointer will appear on the board if the area is a valid spot for point placement.</p>
                                 </li>
                                 <li> <h3>Points</h3>
+                                    <div class="imageContainer">
+                                        <img  class="slider" src="../images/pointsMax.png" alt="">
+                                    </div>
                                     <p>Indicates the number of points on the board. Once there are 3000 points placed on
                                         the the board, a celebration will occur
                                     </p>
                                 </li>
                                 <li>
                                     <h3>Speed Slider</h3>
+                                    <div class="imageContainer">
+                                        <img  class="slider" src="../images/speedSlider.png" alt="">
+                                    </div>
                                     <p>Changes point production speed. Moving the slider to the left slows down point production.
                                         Moving the slider to the right speeds up point production.
                                     </p>
                                 </li>
                                 <li> <h3>Color Slider</h3>
+                                    <div class="imageContainer">
+                                        <img  class="slider" src="../images/colorSlider.png" alt="">
+                                    </div>
                                     <p>Color ranges from red, orange, yellow, green, blue, indigo, violet, back to red</p>
                                 </li>
                                 <li>
                                     <h3>Refresh Button</h3>
                                     <div class="imageContainer">
-                                        <img class="controlButton" src="../images/refreshButton.png" alt="Picture of the game board">
+                                        <img class="controlButton" src="../images/RefreshButton.png" alt="">
                                     </div>
                                     <p>Returns the user to the initial point selection screen and restarts the game</p>
                                 </li>
                                 <li>
                                     <h3>Run Button</h3>
+                                    <div class="imageContainer">
+                                        <img class="controlButton" src="../images/RunButton.png" alt="">
+                                    </div>
                                     <p>Begins point production</p>
                                 </li>
-                                <li> <h3>Play Button</h3>
-                                    <p>Resumes point production after pausing</p>
+                                <li> <h3>Pause/Play Button</h3>
+                                    <div class="imageContainer">
+                                        <img class="controlButton" id="pausedPauseButton" src="../images/pausedPauseButton.png" alt="">
+                                        <img class="controlButton" id="playPauseButton" src="../images/playPauseButton.png" alt="">
+                                    </div>
+                                    <p>Pauses point production. Resumes point production</p>
                                 </li>
-                                <li> <h3>Pause Button</h3>
-                                    <p>Pause point production</p>
-                                </li>
-                                <li> <h3>Reset Button</h3>
+                                <li> <h3>Refresh Button</h3>
+                                    <div class="imageContainer">
+                                        <img class="controlButton" id="refreshButton" src="../images/RefreshButton.png" alt="">
+                                    </div>
                                     <p>Clears the board and restarts game without changing the number of initial points</p>
                                 </li>
                                 <li>
                                     <h3>Undo Button</h3>
                                     <div class="imageContainer">
-                                        <img class="controlButton" id="undoButton" src="../images/undoButton.png" alt="Picture of the game board">
+                                        <img class="controlButton" id="undoButton" src="../images/UndoButton.png" alt="">
                                     </div>
                                     <p>Removes last point placed on the board. Once no points are placed on board the button is disabled</p>
                                 </li>
-                                <li>
+                                <li><h3>Redo Button</h3>
                                     <div class="imageContainer">
-                                        <img class="controlButton" id="redoButton" src="../images/redoButton.png" alt="Picture of the game board">
+                                        <img class="controlButton" id="redoButton" src="../images/RedoButton.png" alt="">
                                     </div>
-                                    <h3>Redo Button</h3>
                                     <p>Replaces the point removed by the undo button</p>
                                 </li>
                             </ol>
@@ -223,34 +219,34 @@
                             <ul>
                                 <li>3 Points</li>
                                     <div class="imageContainer">
-                                        <img id="triangle" src="../images/ProperTriangle.png" alt="Picture of the game board">
+                                        <img id="triangle" src="../images/ProperTriangle.png" alt="">
                                     </div>
                                 <li>4 Points</li>
                                     <div class="imageContainer">
-                                        <img id="square" src="../images/greenSqaure.png" alt="Picture of the game board">
+                                        <img id="square" src="../images/greenSqaure.png" alt="">
                                     </div>
                                 <li>5 Points</li>
                                     <div class="imageContainer">
-                                        <img id="pentagon" src="../images/pentagon2.png" alt="Picture of the game board">
+                                        <img id="pentagon" src="../images/pentagon2.png" alt="">
                                     </div>
                                 <li>6 Points</li>
                                     <div class="imageContainer">
-                                        <img id="hexagon" src="../images/hexagon2.png" alt="Picture of the game board">
+                                        <img id="hexagon" src="../images/hexagon2.png" alt="">
                                     </div>
                                 <li>7 Points</li>
                                     <div class="imageContainer">
-                                        <img id="septagon" src="../images/septagon.png" alt="Picture of the game board">
+                                        <img id="septagon" src="../images/septagon.png" alt="">
                                     </div>
                                 <li>8 Points</li>
                                     <div class="imageContainer">
-                                        <img id="octagon" src="../images/octagon2.png" alt="Picture of the game board">
+                                        <img id="octagon" src="../images/octagon2.png" alt="">
                                     </div>
                             </ul>
                         </div>
                         <div class= "tutorial_section">
                             <h2>Importance of Fractals</h2>
                             <p>
-                                Fractal images are useful for generating realistic plants in video games.
+                                Fractal images occur frequently in nature, so fractal images are useful for generating realistic plant graphics.
                             </p>
                         </div>
                         <div class= "tutorial_section">
