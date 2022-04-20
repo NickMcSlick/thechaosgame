@@ -1,3 +1,16 @@
+/*
+    CS4500 Group Project
+    The Chaos Game
+    The Web Devs
+    Latest Revision: 4/11/22
+
+    Purpose:
+    This is the main stylesheet for the website
+
+    Sources:
+    https://stackoverflow.com/questions/6900124/how-to-make-certain-text-not-selectable-with-css
+ */
+
 /* Global CSS */
 html, body {
     font-family: "Courier New", Monospace;
@@ -8,128 +21,30 @@ html, body {
 	padding: 0;
 }
 
-#section {
+/* General formatting for section wrappers */
+.section {
   display: flex;
   flex-direction: column;
   height: 100%;
 }
 
-/* temporary: show element positions on the screen */
+/* Avoid extra padding */
 #section > * {
-  margin: 0.5em;
   padding: 0;
 }
 
-#mainGameWrapper {
-    flex-direction: column;
-    height: 100%;
-    padding: 2em;
+/* A class to make items unselectable */
+/* FROM: https://stackoverflow.com/questions/6900124/how-to-make-certain-text-not-selectable-with-css */
+.unselectable {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none; /* Standard */
 }
 
-#game_board {
-    padding: 3em;
-    border-radius: 2em;
-    border-width: 0.3em;
-    border-color: rgba(0, 0, 0, 0);
-    box-shadow: 0em 0em 1em grey;
-    height: 65%;
-}
-
-/* Padding so the user doesn't draw right on the edge */
-@media only screen and (min-width : 1224px) {
-  #game_board {
-    padding: 3em;
-    border-radius: 2em;
-    border-width: 0.3em;
-    border-color: rgba(0, 0, 0, 0);
-    box-shadow: 0em 0em 1em grey;
-    height: 60%;
-  }
-  .message_box {
-    margin: 1em auto 2.75em auto;
-    padding: 0;
-    position: relative;
-    color: aqua;
-    text-align: center;
-    display: flex;
-    flex-direction: column;
-    font-size: 3.2vw;
-    /* Styles */
-}
-.textButtonsDiv
-{
-  display: flex;
-  flex-direction: column;
-}
-.red_message_box
-{
-  margin: 0.5em auto 0.5em auto;
-  padding: 0;
-  position: relative;
-  color: red;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  font-size: 2.6vw;
-}
-.message_container
-{
-  flex-direction: row;
-  display: flex;
-}
-}
-@media only screen and (max-width:1223px) {
-#game_board {
-    height: 60%;
-    margin: 1% 2% 10%;
-    padding: 3em;
-    border-radius: 2em;
-    border-width: 0.3em;
-    border-color: rgba(0, 0, 0, 0);
-    box-shadow: 0em 0em 1em grey;
-  }
-  .message_box {
-    margin: 1em auto 5em auto;
-    padding: 0;
-    position: relative;
-    color: aqua;
-    text-align: center;
-    display: flex;
-    min-width: max-content;
-    flex-direction: column;
-    font-size: 3.2vw;
-}
-.red_message_box
-{
-  margin: 0.5em auto 0.5em auto;
-  padding: 0;
-  position: relative;
-  color: red;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  font-size: 2.6vw;
-}
-.message_container
-{
-  flex-direction: row;
-  display: flex;
-}
-.textButtonsDiv
-{
-  display: flex;
-  flex-direction: column;
-}
-}
-/* The formatting for the point drawing area */
-#inner_game {
-    height: 100%;
-    width: 100%;
-}
-
-/* Formatting for the messages on the game page */
-#message_box {
-    margin: 0em auto 0.5em auto;
+/* General message box formatting */
+.general_message_box {
+    margin: 0.5em auto .5em auto;
     padding: 0;
     color: aqua;
     text-align: center;
@@ -150,7 +65,6 @@ html, body {
 
 #header_text {
   position: absolute;
-
   left: 32.87vw;
   font-size: larger;
 
@@ -170,31 +84,8 @@ html, body {
   cursor: pointer;
 }
 
-.squareImage {
-  float: right;
-  width: 40%;
-  max-height: 86.1%;
-}
-
-.triangleImage {
-    float: left;
-    width: 40%;
-}
-
-/* isn't used at the moment, need to fix */
-#game_wrapper {
-    border: 1px solid black;
-    margin: 0.2em;
-    padding: 0;
-}
-
 #messages {
     border: none;
-}
-
-#controls {
-    text-align: center;
-
 }
 
 .headerImages
@@ -208,14 +99,7 @@ html, body {
 #section > #game_board  { flex: 30 }
 #section > #controls    { flex: 2 }
 
-.highlightedText{
-  
-  color: darkcyan;
-}
 
-.slider {
-
-}
 
 
 

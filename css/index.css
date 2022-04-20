@@ -1,0 +1,112 @@
+/*
+    CS4500 Group Project
+    The Chaos Game
+    The Web Devs
+    Latest Revision: 4/16/22
+
+    Purpose:
+    This is the home page stylesheet for the website
+ */
+
+/* Formatting for the warning message */
+#tutorial_warning {
+    visibility: hidden;
+}
+
+/* Formatting for the main page buttons */
+.textButtonsDiv {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 33%;
+}
+
+/* Change the formatting if the screen size changes */
+@media only screen and (min-width : 1224px) {
+    .message_box {
+        margin: 1em auto 0.2em auto;
+        padding: 0;
+        position: relative;
+        color: aqua;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        font-size: 3.2vw;
+    }
+    .red_message_box
+    {
+        margin: 0em auto 0em auto;
+        padding: 0;
+        position: relative;
+        color: red;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        font-size: 1.5vw;
+    }
+    .squareImage {
+        float: right;
+        width: 30%;
+    }
+
+    .triangleImage {
+        float: left;
+        width: 30%;
+    }
+    .message_container
+    {
+        flex-direction: row;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+@media only screen and (max-width:1223px) {
+    .message_box {
+        margin: 1em auto 0.5em auto;
+        padding: 0;
+        position: relative;
+        color: aqua;
+        text-align: center;
+        display: flex;
+        min-width: max-content;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        font-size: 3.2vw;
+    }
+
+    .red_message_box {
+        margin: 0em auto 0em auto;
+        padding: 0;
+        position: relative;
+        color: red;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        font-size: 1.5vw;
+    }
+
+    .squareImage {
+        float: right;
+        width: 30%;
+    }
+
+    .triangleImage {
+        float: left;
+        width: 30%;
+    }
+
+    .message_container {
+        flex-direction: row;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+}
+
+/* Formatting for highlighted selection on home page */
+.highlightedText {
+    color: darkcyan;
+}
