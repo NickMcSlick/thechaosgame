@@ -107,6 +107,7 @@ body
     flex-direction: row;
     flex: 1 1 auto;
     width: 30%;
+    border: #0d6efd;
 }
 
 #specialFactor2 {
@@ -116,6 +117,7 @@ body
     flex-direction: row;
     flex: 1 1 auto;
     width: 30%;
+
 }
 
 .slider {
