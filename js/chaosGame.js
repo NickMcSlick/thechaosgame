@@ -2,7 +2,7 @@
 // CS4500, Group Project
 // The Chaos Game
 // The Web Devs
-// Latest Revision: 4/11/22
+// Latest Revision: 4/18/22
 /*****************/
 
 /****** Description *****/
@@ -26,7 +26,9 @@
 
 /***** Sources *****/
 // Music made available by "https://mixkit.co/free-sound-effects/" and "https://patrickdearteaga.com/arcade-music/".
-// TO-DO: DOCUMENT EXTERNAL SOURCES
+// HSV to RGB Conversion from: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
+// Fragment shader code from: https://www.desultoryquest.com/blog/drawing-anti-aliased-circular-points-using-opengl-slash-webgl/
+// Element removal code from: https://stackoverflow.com/questions/19885788/removing-every-child-element-except-first-child
 /*******************/
 
 
@@ -241,7 +243,7 @@ function main(selection) {
             state.current = new Point(state.points[state.n].x, state.points[state.n].y, "", false);
 
             // Update the message to tell the user to press run
-            updateInnerHtml(dom.messageBox, "Press the 'Run' button to start the game!");
+            updateInnerHtml(dom.messageBox, "Press the 'Run' button to start! The game will end at 3000 points!");
         }
 
         // Readjust the points
@@ -435,7 +437,7 @@ var run_button = new Audio("../audio/Run_Button.wav");
 // Initialize controls and bind their respective events
 function initializeControlEvents(controls, state, flags, dom, update) {
     // SliderSound defined as variable
-    var SliderSound = new Audio("../audio/woodSlider.wav");
+    var SliderSound = new Audio("../audio/SliderS.wav");
     // Set slider events (also initialize the slider values)
     controls.speed.oninput = function() {
         config.SPEED = controls.speed.max - controls.speed.value;
@@ -509,10 +511,11 @@ function initializeControlEvents(controls, state, flags, dom, update) {
     }
 
     // Update the play pause button for onclick
+    // And initialize it
     controls.playPause.onclick = function() {
         updatePlayPause(controls.playPause, config);
     }
-    controls.playPause.innerHTML = "\u23F8";
+    updatePlayPause(controls.playPause, config);
 
     // Update play/pause
     // This function is abstracted and is not anonymous because it is needed in the reset event
@@ -546,7 +549,9 @@ function initializeControlEvents(controls, state, flags, dom, update) {
     disable(controls.redo);
     disable(controls.playPause);
 }
-
+let pointClick = new Audio("../audio/click.wav");
+    pointClick.volume = 0.2;
+    
 // A function to enable canvas events
 // This is done to enable user drawing
 function enableCanvasEvents(canvas, update, state) {
@@ -567,6 +572,7 @@ function enableCanvasEvents(canvas, update, state) {
     canvas.onclick = function (e) {
         placePoint(e, state.mousePosition, state.points, canvas, state.undid);
         update();
+        pointClick.play();
     }
 }
 
@@ -631,11 +637,13 @@ function updateMousePosition(e, mousePosition, points, canvas) {
     }
 }
 
+
+    
 // Place points
 function placePoint(e, mousePosition, points, canvas, undid) {
     // Clear the array
     undid.length = 0;
-
+    
     let rect = e.target.getBoundingClientRect();
     mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
     mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
@@ -656,10 +664,6 @@ function placePoint(e, mousePosition, points, canvas, undid) {
         mousePosition.y = 2.0;
         return;
     }
-
-    let pointClick = new Audio("../audio/click.wav");
-    pointClick.volume = 0.2;
-    pointClick.play();
 
     points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65), true));
 }

@@ -1,3 +1,18 @@
+/***** Title *****/
+// CS4500, Group Project
+// The Chaos Game
+// The Web Devs
+// Latest Revision: 4/13/22
+/*****************/
+
+/****** Description *****/
+// This program sets events for the main page and for the main page options
+/************************/
+
+/***** Major data structures *****/
+// DOM Elements
+/*********************************/
+
 var tutorialSelected = true
 var playSelected = false
 

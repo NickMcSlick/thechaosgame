@@ -7,20 +7,35 @@
 
 /****** Description *****/
 // This program takes in the user input for point number selection
-// and spawns an instance of the game using main(n)
+// and spawns an instance of the game using main(n) - it also handles
+// the background music
 /************************/
 
 /***** Major data structures *****/
 // Defined within selectMain():
 // DOM elements, and an array of DOM elements
+// Audio elements
 /*********************************/
+
 //sound on click
 var sound = new Audio("../Audio/ButtonClickS.wav");
 
 // Main point selection script
 function selectMain() {
+  // Background music
+  var music = new Audio("../audio/Interplanetary Odyssey.ogg");
+  music.volume = 0.2;
+
+  // Unfortunately most browsers try to stop music from playing without
+  // user interaction. So, to circumvent this, we play the background music
+  // when the user mouses over the page
+  window.onmouseover = function() {
+    music.play();
+  }
+
   let pointSelectionDiv = document.getElementById("pointSelection");
   let gameDiv = document.getElementById("mainGameWrapper");
+  let specialFactorElement = document.getElementById("selectPointsFactor");
 
   // Check that these elements exits
   if (!pointSelectionDiv) {
@@ -28,6 +43,8 @@ function selectMain() {
     return;
   } else if (!gameDiv) {
     console.log("Main game wrapper does not exist!");
+  } else if(!specialFactorElement) {
+    console.log("Special factor element display does not exist!");
   }
 
   let three = document.getElementById("three");
@@ -57,7 +74,7 @@ function selectMain() {
   gameDiv.hidden = true;
   let current = three;
   let prev = three;
-  updateSpecialFactor(3);
+  updateSpecialFactor(3, specialFactorElement);
   selected(three);
 
   // Set events for using arrow navigation
@@ -70,7 +87,7 @@ function selectMain() {
       } else {
         current = getTableElement(tableArray, current.associatedValue - 1);
       }
-      updateSpecialFactor(current.associatedValue);
+      updateSpecialFactor(current.associatedValue, specialFactorElement);
       selected(current);
       deSelected(prev);
 
@@ -82,7 +99,7 @@ function selectMain() {
       } else {
         current = getTableElement(tableArray, current.associatedValue + 1);
       }
-      updateSpecialFactor(current.associatedValue);
+      updateSpecialFactor(current.associatedValue, specialFactorElement);
       selected(current);
       deSelected(prev);
 
@@ -103,7 +120,7 @@ function selectMain() {
       current = tableArray[i];
       deSelected(prev);
       selected(current);
-      updateSpecialFactor(tableArray[i].associatedValue);
+      updateSpecialFactor(tableArray[i].associatedValue, specialFactorElement);
       tableArray[i].onclick = function () {
         sound.play();
         pointSelectionDiv.hidden = true;
@@ -124,16 +141,15 @@ function selected(domElement) {
 // De-select an option
 function deSelected(domElement) {
   // This could be combined into one regex
-  domElement.innerHTML = domElement.innerHTML.replace("&gt;", "");
-  domElement.innerHTML = domElement.innerHTML.replace("&lt;", "");
-  domElement.innerHTML = domElement.innerHTML.replace(" ", "");
+  domElement.innerHTML = domElement.innerHTML.replaceAll("&gt;", "");
+  domElement.innerHTML = domElement.innerHTML.replaceAll("&lt;", "");
+  domElement.innerHTML = domElement.innerHTML.trim();
   domElement.style.color = "aqua";
 }
 
 // Update the special factor
-function updateSpecialFactor(value) {
-  let specialFactorElement = document.getElementById("selectPointsFactor");
-  specialFactorElement.innerHTML = "Special factor needed to get a fractal pattern: " + determineSpecialFactor(value);
+function updateSpecialFactor(value, domElement) {
+  domElement.innerHTML = "Special factor needed to get a fractal pattern: " + determineSpecialFactor(value);
 }
 
 // Find special factor
@@ -145,6 +161,7 @@ function determineSpecialFactor(value) {
     case 6: return "2/3";
     case 7: return "7/10";
     case 8: return "8/11";
+    default: return "-1";
   }
 }
 
