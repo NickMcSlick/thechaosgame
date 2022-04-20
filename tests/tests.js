@@ -62,6 +62,9 @@ Object.defineProperty(dummyEvent, "target", { writable: false, value: dummyDom.c
 dummyDom.canvas.width = 500;
 dummyDom.canvas.height = 500;
 
+// Get dummy drawing context
+let dummyWebGL = dummyDom.canvas.getContext("webgl");
+
 // Test if the fragment shader exists
 function fShaderTest() {
     if (FSHADER) {
@@ -299,6 +302,7 @@ function testDisable() {
     }
 }
 
+// Test that the inner html <span> update works
 function testUpdateInnerHtml() {
     let dummyDiv = document.createElement("div");
     updateInnerHtml(dummyDiv, "Updated!");
@@ -310,6 +314,7 @@ function testUpdateInnerHtml() {
     }
 }
 
+// Test the enabling of canvas events
 function testEnableCanvasEvents() {
     let dummyCanvas = document.createElement("canvas");
     let dummyUpdate = function() { };
@@ -321,6 +326,7 @@ function testEnableCanvasEvents() {
     }
 }
 
+// Test that the control events are initialized
 function testInitializeControlEvents() {
     initializeControlEvents(dummyControls, dummyState, dummyFlags, dummyDom, new function() {})
     if (dummyControls.speed.oninput && dummyControls.color.oninput && dummyControls.undo.onclick
@@ -333,9 +339,55 @@ function testInitializeControlEvents() {
     }
 }
 
+// Test that the canvas resizes
+/* FIX THIS TEST */
+function testResize() {
+    console.log(dummyDom.innerGame.getBoundingClientRect().height);
+
+    resize(dummyWebGL, dummyState, dummyDom, dummyFlags);
+
+    if (dummyDom.canvas.width === 400 && dummyDom.canvas.height === 400) {
+        return true;
+    } else {
+        console.log(dummyDom.canvas.width);
+        return false;
+    }
+}
+
+// Test the average function
+function testAverage() {
+    let arr = [1, 2, 3];
+    if (average(arr) !== 2) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+// Check the distance function
+function testDistance() {
+    let p1 = new Point(0.0, 1.0, "", false);
+    let p2 = new Point(0.0, 0.0, "", false);
+
+    if (distance(p1, p2) !== 1.0) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
+// Test standard deviation
+function testStandardDeviation() {
+    let arr = [1, 1, 3, 3];
+    if (standardDeviation(arr) != 1) {
+        return false;
+    } else {
+        return true;
+    }
+}
+
 // INSERT TESTS FOR:
-// Control binding
-// These two are visual, creating visual system tests:
+// These three are visual, creating visual system tests:
 // addLabels
 // addCustomLabel
 // readjustPoints
@@ -346,6 +398,17 @@ function runTests() {
     console.log("Fragment Shader: " + fShaderTest());
     console.log("Vertex Shader: " + vShaderTest());
     console.log("Header exists: " + testElementExists("page_header"));
+    console.log("Point selection 'page' exists: " + testElementExists("pointSelection"));
+    console.log("Point selection prompt exists: " + testElementExists("pointSelectionPrompt"));
+    console.log("Point selection table exists: " + testElementExists("pointTable"));
+    console.log("Point selection of 'three' exists: " + testElementExists("three"));
+    console.log("Point selection of 'four' exists: " + testElementExists("four"));
+    console.log("Point selection of 'five' exists: " + testElementExists("five"));
+    console.log("Point selection of 'six' exists: " + testElementExists("six"));
+    console.log("Point selection of 'seven' exists: " + testElementExists("seven"));
+    console.log("Point selection of 'eight' exists: " + testElementExists("eight"));
+    console.log("Special factor exists: " + testElementExists("selectPointsFactor"));
+    console.log("Main game wrapper exists: " + testElementExists("mainGameWrapper"));
     console.log("Canvas exists: " + testElementExists("webGL"));
     console.log("Messages area exists: " + testElementExists("messages"));
     console.log("Message box exists: " + testElementExists("message_box"));
@@ -353,6 +416,15 @@ function runTests() {
     console.log("Inner game div exists: " + testElementExists("inner_game"));
     console.log("Number of points drawn exists: " + testElementExists("points_placed"));
     console.log("Controls area exists: " + testElementExists("controls"));
+    console.log("Points placed exists: " + testElementExists("points_placed"));
+    console.log("Speed slider exists: " + testElementExists("speed"));
+    console.log("Play/pause exists: " + testElementExists("play_pause"));
+    console.log("Color slider exists: " + testElementExists("color"));
+    console.log("Run button exists: " + testElementExists("run"));
+    console.log("Undo button exists: " + testElementExists("undo"));
+    console.log("Redo button exists: " + testElementExists("redo"));
+    console.log("Reset button exists: " + testElementExists("reset"));
+    console.log("New button exists: " + testElementExists("new"));
 
     // TO-DO: insert to check if buttons exist
 
@@ -376,4 +448,8 @@ function runTests() {
     console.log("Test updating messages: " + testUpdateInnerHtml());
     console.log("Test enabling canvas events: " + testEnableCanvasEvents());
     console.log("Test initializing controls: " + testInitializeControlEvents());
+    console.log("Test window resizing: " + testResize());
+    console.log("Test average: " + testAverage());
+    console.log("Test distance: " + testDistance());
+    console.log("Test standard deviation: " + testStandardDeviation());
 }
