@@ -77,11 +77,6 @@
     width: 100%;
 }
 
-/* Formatting for the messages */
-#message_box {
-    font-size: calc(4vw + 4vh + 2vmin);
-}
-
 /* Formatting for the messages on the game page */
 .game_message_box {
     margin: 0.5em auto 1.0em auto;
