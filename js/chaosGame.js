@@ -246,7 +246,7 @@ function main(selection) {
             // If a point is the starting point, label it
         } else if (state.points.length === state.n + 1 && !flags.run && !flags.endGame) {
             // Update the message to tell the user to press run
-            updateInnerHtml(dom.messageBox, "Press the 'Run' button to start! The game will end after 3000 points!");
+            updateInnerHtml(dom.messageBox, "Press the 'Run' button to start! The game will end at 3000 points!");
         
             // Draw the starting label
             addCustomLabel(state.points[state.n], dom.canvas, "Start");
