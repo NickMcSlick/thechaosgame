@@ -245,11 +245,12 @@ function main(selection) {
 
             // If a point is the starting point, label it
         } else if (state.points.length === state.n + 1 && !flags.run && !flags.endGame) {
+            // Update the message to tell the user to press run
+            updateInnerHtml(dom.messageBox, "Press the 'Run' button to start! The game will end after 3000 points!");
+        
+            // Draw the starting label
             addCustomLabel(state.points[state.n], dom.canvas, "Start");
             state.current = new Point(state.points[state.n].x, state.points[state.n].y, "", false);
-
-            // Update the message to tell the user to press run
-            updateInnerHtml(dom.messageBox, "Press the 'Run' button to start! The game will end at 3000 points!");
         }
 
         // Readjust the points
@@ -270,7 +271,7 @@ function main(selection) {
             }
 
             if( standardDeviation(slopes) > threshold )
-                readjustPoints(state.points, dom.canvas, state.n);
+                readjustLabels(state.points, dom.canvas, state.n);
             else
                 addLabels(state.points.slice(0, state.n), dom.canvas);
         }
@@ -764,7 +765,7 @@ function addCustomLabel(labelPoint, canvas, labelMessage) {
 
 // Calculate the new center and readjust the points accordingly
 // OF NOTE - this works using screen space instead of webGL coordinates - otherwise it gets stretched
-function readjustPoints(points, canvas, n) {
+function readjustLabels(points, canvas, n) {
     let div = document.getElementById("inner_game");
     let sum = [0, 0];
     for (let i = 0; i < points.length && i < n; i++) {
