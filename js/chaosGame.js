@@ -182,6 +182,12 @@ function main(selection) {
         }
     }
 
+    // Check to make sure that the input is correct
+    if (selection < 3 || selection > 8) {
+        console.log("Input data is out of bounds!");
+        return;
+    }
+
     // Resize canvas
     dom.canvas.width = dom.innerGame.getBoundingClientRect().width;
     dom.canvas.height = dom.innerGame.getBoundingClientRect().height;
