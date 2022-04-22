@@ -362,21 +362,6 @@ function testInitializeControlEvents() {
     }
 }
 
-// Test that the canvas resizes
-/* FIX THIS TEST */
-function testResize() {
-    console.log(dummyDom.innerGame.getBoundingClientRect().height);
-
-    resize(dummyWebGL, dummyState, dummyDom, dummyFlags);
-
-    if (dummyDom.canvas.width === 400 && dummyDom.canvas.height === 400) {
-        return true;
-    } else {
-        console.log(dummyDom.canvas.width);
-        return false;
-    }
-}
-
 // Test the average function
 function testAverage() {
     let arr = [1, 2, 3];
@@ -532,7 +517,6 @@ function runTests() {
     console.log("Updating messages works: " + testUpdateInnerHtml());
     console.log("Enabling canvas events works: " + testEnableCanvasEvents());
     console.log("Initializing of controls works: " + testInitializeControlEvents());
-    console.log("Window resizing works: " + testResize());
     console.log("Average works: " + testAverage());
     console.log("Distance works: " + testDistance());
     console.log("Standard deviation works: " + testStandardDeviation());

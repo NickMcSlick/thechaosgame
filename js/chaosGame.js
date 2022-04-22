@@ -392,13 +392,13 @@ function main(selection) {
                     // We want this point to be drawn underneath the initial points and above the generated points
                     totalPoints.splice(totalPoints.length - state.n - 1, 0, state.generatedPoints[state.generatedPoints.length - 1]);
 
+                    // Update the message to tell the user the random number and point chosen
+                    updateInnerHtml(dom.messageBox, "Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65));
+
                     // Update current vertex and label it
                     state.current = state.generatedPoints[state.generatedPoints.length - 1];
                     state.current.border = true;
                     addCustomLabel(state.current, dom.canvas, "Current");
-
-                    // Update the message to tell the user the random number and point chosen
-                    updateInnerHtml(dom.messageBox, "Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65));
                 }
 
                 // Draw
