@@ -25,6 +25,7 @@ function selectMain() {
   // Background music
   var music = new Audio("../audio/Interplanetary Odyssey.ogg");
   music.volume = 0.2;
+  music.loop = true;
 
   // Unfortunately most browsers try to stop music from playing without
   // user interaction. So, to circumvent this, we play the background music
