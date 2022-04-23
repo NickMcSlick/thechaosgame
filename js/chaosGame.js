@@ -395,6 +395,26 @@ function main(selection) {
                     // Update the message to tell the user the random number and point chosen
                     updateInnerHtml(dom.messageBox, "Random number chosen: " + rand + " Point Associated: " + String.fromCharCode(rand + 65));
 
+                        // 1. Get the slopes formed by a point and its neighbor
+                        // 2. Get the standard deviation of the slopes of the points
+                        // 3. If the standard deviation of the slopes is under a certain threshold, the slopes are similar enough
+                        //    to each other that they are considered to be in a line, and so point readjustment is not carried out.
+                        let threshold = 1.0;
+                        let slopes = [];
+                        for(let i = 0; i < state.points.length; i++) {
+                            let p1 = state.points[i];
+                            let p2 = state.points[ (i+1) % state.points.length ];
+                            let slope = (p2.y-p1.y) / (p2.x-p1.x);
+
+                            slopes.push( slope );
+                        }
+
+                        if( standardDeviation(slopes) > threshold )
+                            readjustLabels(state.points, dom.canvas, state.n);
+                        else
+                            addLabels(state.points.slice(0, state.n), dom.canvas);
+
+
                     // Update current vertex and label it
                     state.current = state.generatedPoints[state.generatedPoints.length - 1];
                     state.current.border = true;
@@ -579,7 +599,6 @@ function enableCanvasEvents(canvas, update, state) {
     canvas.onclick = function (e) {
         placePoint(e, state.mousePosition, state.points, canvas, state.undid);
         update();
-        pointClick.play();
     }
 }
 
@@ -644,8 +663,6 @@ function updateMousePosition(e, mousePosition, points, canvas) {
     }
 }
 
-
-    
 // Place points
 function placePoint(e, mousePosition, points, canvas, undid) {
     // Clear the array
@@ -671,6 +688,8 @@ function placePoint(e, mousePosition, points, canvas, undid) {
         mousePosition.y = 2.0;
         return;
     }
+
+    pointClick.play();
 
     points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65), true));
 }
