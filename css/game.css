@@ -27,6 +27,10 @@
     vertical-align: text-bottom;
 }
 
+.controlsText {
+    font-size: large;
+}
+
 /* Mouse-over effects */
 .slider:hover {
     opacity: 1; /* Fully shown on mouse-over */
@@ -143,6 +147,7 @@
     padding: 0.375rem 0.75rem;
     font-size: 1rem;
     border-radius: 0.25rem;
+    margin-block: 1.5%;
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 .btn-outline-primary {
@@ -163,6 +168,7 @@
     border-bottom-right-radius: 2em;
     box-shadow: 0em 0em 1em grey;
     padding: 1em;
+    min-width: fit-content;
 }
 
 
