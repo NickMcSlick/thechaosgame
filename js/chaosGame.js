@@ -25,7 +25,7 @@
 /*********************************/
 
 /***** Sources *****/
-// Music made available by: "https://mixkit.co/free-sound-effects/" and "https://patrickdearteaga.com/arcade-music/".
+// Music made available by: "https://mixkit.co/free-sound-effects/", " https://www.bensound.com", and "https://patrickdearteaga.com/arcade-music/".
 // HSV to RGB Conversion from: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
 // Fragment shader code from: https://www.desultoryquest.com/blog/drawing-anti-aliased-circular-points-using-opengl-slash-webgl/
 // Element removal code from: https://stackoverflow.com/questions/19885788/removing-every-child-element-except-first-child

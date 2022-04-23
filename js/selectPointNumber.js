@@ -23,7 +23,7 @@ var sound = new Audio("../Audio/ButtonClickS.wav");
 // Main point selection script
 function selectMain() {
   // Background music
-  var music = new Audio("../audio/Interplanetary Odyssey.ogg");
+  var music = new Audio("../audio/Interplanetary Odyssey.mp3");
   music.volume = 0.2;
   music.loop = true;
 
