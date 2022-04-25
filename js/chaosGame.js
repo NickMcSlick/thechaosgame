@@ -640,13 +640,19 @@ function resize(webGL, state, dom, flags) {
 // Update the mouse position
 function updateMousePosition(e, mousePosition, points, canvas) {
     let rect = e.target.getBoundingClientRect();
-    let tempX = 2 * (e.clientX - rect.left) / canvas.width - 1;
-    let tempY = - 2 * (e.clientY - rect.top) / canvas.height + 1;
+    let tempX =  2 * (e.clientX - rect.left) / canvas.width - 1;
+    let tempY = -2 * (e.clientY - rect.top) / canvas.height + 1;
 
     // Check if points are too close and if they are, move the mouse out of sight
-    let tooClose = 0.1;
+    let tooClose = 30;
     for(let p of points) {
-        if( distance(new Point(tempX, tempY), p) < tooClose ) {
+        // screenspace equivelants of mouse position and point position
+        let screenspaceMousePos = { x: e.clientX, y: e.clientY };
+        let pointPos = { 
+            x: (p.x + 1) * canvas.width  *  0.5 + rect.left,
+            y: (p.y - 1) * canvas.height * -0.5 + rect.top
+        };
+        if( distance(screenspaceMousePos, pointPos) < tooClose ) {
             mousePosition.x = 2.0;
             mousePosition.y = 2.0;
             return;
@@ -665,22 +671,27 @@ function updateMousePosition(e, mousePosition, points, canvas) {
 
 // Place points
 function placePoint(e, mousePosition, points, canvas, undid) {
-    // Clear the array
-    undid.length = 0;
-    
     let rect = e.target.getBoundingClientRect();
-    mousePosition.x = 2 * (e.clientX - rect.left) / canvas.width - 1;
-    mousePosition.y = - 2 * (e.clientY - rect.top) / canvas.height + 1;
+    mousePosition.x =  2 * (e.clientX - rect.left) / canvas.width - 1;
+    mousePosition.y = -2 * (e.clientY - rect.top) / canvas.height + 1;
 
     // Check if points are too close
-    let tooClose = 0.1;
+    let tooClose = 30;
     for(let p of points) {
-        if( distance(mousePosition, p) < tooClose ) {
+        // screenspace equivelants of mouse position and point position
+        let screenspaceMousePos = { x: e.clientX, y: e.clientY };
+        let pointPos = { 
+            x: (p.x + 1) * canvas.width  *  0.5 + rect.left,
+            y: (p.y - 1) * canvas.height * -0.5 + rect.top
+        };
+        if( distance(screenspaceMousePos, pointPos) < tooClose ) {
             mousePosition.x = 2.0;
             mousePosition.y = 2.0;
             return;
         }
     }
+    // Clear the array
+    undid.length = 0;
 
     // Check to make sure the user isn't drawing too close to the border
     if (Math.abs(mousePosition.x) > 0.85 || Math.abs(mousePosition.y) > 0.85) {
