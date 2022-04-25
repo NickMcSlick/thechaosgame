@@ -644,9 +644,9 @@ function updateMousePosition(e, mousePosition, points, canvas) {
     let tempY = -2 * (e.clientY - rect.top) / canvas.height + 1;
 
     // Check if points are too close and if they are, move the mouse out of sight
-    let tooClose = 30;
+    let tooClose = 40;
     for(let p of points) {
-        // screenspace equivelants of mouse position and point position
+        // screenspace equivalent of mouse position and point position
         let screenspaceMousePos = { x: e.clientX, y: e.clientY };
         let pointPos = { 
             x: (p.x + 1) * canvas.width  *  0.5 + rect.left,
@@ -676,9 +676,9 @@ function placePoint(e, mousePosition, points, canvas, undid) {
     mousePosition.y = -2 * (e.clientY - rect.top) / canvas.height + 1;
 
     // Check if points are too close
-    let tooClose = 30;
+    let tooClose = 40;
     for(let p of points) {
-        // screenspace equivelants of mouse position and point position
+        // screenspace equivalents of mouse position and point position
         let screenspaceMousePos = { x: e.clientX, y: e.clientY };
         let pointPos = { 
             x: (p.x + 1) * canvas.width  *  0.5 + rect.left,
