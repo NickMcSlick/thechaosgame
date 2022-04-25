@@ -783,13 +783,13 @@ function addCustomLabel(labelPoint, canvas, labelMessage) {
         let p = newLabel("customLabel", "10");
         let node = document.createTextNode(labelMessage);
         p.appendChild(node);
-        p.style.top = div.getBoundingClientRect().top + window.scrollY + point.y  - 20 + "px";
-        p.style.left = div.getBoundingClientRect().left + point.x - 20 + "px";
         div.appendChild(p);
+        p.style.top = div.getBoundingClientRect().top + window.scrollY + point.y  - 20 + "px";
+        p.style.left = div.getBoundingClientRect().left + point.x - p.offsetWidth / 2 + "px";
     } else {
         label.innerHTML = labelMessage;
         label.style.top = div.getBoundingClientRect().top + window.scrollY + point.y - 20 + "px";
-        label.style.left = div.getBoundingClientRect().left + point.x - 20 + "px";
+        label.style.left = div.getBoundingClientRect().left + point.x - label.offsetWidth / 2 + "px";
     }
 }
 
