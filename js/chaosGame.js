@@ -576,8 +576,6 @@ function initializeControlEvents(controls, state, flags, dom, update) {
     disable(controls.redo);
     disable(controls.playPause);
 }
-let pointClick = new Audio("../audio/click.wav");
-    pointClick.volume = 0.2;
     
 // A function to enable canvas events
 // This is done to enable user drawing
@@ -599,10 +597,7 @@ function enableCanvasEvents(canvas, update, state) {
     // If the user clicks on the canvas, add a point to the point array
     canvas.onclick = function (e) {
         placePoint(e, state.mousePosition, state.points, canvas, state.undid);
-        pointClick.play();
         update();
-        
-
     }
 }
 
@@ -704,7 +699,9 @@ function placePoint(e, mousePosition, points, canvas, undid) {
         return;
     }
 
-    
+    let pointClick = new Audio("../audio/click.wav");
+    pointClick.volume = 0.2;
+    pointClick.play();
 
     points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65), true));
 }
