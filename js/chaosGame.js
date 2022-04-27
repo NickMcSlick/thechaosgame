@@ -583,6 +583,7 @@ let pointClick = new Audio("../audio/click.wav");
 // This is done to enable user drawing
 function enableCanvasEvents(canvas, update, state) {
     // When the user mouses over the canvas, update the mouse position and render
+    
     canvas.onmousemove = function (e) {
         updateMousePosition(e, state.mousePosition, state.points, canvas);
         update();
@@ -598,7 +599,10 @@ function enableCanvasEvents(canvas, update, state) {
     // If the user clicks on the canvas, add a point to the point array
     canvas.onclick = function (e) {
         placePoint(e, state.mousePosition, state.points, canvas, state.undid);
+        pointClick.play();
         update();
+        
+
     }
 }
 
@@ -700,7 +704,7 @@ function placePoint(e, mousePosition, points, canvas, undid) {
         return;
     }
 
-    pointClick.play();
+    
 
     points.push(new Point(mousePosition.x, mousePosition.y, String.fromCharCode(points.length + 65), true));
 }
