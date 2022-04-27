@@ -542,7 +542,6 @@ function initializeControlEvents(controls, state, flags, dom, update) {
     controls.playPause.onclick = function() {
         updatePlayPause(controls.playPause, config);
     }
-    updatePlayPause(controls.playPause, config);
 
     // Update play/pause
     // This function is abstracted and is not anonymous because it is needed in the reset event
