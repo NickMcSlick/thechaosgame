@@ -19,7 +19,7 @@ function setTutorialAsSeen() {
 }
 
 /* Slideshow */
-let slideIndex = [1,1];
+let slideIndex = [1, 1, 1, 1, 1, 1, 1, 1];
 let slideId = ["threePtProcess", "eightPtProcess", "threePt", "fourPt", "fivePt", "sixPt", "sevenPt", "eightPt"];
 
 function plusSlides(n, no) {
