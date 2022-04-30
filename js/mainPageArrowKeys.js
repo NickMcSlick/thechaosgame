@@ -16,6 +16,7 @@
 var tutorialSelected = true
 var playSelected = false
 
+
 function presetTutorialText()
 {
     var tutorial = document.getElementById('indexTutorialText')
@@ -68,3 +69,43 @@ document.addEventListener('keyup', (event) =>
         indexTutorialButton()
     }
 })
+
+function selectIndex() {
+    let indexTutorialText = document.getElementById('indexTutorialText');
+    let indexPlayText = document.getElementById('indexPlayText');
+
+    let tableArray = [indexTutorialText, indexPlayText];
+
+    // Loop through table elements to assign the mouse events
+    for (let i = 0; i < tableArray.length; i++) {
+        tableArray[i].onmouseover = function()
+        {
+            if (i === 0) { // open tutorial
+                deSelected((tableArray[0]))
+                selected(tableArray[0])
+                deSelected((tableArray[1]))
+            }
+            else { // open play
+                deSelected((tableArray[1]))
+                selected(tableArray[1])
+                deSelected((tableArray[0]))
+            }
+        }
+    }
+};
+
+// Select an option
+function selected(domElement) {
+    domElement.innerHTML = "&gt; " + domElement.innerHTML + " &lt;";
+    domElement.style.color = "darkcyan";
+}
+
+// De-select an option
+function deSelected(domElement) {
+    // This could be combined into one regex
+    domElement.innerHTML = domElement.innerHTML.replaceAll("&gt;", "");
+    domElement.innerHTML = domElement.innerHTML.replaceAll("&lt;", "");
+    domElement.innerHTML = domElement.innerHTML.trim();
+    domElement.style.color = "aqua";
+}
+
