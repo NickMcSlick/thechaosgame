@@ -80,12 +80,12 @@ function selectIndex() {
     for (let i = 0; i < tableArray.length; i++) {
         tableArray[i].onmouseover = function()
         {
-            if (i === 0) { // open tutorial
+            if (i === 0) { // mouse over indexPlayText
                 deSelected((tableArray[0]))
                 selected(tableArray[0])
                 deSelected((tableArray[1]))
             }
-            else { // open play
+            else { // mouse over indexPlayText
                 deSelected((tableArray[1]))
                 selected(tableArray[1])
                 deSelected((tableArray[0]))
