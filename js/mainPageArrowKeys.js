@@ -86,6 +86,7 @@ function selectIndex() {
     for (let i = 0; i < tableArray.length; i++) {
         tableArray[i].onmouseover = function()
         {
+
             if (i === 0) { // open tutorial
                 playSelected = false;
                 tutorialSelected = true;
