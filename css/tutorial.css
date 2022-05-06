@@ -128,6 +128,7 @@ body
 /* Hide the images by default */
 .threePtProcess, .eightPtProcess, .threePt, .fourPt, .fivePt, .sixPt, .sevenPt, .eightPt {
     display: none;
+    text-align: center;
 }
 
 /* Next & previous buttons */
