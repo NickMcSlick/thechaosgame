@@ -36,6 +36,7 @@ function currentSlide(n, no) {
     showSlides(slideIndex[no] = n, no);
 }
 
+// Show the slide
 function showSlides(n, no) {
     let i;
     let x = document.getElementsByClassName(slideId[no]);
@@ -52,6 +53,7 @@ function showSlides(n, no) {
     dots[slideIndex[no]-1].className += " active";
 }
 
+// Initial setup for tutorial
 function tutorialOnLoad() {
     setTutorialAsSeen();
     showSlides(1, 0);
