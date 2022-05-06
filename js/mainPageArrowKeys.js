@@ -2,6 +2,11 @@
 // CS4500, Group Project
 // The Chaos Game
 // The Web Devs
+// Bryce Paubel (Team Leader)
+// Kathlyn Olson
+// Michael Schall
+// Preston Smith
+// John Walthall
 // Latest Revision: 4/13/22
 /*****************/
 
@@ -70,6 +75,7 @@ document.addEventListener('keyup', (event) =>
     }
 })
 
+// Assign the events for the mouse selection
 function selectIndex() {
     let indexTutorialText = document.getElementById('indexTutorialText');
     let indexPlayText = document.getElementById('indexPlayText');
@@ -106,7 +112,6 @@ function selected(domElement) {
 
 // De-select an option
 function deSelected(domElement) {
-    // This could be combined into one regex
     domElement.classList.remove('highlightedText');
     domElement.innerHTML = domElement.innerHTML.replaceAll("&gt;", "");
     domElement.innerHTML = domElement.innerHTML.replaceAll("&lt;", "");
