@@ -2,7 +2,12 @@
 // CS4500, Group Project
 // The Chaos Game
 // The Web Devs
-// Latest Revision: 4/18/22
+// Bryce Paubel (Team Leader)
+// Kathlyn Olson
+// Michael Schall
+// Preston Smith
+// John Walthall
+// Latest Revision: 4/27/22
 /*****************/
 
 /****** Description *****/
@@ -137,7 +142,7 @@ function main(selection) {
     let state = {
         n: selection,                                                          // The number of points
         mousePosition: new Point(0, 0, "", true),            // Current mouse position
-        current: new Point(0, 0, ""),                               // Current position for drawing
+        current: new Point(0, 0, "", true),                               // Current position for drawing
         points: [],                                                             // Selected point array
         generatedPoints: [],                                                    // Generated points array
         undid: [],                                                              // The undone points

@@ -2,6 +2,11 @@
 // CS4500, Group Project
 // The Chaos Game
 // The Web Devs
+// Bryce Paubel (Team Leader)
+// Kathlyn Olson
+// Michael Schall
+// Preston Smith
+// John Walthall
 // Latest Revision: 4/11/22
 /*****************/
 
