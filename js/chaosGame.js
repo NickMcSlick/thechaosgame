@@ -362,6 +362,8 @@ function main(selection) {
                     clearChildren(dom.innerGame);
                     update();
 
+                    // Confetti from: https://codepen.io/bananascript/pen/EyZeWm
+                    // Celebration noise from: https://learningsolutionsmag.com/articles/coding-sound-with-javascript-beginner-s-guide
                     // Celebration gif and music here
                     if (confettiCounter++ < confettiAmount) {
                         confetti(); //with current modification, only one confetti is spawned per call
