@@ -30,7 +30,6 @@
 /************************/
 
 /***** Major data structures *****/
-// Defined within selectMain():
 // DOM elements, and an array of DOM elements
 // Audio elements
 /*********************************/
