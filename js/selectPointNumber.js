@@ -26,8 +26,7 @@
 
 /****** Description *****/
 // This program takes in the user input for point number selection
-// and spawns an instance of the game using main(n) - it also handles
-// the background music
+// and spawns an instance of the game using main(n)
 /************************/
 
 /***** Major data structures *****/
