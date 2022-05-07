@@ -269,7 +269,7 @@ function main(selection) {
             //    to each other that they are considered to be in a line, and so point readjustment is not carried out.
             let threshold = 1.0;
             let slopes = [];
-            for(let i = 0; i < state.points.length; i++) {
+            for(let i = 0; i < state.points.length - 1; i++) {
                 let p1 = state.points[i];
                 let p2 = state.points[ (i+1) % state.points.length ];
                 let slope = (p2.y-p1.y) / (p2.x-p1.x);
@@ -408,7 +408,7 @@ function main(selection) {
                         //    to each other that they are considered to be in a line, and so point readjustment is not carried out.
                         let threshold = 1.0;
                         let slopes = [];
-                        for(let i = 0; i < state.points.length; i++) {
+                        for(let i = 0; i < state.points.length - 1; i++) {
                             let p1 = state.points[i];
                             let p2 = state.points[ (i+1) % state.points.length ];
                             let slope = (p2.y-p1.y) / (p2.x-p1.x);
