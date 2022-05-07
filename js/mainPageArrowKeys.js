@@ -10,6 +10,10 @@
 // Latest Revision: 4/13/22
 /*****************/
 
+/***** Copyright *****/
+// Copyright 2022, Bryce Paubel, Kathlyn Olson, Michael Schall, Preston Smith, John Walthall
+/*********************/
+
 /***** Licensing *****/
 // Licensed under GNU GPL 3
 // This file is part of The Chaos Game.

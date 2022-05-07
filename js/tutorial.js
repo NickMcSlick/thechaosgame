@@ -7,8 +7,12 @@
 // Michael Schall
 // Preston Smith
 // John Walthall
-// Latest Revision: 4/13/22
+// Latest Revision: 5/7/22
 /*****************/
+
+/***** Copyright *****/
+// Copyright 2022, Bryce Paubel, Kathlyn Olson, Michael Schall, Preston Smith, John Walthall
+/*********************/
 
 /***** Licensing *****/
 // Licensed under GNU GPL 3

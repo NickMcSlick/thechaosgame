@@ -10,6 +10,10 @@
 // Latest Revision: 5/7/22
 /*****************/
 
+/***** Copyright *****/
+// Copyright 2022, Bryce Paubel, Kathlyn Olson, Michael Schall, Preston Smith, John Walthall
+/*********************/
+
 /***** Licensing *****/
 // Licensed under GNU GPL 3
 // This file is part of The Chaos Game.
@@ -29,9 +33,11 @@
 /*********************************/
 
 /*****Sources*****/
-//https://codepen.io/bananascript/pen/EyZeWm
+// Confetti: https://codepen.io/bananascript/pen/EyZeWm
 /*********************************/
 
+
+// The entirety of this code comes from: https://codepen.io/bananascript/pen/EyZeWm
 'use strict';
 
 let confetti = function() {
