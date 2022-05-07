@@ -123,6 +123,19 @@ let FSHADER = `
 
 // Main game program
 function main(selection) {
+
+    // Background music
+    var music = new Audio("../audio/Interplanetary Odyssey.mp3");
+    music.volume = 0.2;
+    music.loop = true;
+
+    // Unfortunately most browsers try to stop music from playing without
+    // user interaction. So, to circumvent this, we play the background music
+    // when the user mouses over the page
+    window.onmouseover = function() {
+        music.play();
+    }
+
     let webGL;                                      // The drawing context
 
     let musicCounter= 0                             // number of times music has played!

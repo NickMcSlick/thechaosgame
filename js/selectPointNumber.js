@@ -22,22 +22,8 @@
 // Audio elements
 /*********************************/
 
-//sound on click
-var sound = new Audio("../Audio/ButtonClickS.wav");
-
 // Main point selection script
 function selectMain() {
-  // Background music
-  var music = new Audio("../audio/Interplanetary Odyssey.mp3");
-  music.volume = 0.2;
-  music.loop = true;
-
-  // Unfortunately most browsers try to stop music from playing without
-  // user interaction. So, to circumvent this, we play the background music
-  // when the user mouses over the page
-  window.onmouseover = function() {
-    music.play();
-  }
 
   let pointSelectionDiv = document.getElementById("pointSelection");
   let gameDiv = document.getElementById("mainGameWrapper");
@@ -111,7 +97,6 @@ function selectMain() {
 
     // Enter
     } else if (e.keyCode === 13) {
-      sound.play();
       pointSelectionDiv.hidden = true;
       gameDiv.hidden = false;
       main(current.associatedValue);
@@ -128,7 +113,6 @@ function selectMain() {
       selected(current);
       updateSpecialFactor(tableArray[i].associatedValue, specialFactorElement);
       tableArray[i].onclick = function () {
-        sound.play();
         pointSelectionDiv.hidden = true;
         gameDiv.hidden = false;
         main(tableArray[i].associatedValue);
