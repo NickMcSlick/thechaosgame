@@ -18,6 +18,13 @@
 // Session objects
 /*********************************/
 
+/***** Sources Used *****/
+// For slide show: https://www.sitepoint.com/community/t/having-trouble-with-multiple-slideshows-on-one-page/293076
+// For slide show: https://www.w3schools.com/howto/tryit.asp?filename=tryhow_js_slideshow_multiple
+// For slide show: https://www.w3schools.com/howto/howto_js_slideshow.asp
+/*********************************/
+
+
 /* IT SHOULD BE NOTED THAT THIS WON'T WORK FOR EVERY BROWSER DUE TO COOKIE RESTRICTIONS */
 function setTutorialAsSeen() {
     sessionStorage.setItem("tutorial", "hasSeen");

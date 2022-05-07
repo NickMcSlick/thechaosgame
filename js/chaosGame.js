@@ -34,6 +34,8 @@
 // HSV to RGB Conversion from: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
 // Fragment shader code from: https://www.desultoryquest.com/blog/drawing-anti-aliased-circular-points-using-opengl-slash-webgl/
 // Element removal code from: https://stackoverflow.com/questions/19885788/removing-every-child-element-except-first-child
+// Confetti from: https://codepen.io/bananascript/pen/EyZeWm
+// Celebration noise from: https://learningsolutionsmag.com/articles/coding-sound-with-javascript-beginner-s-guide
 /*******************/
 
 
