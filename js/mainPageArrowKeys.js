@@ -84,7 +84,7 @@ function selectIndex() {
 
     // Loop through table elements to assign the mouse events
     for (let i = 0; i < tableArray.length; i++) {
-        tableArray[i].onmouseover = function()
+        tableArray[i].onmouseover = tableArray[i].onmousemove = tableArray[i].onmousedown = function()
         {
 
             if (i === 0) { // open tutorial
