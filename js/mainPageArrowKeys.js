@@ -32,19 +32,22 @@
 // DOM Elements
 /*********************************/
 
+// Initialize booleans
 var tutorialSelected = true;
 var playSelected = false;
 
-
+// Default selection
 function presetTutorialText()
 {
     var tutorial = document.getElementById('indexTutorialText')
     tutorial.textContent = "> "+tutorial.innerText+" <"
 }
 
+// Insert the key navigation events
 document.addEventListener('keyup', (event) =>
 {
-    var text
+    var text;
+    // If the user presses up or down and the play is selected, select the tutorial
     if((event.code==='ArrowDown' || event.code === 'ArrowUp' || event.code === 'ArrowLeft' || event.code === 'ArrowRight') && tutorialSelected === false && playSelected===true)
     {
         document.getElementById('indexPlayText').classList.remove('highlightedText');
@@ -56,6 +59,7 @@ document.addEventListener('keyup', (event) =>
         tutorialSelected = true;
         playSelected = false;
     }
+    // If the user presses up or down and the tutorial is selected, select play
     else if((event.code==='ArrowDown' || event.code === 'ArrowUp' || event.code === 'ArrowLeft' || event.code === 'ArrowRight') && tutorialSelected === true && playSelected===false)
     {
         document.getElementById('indexTutorialText').classList.remove('highlightedText');
@@ -67,6 +71,7 @@ document.addEventListener('keyup', (event) =>
         playSelected = true;
         tutorialSelected = false;
     }
+    // Otherwise, select te tutorial
     else if(event.code==='ArrowDown' || event.code === 'ArrowUp' || event.code === 'ArrowLeft' || event.code === 'ArrowRight')
     {
         document.getElementById('indexTutorialText').classList.add('highlightedText');
@@ -78,11 +83,13 @@ document.addEventListener('keyup', (event) =>
         tutorialSelected = true;
         playSelected = false;
     }
-    
+
+    // If the user presses enter and the play button is selected, navigate the user to the game
     if((event.code==='Enter') && tutorialSelected === false && playSelected===true)
     {
         indexPlayButton();
     }
+    // If the user presses enter and the tutorial button is selected, navigate the user to the tutorial
     else if((event.code==='Enter') && tutorialSelected === true && playSelected===false)
     {
         indexTutorialButton();
