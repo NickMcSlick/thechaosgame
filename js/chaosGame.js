@@ -429,6 +429,7 @@ function main(selection) {
                 }
 
                 // Draw
+                // HSV to RGB Conversion from: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
                 drawVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0));
 
                 // Update the number of points drawn (excluding the mouse position)
@@ -451,6 +452,7 @@ function main(selection) {
         // If we are not running the game, bind and draw the current positions
         } else {
             // Draw
+            // HSV to RGB Conversion from: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
             drawVertices(webGL, totalPoints, hsvToRgb(config.COLOR / 360, 1.0, 1.0), state.n);
             // Update the number of points drawn
             if (totalPoints.length === 0)
@@ -487,7 +489,10 @@ function initializeControlEvents(controls, state, flags, dom, update) {
     // Update slider
     controls.color.oninput = function() {
         config.COLOR = controls.color.value;
+
+        // HSV to RGB Conversion from: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
         currentColor = hsvToRgb(config.COLOR / 360, 1, 1);
+
         controls.color.style.backgroundColor = "rgb( " + currentColor.r + ", " + currentColor.g + ", " + currentColor.b + ")";
         SliderSound.play();
         update();
@@ -533,6 +538,7 @@ function initializeControlEvents(controls, state, flags, dom, update) {
         config.SPEED = controls.speed.value = "1000";
         config.PLAY = false;
 
+        // HSV to RGB Conversion from: https://axonflux.com/handy-rgb-to-hsl-and-rgb-to-hsv-color-model-c
         currentColor = hsvToRgb(config.COLOR / 360, 1, 1);
         controls.color.style.backgroundColor = "rgb( " + currentColor.r + ", " + currentColor.g + ", " + currentColor.b + ")";
         controls.speed.value = (controls.speed.max - config.SPEED) + "";
