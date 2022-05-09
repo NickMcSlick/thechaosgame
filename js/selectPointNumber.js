@@ -118,7 +118,7 @@ function selectMain() {
 
   // Loop through table elements to assign the mouse events
   for (let i = 0; i < tableArray.length; i++) {
-    tableArray[i].onclick = function () {
+    tableArray[i].onclick = tableArray[i].ontouchstart = function () {
       pointSelectionDiv.hidden = true;
       gameDiv.hidden = false;
       main(tableArray[i].associatedValue);

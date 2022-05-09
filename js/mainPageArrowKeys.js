@@ -103,6 +103,9 @@ function selectIndex() {
 
     let tableArray = [indexTutorialText, indexPlayText];
 
+    tableArray[0].ontouchstart = indexTutorialButton;
+    tableArray[1].ontouchstart = indexPlayButton;
+
     // Loop through table elements to assign the mouse events
     for (let i = 0; i < tableArray.length; i++) {
         tableArray[i].onmouseover = tableArray[i].onmousemove = tableArray[i].onmousedown = function()
