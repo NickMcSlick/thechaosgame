@@ -118,17 +118,17 @@ function selectMain() {
 
   // Loop through table elements to assign the mouse events
   for (let i = 0; i < tableArray.length; i++) {
+    tableArray[i].onclick = function () {
+      pointSelectionDiv.hidden = true;
+      gameDiv.hidden = false;
+      main(tableArray[i].associatedValue);
+    }
     tableArray[i].onmouseover = tableArray[i].onmousemove = tableArray[i].onmousedown = function() {
       prev = current;
       current = tableArray[i];
       deSelected(prev);
       selected(current);
       updateSpecialFactor(tableArray[i].associatedValue, specialFactorElement);
-      tableArray[i].onclick = function () {
-        pointSelectionDiv.hidden = true;
-        gameDiv.hidden = false;
-        main(tableArray[i].associatedValue);
-      }
     }
   }
 }
